@@ -3,7 +3,10 @@ module Rack
   class Attack
     class << self
 
-      def block
+      attr_reader :blocks, :throttles, :whitelists
+
+      def block(name, &block)
+        (@blocks ||= {})[name] = block
       end
 
       def throttle
