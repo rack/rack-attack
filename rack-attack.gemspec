@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description = "A flexible rack middleware for throttling and blocking requests"
   s.email = "aaron@ktheory.com"
 
-  s.files = Dir.glob("{bin,lib}/**/*") + %w(LICENSE README.rdoc Rakefile)
+  s.files = Dir.glob("{bin,lib}/**/*") + %w(LICENSE README.md)
   s.homepage = 'http://github.com/kickstarter/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
