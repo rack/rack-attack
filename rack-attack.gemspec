@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency 'debugger', '~> 1.1.3'
 end
 

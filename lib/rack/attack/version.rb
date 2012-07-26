@@ -1,5 +1,5 @@
 module Rack
-  class Attack
+  module Attack
     VERSION = '0.0.1'
   end
 end
