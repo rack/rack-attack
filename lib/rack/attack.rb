@@ -2,17 +2,19 @@ require 'rack'
 module Rack::Attack
   require 'rack/attack/cache'
   require 'rack/attack/throttle'
+  require 'rack/attack/whitelist'
+  require 'rack/attack/blacklist'
 
   class << self
 
     attr_reader :cache, :notifier
 
     def whitelist(name, &block)
-      (@whitelists ||= {})[name] = block
+      (@whitelists ||= {})[name] = Whitelist.new(name, block)
     end
 
-    def block(name, &block)
-      (@blocks ||= {})[name] = block
+    def blacklist(name, &block)
+      (@blacklists ||= {})[name] = Blacklist.new(name, block)
     end
 
     def throttle(name, options, &block)
@@ -20,7 +22,7 @@ module Rack::Attack
     end
 
     def whitelists; @whitelists ||= {}; end
-    def blocks;     @blocks     ||= {}; end
+    def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
 
     def new(app)
@@ -38,8 +40,8 @@ module Rack::Attack
         return @app.call(env)
       end
 
-      if blocked?(req)
-        blocked_response
+      if blacklisted?(req)
+        blacklisted_response
       elsif throttled?(req)
         throttled_response
       else
@@ -48,18 +50,14 @@ module Rack::Attack
     end
 
     def whitelisted?(req)
-      whitelists.any? do |name, block|
-        block[req].tap{ |match|
-          instrument(:type => :whitelist, :name => name, :request => req) if match
-        }
+      whitelists.any? do |name, whitelist|
+        whitelist[req]
       end
     end
 
-    def blocked?(req)
-      blocks.any? do |name, block|
-        block[req].tap { |match|
-          instrument(:type => :block, :name => name, :request => req) if match
-        }
+    def blacklisted?(req)
+      blacklists.any? do |name, blacklist|
+        blacklist[req]
       end
     end
 
@@ -73,7 +71,7 @@ module Rack::Attack
       notifier.instrument('rack.attack', payload) if notifier
     end
 
-    def blocked_response
+    def blacklisted_response
       [503, {}, ['Blocked']]
     end
 
@@ -82,7 +80,7 @@ module Rack::Attack
     end
 
     def clear!
-      @whitelists, @blocks, @throttles = {}, {}, {}
+      @whitelists, @blacklists, @throttles = {}, {}, {}
     end
 
   end

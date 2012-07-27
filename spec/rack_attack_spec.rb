@@ -22,15 +22,15 @@ describe 'Rack::Attack' do
 
   allow_ok_requests
 
-  describe 'with a block' do
+  describe 'with a blacklist' do
     before do
       @bad_ip = '1.2.3.4'
-      Rack::Attack.block("ip #{@bad_ip}") {|req| req.ip == @bad_ip }
+      Rack::Attack.blacklist("ip #{@bad_ip}") {|req| req.ip == @bad_ip }
     end
 
-    it('has a block') { Rack::Attack.blocks.key?("ip #{@bad_ip}") }
+    it('has a blacklist') { Rack::Attack.blacklists.key?("ip #{@bad_ip}") }
 
-    it "should block bad requests" do
+    it "should blacklist bad requests" do
       get '/', {}, 'REMOTE_ADDR' => @bad_ip
       last_response.status.must_equal 503
     end
@@ -44,7 +44,7 @@ describe 'Rack::Attack' do
       end
 
       it('has a whitelist'){ Rack::Attack.whitelists.key?("good ua") }
-      it "should allow whitelists before blocks" do
+      it "should allow whitelists before blacklists" do
         get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua
         last_response.status.must_equal 200
       end

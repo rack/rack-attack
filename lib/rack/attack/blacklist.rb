@@ -1,12 +1,13 @@
 require_relative 'check'
 module Rack
   module Attack
-    class Whitelist < Check
+    class Blacklist < Check
       def initialize(name, block)
         super
-        @type = :whitelist
+        @type = :blacklist
       end
 
     end
   end
 end
+

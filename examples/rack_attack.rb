@@ -15,15 +15,9 @@ Rack::Attack.throttle "logins/email", :limit => 2, :period => 60 do |req|
   req.params['email'] unless req.params['email'].blank?
 end
 
-
-# Block cloud IPs from accessing PATH regexp
-Rack::Attack.block "bad_ips from logging in" do |req|
+# Blacklist cloud IPs from accessing PATH regexp
+Rack::Attack.blacklist "bad_ips from logging in" do |req|
   req.path =~ /^login/ && bad_ips.include?(req.ip)
-end
-
-# Throttle login attempts
-Rack::Attack.throttle "logins/ip", :limit => 2, :period => 1.second do | req|
-  req.ip if req.post? && req.path_info =~ /^login/
 end
 
 # Whitelist a User-Agent

@@ -16,7 +16,7 @@ module Rack
       end
 
       def [](req)
-        discriminator = @block[req]
+        discriminator = block[req]
         return false unless discriminator
 
         key = "#{name}:#{discriminator}"
