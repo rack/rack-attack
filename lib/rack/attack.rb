@@ -1,6 +1,7 @@
 require 'rack'
 module Rack::Attack
   require 'rack/attack/cache'
+  require 'rack/attack/throttle'
 
   class << self
 
@@ -14,7 +15,8 @@ module Rack::Attack
       (@blocks ||= {})[name] = block
     end
 
-    def throttle
+    def throttle(name, options, &block)
+      (@throttles ||= {})[name] = Throttle.new(name, options, block)
     end
 
     def whitelists; @whitelists ||= {}; end
@@ -22,7 +24,7 @@ module Rack::Attack
     def throttles;  @throttles  ||= {}; end
 
     def new(app)
-      @cache = Cache.new
+      @cache ||= Cache.new
       @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @app = app
       self
@@ -39,6 +41,7 @@ module Rack::Attack
       if blocked?(req)
         blocked_response
       elsif throttled?(req)
+        throttled_response
       else
         @app.call(env)
       end
@@ -61,7 +64,9 @@ module Rack::Attack
     end
 
     def throttled?(req)
-      false
+      throttles.any? do |name, throttle|
+        throttle[req]
+      end
     end
 
     def instrument(payload)

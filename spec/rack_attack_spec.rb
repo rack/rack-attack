@@ -51,5 +51,27 @@ describe 'Rack::Attack' do
     end
   end
 
+  describe 'with a throttle' do
+    before do
+      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+      Rack::Attack.throttle('ip/sec', :limit => 1, :period => 1) { |req| req.ip }
+    end
+
+    it('should have a throttle'){ Rack::Attack.throttles.key?('ip/sec') }
+    allow_ok_requests
+
+    it 'should set the counter for one request' do
+      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      Rack::Attack.cache.store.read('rack::attack:ip/sec:1.2.3.4').must_equal 1
+    end
+
+    it 'should block 2 requests' do
+      2.times do
+        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      end
+      last_response.status.must_equal 503
+    end
+  end
+
 
 end
