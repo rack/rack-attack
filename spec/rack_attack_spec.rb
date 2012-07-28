@@ -30,12 +30,18 @@ describe 'Rack::Attack' do
 
     it('has a blacklist') { Rack::Attack.blacklists.key?("ip #{@bad_ip}") }
 
-    it "should blacklist bad requests" do
-      get '/', {}, 'REMOTE_ADDR' => @bad_ip
-      last_response.status.must_equal 503
-    end
+    describe "a bad request" do
+      before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
+      it "should return a blacklist response" do
+        get '/', {}, 'REMOTE_ADDR' => @bad_ip
+        last_response.status.must_equal 503
+      end
+      it "should tag the env" do
+        last_request.env['rack.attack.blacklist'].must_equal "ip #{@bad_ip}"
+      end
 
-    allow_ok_requests
+      allow_ok_requests
+    end
 
     describe "and with a whitelist" do
       before do
@@ -44,9 +50,15 @@ describe 'Rack::Attack' do
       end
 
       it('has a whitelist'){ Rack::Attack.whitelists.key?("good ua") }
-      it "should allow whitelists before blacklists" do
-        get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua
-        last_response.status.must_equal 200
+      describe "with a request match both whitelist & blacklist" do
+        before { get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua }
+        it "should allow whitelists before blacklists" do
+          get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua
+          last_response.status.must_equal 200
+        end
+        it "should tag the env" do
+          last_request.env['rack.attack.whitelist'].must_equal 'good ua'
+        end
       end
     end
   end
@@ -60,18 +72,26 @@ describe 'Rack::Attack' do
     it('should have a throttle'){ Rack::Attack.throttles.key?('ip/sec') }
     allow_ok_requests
 
-    it 'should set the counter for one request' do
-      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
-      Rack::Attack.cache.store.read('rack::attack:ip/sec:1.2.3.4').must_equal 1
-    end
-
-    it 'should block 2 requests' do
-      2.times do
-        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+    describe 'a single request' do
+      before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+      it 'should set the counter for one request' do
+        Rack::Attack.cache.store.read('rack::attack:ip/sec:1.2.3.4').must_equal 1
       end
-      last_response.status.must_equal 503
     end
+    describe "with 2 requests" do
+      before do
+        2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+      end
+      it 'should block the last request' do
+        last_response.status.must_equal 503
+      end
+      it 'should tag the env' do
+        last_request.env['rack.attack.throttled'].must_equal({:name => 'ip/sec', :count => 2, :limit => 1, :period => 1})
+      end
+      it 'should set a Retry-After header' do
+        last_response.headers['Retry-After'].must_equal 1
+      end
+    end
+
   end
-
-
 end

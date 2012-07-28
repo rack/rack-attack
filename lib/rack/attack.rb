@@ -8,6 +8,7 @@ module Rack::Attack
   class << self
 
     attr_reader :cache, :notifier
+    attr_accessor :blacklisted_response, :throttled_response
 
     def whitelist(name, &block)
       (@whitelists ||= {})[name] = Whitelist.new(name, block)
@@ -28,6 +29,12 @@ module Rack::Attack
     def new(app)
       @cache ||= Cache.new
       @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+      @blacklisted_response = lambda {|env| [503, {}, ['Blocked']] }
+      @throttled_response   = lambda {|env|
+        retry_after = env['rack.attack.throttled'][:period] rescue nil
+        [503, {'Retry-After' => retry_after}, ['Retry later']]
+      }
+
       @app = app
       self
     end
@@ -41,9 +48,9 @@ module Rack::Attack
       end
 
       if blacklisted?(req)
-        blacklisted_response
+        blacklisted_response[env]
       elsif throttled?(req)
-        throttled_response
+        throttled_response[env]
       else
         @app.call(env)
       end
@@ -71,15 +78,7 @@ module Rack::Attack
       notifier.instrument('rack.attack', payload) if notifier
     end
 
-    def blacklisted_response
-      [503, {}, ['Blocked']]
-    end
-
-    def throttled_response
-      [503, {}, ['Throttled']]
-    end
-
-    def clear!
+   def clear!
       @whitelists, @blacklists, @throttles = {}, {}, {}
     end
 
