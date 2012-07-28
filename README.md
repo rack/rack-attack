@@ -8,28 +8,29 @@ Thottle state is stored in a configurable cache (e.g. `Rails.cache`), presumably
 
 ## Installation
 
-Add `rack-attack` to your Gemfile or run
+Add "rack-attack" to your Gemfile or run
+
     gem install rack-attack
 
-Tell your app to use the `Rack::Attack` middleware.
+Tell your app to use the Rack::Attack middleware.
 For Rails 3 apps:
 
     # In config/application.rb
     config.middleware.use Rack::Attack
 
 Or in your `config.ru`:
+
     use Rack::Attack
 
 Optionally configure the cache store for throttling:
 
-   Rack::Attack.cache.store = my_cache_store # defaults to Rails.cache
+    Rack::Attack.cache.store = my_cache_store # defaults to Rails.cache
 
 Note that `Rack::Attack.cache` is only used for throttling, not blacklisting & whitelisting.
 
 ## How it works
 
-The Rack::Attack middleware examines each request against *whitelists*, *blacklists*, and *throttles* that you define.
-By default, there are no whitelists, blacklists, or throttles.
+The Rack::Attack middleware examines each request against *whitelists*, *blacklists*, and *throttles* that you define. There are none by default.
 
  * If the request matches any whitelist, the request is allowed. Blacklists and throttles are not checked.
  * If the request matches any blacklist, the request is blocked. Throttles are not checked.
@@ -82,10 +83,5 @@ Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
 
 Rack::Attack complements `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
-
-## Processing order
- * If any whitelist matches, the request is allowed
- * If any blacklist matches, the request is blocked (unless a whitelist matched)
- * If any throttle matches, the request is throttled (unless a whitelist or blacklist matched)
 
 [![Travis CI](https://secure.travis-ci.org/ktheory/rack-attack.png)](http://travis-ci.org/ktheory/rack-attack)
