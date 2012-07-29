@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version = Rack::Attack::VERSION
 
   s.authors = ["Aaron Suggs"]
-  s.description = "A flexible rack middleware for throttling and blocking requests"
+  s.description = "A rack middleware for throttling and blocking abusive requests"
   s.email = "aaron@ktheory.com"
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile LICENSE README.md)
