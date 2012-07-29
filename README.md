@@ -95,6 +95,15 @@ Similarly for blacklisted responses:
 
 ## Logging & Instrumentation
 
+Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
+
+You can subscribe to 'rack.attack' events and do whatever:
+
+    ActiveSupport::Notifications.subscribe("rack.attack") do |hash|
+      # Log it
+      # Graph it using statsd
+    end
+
 ## Motivation
 
 Abusive clients range from malicious login crackers to naively-written scrapers.
