@@ -11,15 +11,15 @@ module Rack::Attack
     attr_accessor :blacklisted_response, :throttled_response
 
     def whitelist(name, &block)
-      (@whitelists ||= {})[name] = Whitelist.new(name, block)
+      self.whitelists[name] = Whitelist.new(name, block)
     end
 
     def blacklist(name, &block)
-      (@blacklists ||= {})[name] = Blacklist.new(name, block)
+      self.blacklists[name] = Blacklist.new(name, block)
     end
 
     def throttle(name, options, &block)
-      (@throttles ||= {})[name] = Throttle.new(name, options, block)
+      self.throttles[name] = Throttle.new(name, options, block)
     end
 
     def whitelists; @whitelists ||= {}; end
@@ -27,18 +27,19 @@ module Rack::Attack
     def throttles;  @throttles  ||= {}; end
 
     def new(app)
+      @app = app
+
+      # Set defaults
       @cache ||= Cache.new
-      @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-      @blacklisted_response = lambda {|env| [503, {}, ['Blocked']] }
-      @throttled_response   = lambda {|env|
+      @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+      @blacklisted_response ||= lambda {|env| [503, {}, ['Blocked']] }
+      @throttled_response   ||= lambda {|env|
         retry_after = env['rack.attack.throttled'][:period] rescue nil
         [503, {'Retry-After' => retry_after}, ['Retry later']]
       }
 
-      @app = app
       self
     end
-
 
     def call(env)
       req = Rack::Request.new(env)
