@@ -129,4 +129,4 @@ Thanks to [Kickstarter](https://github.com/kickstarter) for sponsoring Rack::Att
 
 Copyright (c) 2012 Kickstarter, Inc
 
-Released under an (MIT License](http://opensource.org/licenses/MIT)
+Released under an [MIT License](http://opensource.org/licenses/MIT)
