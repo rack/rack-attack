@@ -37,7 +37,7 @@ describe 'Rack::Attack' do
         last_response.status.must_equal 503
       end
       it "should tag the env" do
-        last_request.env['rack.attack.blacklist'].must_equal "ip #{@bad_ip}"
+        last_request.env['rack.attack.matched'].must_equal({:blacklist => "ip #{@bad_ip}"})
       end
 
       allow_ok_requests
@@ -57,7 +57,7 @@ describe 'Rack::Attack' do
           last_response.status.must_equal 200
         end
         it "should tag the env" do
-          last_request.env['rack.attack.whitelist'].must_equal 'good ua'
+          last_request.env['rack.attack.matched'].must_equal({:whitelist => 'good ua'})
         end
       end
     end
@@ -86,7 +86,7 @@ describe 'Rack::Attack' do
         last_response.status.must_equal 503
       end
       it 'should tag the env' do
-        last_request.env['rack.attack.throttled'].must_equal({:name => 'ip/sec', :count => 2, :limit => 1, :period => 1})
+        last_request.env['rack.attack.matched'].must_equal({:throttle => 'ip/sec', :count => 2, :limit => 1, :period => 1})
       end
       it 'should set a Retry-After header' do
         last_response.headers['Retry-After'].must_equal 1
