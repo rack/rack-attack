@@ -124,3 +124,9 @@ Rack::Attack complements `iptables` and nginx's [limit_zone module](http://wiki.
 Thanks to [Kickstarter](https://github.com/kickstarter) for sponsoring Rack::Attack development
 
 [![Travis CI](https://secure.travis-ci.org/ktheory/rack-attack.png)](http://travis-ci.org/ktheory/rack-attack)
+
+## License
+
+Copyright (c) 2012 Kickstarter, Inc
+
+Released under an (MIT License](http://opensource.org/licenses/MIT)
