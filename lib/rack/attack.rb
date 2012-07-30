@@ -34,7 +34,7 @@ module Rack::Attack
       @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @blacklisted_response ||= lambda {|env| [503, {}, ['Blocked']] }
       @throttled_response   ||= lambda {|env|
-        retry_after = env['rack.attack.matched'][:period] rescue nil
+        retry_after = env['rack.attack.match_data'][:period] rescue nil
         [503, {'Retry-After' => retry_after}, ['Retry later']]
       }
 
@@ -75,8 +75,8 @@ module Rack::Attack
       end
     end
 
-    def instrument(type, payload)
-      notifier.instrument("rack.attack.#{type}", payload) if notifier
+    def instrument(req)
+      notifier.instrument('rack.attack', req) if notifier
     end
 
    def clear!

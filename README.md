@@ -82,7 +82,11 @@ Note that `req` is a [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/
 Customize the response of throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
     Rack:Attack.throttled_response = lambda do |env|
-      env['rack.attack.throttled'] # name and other data about the matched throttle
+      # name and other data about the matched throttle
+      env['rack.attack.matched']
+      env['rack.attack.match_type']
+      env['rack.attack.match_data']
+
       [ 503, {}, ['Throttled']]
     end
 
@@ -97,9 +101,9 @@ Similarly for blacklisted responses:
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
 
-You can subscribe to 'rack.attack.{blacklist,throttle,whitelist}' events and log it, graph it, etc:
+You can subscribe to 'rack.attack' events and log it, graph it, etc:
 
-    ActiveSupport::Notifications.subscribe('rack.attack.blacklist') do |name, start, finish, request_id, req|
+    ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
       puts req.inspect
     end
 

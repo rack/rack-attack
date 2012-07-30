@@ -10,8 +10,9 @@ module Rack
       def [](req)
         block[req].tap {|match|
           if match
-            req.env["rack.attack.matched"] = {type => name}
-            Rack::Attack.instrument(type, req)
+            req.env["rack.attack.matched"] = name
+            req.env["rack.attack.match_type"] = type
+            Rack::Attack.instrument(req)
           end
         }
       end

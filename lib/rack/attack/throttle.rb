@@ -23,8 +23,10 @@ module Rack
         count = cache.count(key, period)
         (count > limit).tap do |throttled|
           if throttled
-            req.env['rack.attack.matched'] = {:throttle => name, :count => count, :period => period, :limit => limit}
-            Rack::Attack.instrument(:throttle, req)
+            req.env['rack.attack.matched']    = name
+            req.env['rack.attack.match_type'] = :throttle
+            req.env['rack.attack.match_data'] = {:count => count, :period => period, :limit => limit}
+            Rack::Attack.instrument(req)
           end
         end
       end
