@@ -97,11 +97,10 @@ Similarly for blacklisted responses:
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
 
-You can subscribe to 'rack.attack' events and do whatever:
+You can subscribe to 'rack.attack.{blacklist,throttle,whitelist}' events and log it, graph it, etc:
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |hash|
-      # Log it
-      # Graph it using statsd
+    ActiveSupport::Notifications.subscribe('rack.attack.blacklist') do |name, start, finish, request_id, req|
+      puts req.inspect
     end
 
 ## Motivation
