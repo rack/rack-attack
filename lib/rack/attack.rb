@@ -35,7 +35,7 @@ module Rack::Attack
       @blacklisted_response ||= lambda {|env| [503, {}, ['Blocked']] }
       @throttled_response   ||= lambda {|env|
         retry_after = env['rack.attack.match_data'][:period] rescue nil
-        [503, {'Retry-After' => retry_after}, ['Retry later']]
+        [503, {'Retry-After' => retry_after.to_s}, ['Retry later']]
       }
 
       self

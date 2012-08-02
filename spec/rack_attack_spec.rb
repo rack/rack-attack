@@ -93,7 +93,7 @@ describe 'Rack::Attack' do
         last_request.env['rack.attack.match_data'].must_equal({:count => 2, :limit => 1, :period => 1})
       end
       it 'should set a Retry-After header' do
-        last_response.headers['Retry-After'].must_equal 1
+        last_response.headers['Retry-After'].must_equal '1'
       end
     end
 
