@@ -1,4 +1,4 @@
-# Rack::Attack
+# Rack::Attack!!!
 A DSL for blocking & thottling abusive clients
 
 Rack::Attack is a rack middleware to protect your web app from bad clients.
