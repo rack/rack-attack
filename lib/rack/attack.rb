@@ -7,7 +7,7 @@ module Rack::Attack
 
   class << self
 
-    attr_accessor :cache, :notifier, :blacklisted_response, :throttled_response
+    attr_accessor :notifier, :blacklisted_response, :throttled_response
 
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
@@ -29,7 +29,6 @@ module Rack::Attack
       @app = app
 
       # Set defaults
-      @cache ||= Cache.new
       @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @blacklisted_response ||= lambda {|env| [503, {}, ['Blocked']] }
       @throttled_response   ||= lambda {|env|
@@ -76,6 +75,10 @@ module Rack::Attack
 
     def instrument(req)
       notifier.instrument('rack.attack', req) if notifier
+    end
+
+    def cache
+      @cache ||= Cache.new
     end
 
    def clear!
