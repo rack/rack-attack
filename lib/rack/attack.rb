@@ -7,8 +7,7 @@ module Rack::Attack
 
   class << self
 
-    attr_reader :cache, :notifier
-    attr_accessor :blacklisted_response, :throttled_response
+    attr_accessor :cache, :notifier, :blacklisted_response, :throttled_response
 
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
