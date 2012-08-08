@@ -8,12 +8,12 @@ module Rack
         @prefix = 'rack::attack'
       end
 
-      def count(unprefixed_key, expires_in)
-        key = "#{prefix}:#{unprefixed_key}"
-        result = store.increment(key, 1, :expires_in => expires_in)
+      def count(unprefixed_key, period)
+        key = "#{prefix}:#{Time.now.to_i/period}:#{unprefixed_key}"
+        result = store.increment(key, 1)
         # NB: Some stores return nil when incrementing uninitialized values
         if result.nil?
-          store.write(key, 1, :expires_in => expires_in)
+          store.write(key, 1)
         end
         result || 1
       end
