@@ -83,7 +83,11 @@ Note that `req` is a [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/
 
 ## Responses
 
-Customize the response of throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
+Customize the response of blacklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
+
+    Rack:Attack.blacklisted_response = lambda do |env|
+      [ 503, {}, ['Blocked']]
+    end
 
     Rack:Attack.throttled_response = lambda do |env|
       # name and other data about the matched throttle
@@ -96,16 +100,9 @@ Customize the response of throttled requests using an object that adheres to the
       [ 503, {}, [body]]
     end
 
-Similarly for blacklisted responses:
+For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
 
-    Rack:Attack.blacklisted_response = lambda do |env|
-      [ 503, {}, ['Blocked']]
-    end
-
-For responses that did not exceed a throttle limit, Rack::Attack annotates the environment with match data.
-For example, in out `reqs/ip` throttle above, a matching request would have:
-
-    request.env['rack.attack.throttle_data']['req/ip'] # => { :period => 1, :limit => 5, :count => n }
+    request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 
 ## Logging & Instrumentation
 
