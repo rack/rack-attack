@@ -60,7 +60,9 @@ Note that `req` is a [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/
 
     # Throttle requests to 5 requests per second per ip
     Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
-      # If the return value is truthy, the cache key for "rack::attack:req/ip:#{req.ip}" is incremented and checked.
+      # If the return value is truthy, the cache key for
+      # "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
+      # is incremented and compared with the limit.
       # If falsy, the cache key is neither incremented or checked.
       req.ip
     end
@@ -99,6 +101,11 @@ Similarly for blacklisted responses:
     Rack:Attack.blacklisted_response = lambda do |env|
       [ 503, {}, ['Blocked']]
     end
+
+For responses that did not exceed a throttle limit, Rack::Attack annotates the environment with match data.
+For example, in out `reqs/ip` throttle above, a matching request would have:
+
+    request.env['rack.attack.throttle_data']['req/ip'] # => { :period => 1, :limit => 5, :count => n }
 
 ## Logging & Instrumentation
 
