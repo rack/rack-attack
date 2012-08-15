@@ -1,10 +1,10 @@
 # Rack::Attack!!!
-*A DSL for blocking & thottling abusive clients*
+*A DSL for blocking & throttling abusive clients*
 
 Rack::Attack is a rack middleware to protect your web app from bad clients.
-It allows *whitelisting*, *blacklisting*, and *thottling* based on arbitrary properties of the request.
+It allows *whitelisting*, *blacklisting*, and *throttling* based on arbitrary properties of the request.
 
-Thottle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached.
+Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached.
 
 ## Installation
 
