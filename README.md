@@ -28,7 +28,7 @@ Optionally configure the cache store for throttling:
 
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
 
-Note that `Rack::Attack.cache` is only used for throttling, not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
+Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
 ## How it works
 
@@ -40,8 +40,8 @@ The Rack::Attack middleware compares each request against *whitelists*, *blackli
 
 ## Usage
 
-Define blacklists, throttles, and whitelists.
-Note that `req` is a [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object.
+Define blacklists, throttles, and whitelists as blocks that return truthy of falsy values.
+A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
 
 ### Blacklists
 
@@ -53,23 +53,25 @@ Note that `req` is a [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/
 
     # Block logins from a bad user agent
     Rack::Attack.blacklist('block bad UA logins') do |req|
-      req.post? && request.path == '/login' && req.user_agent == 'BadUA'
+      req.path == '/login' && req.post? && req.user_agent == 'BadUA'
     end
 
 ### Throttles
 
     # Throttle requests to 5 requests per second per ip
     Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
-      # If the return value is truthy, the cache key for
-      # "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
-      # is incremented and compared with the limit.
-      # If falsy, the cache key is neither incremented or checked.
+      # If the return value is truthy, the cache key for the return value
+      # is incremented and compared with the limit. In this case:
+      #   "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
+      #
+      # If falsy, the cache key is neither incremented nor checked.
+
       req.ip
     end
 
     # Throttle login attempts for a given email parameter to 6 reqs/minute
     Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
-      req.post? && request.path == '/login' && req.params['email']
+      request.path == '/login' && req.post? && req.params['email']
     end
 
 ### Whitelists
@@ -124,7 +126,7 @@ It is impractical if not impossible to block abusive clients completely.
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
 
-Rack::Attack complements `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
+Rack::Attack complements tools like iptables and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
 
 [![Travis CI](https://secure.travis-ci.org/ktheory/rack-attack.png)](http://travis-ci.org/ktheory/rack-attack)
 
