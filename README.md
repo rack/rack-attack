@@ -40,7 +40,7 @@ The Rack::Attack middleware compares each request against *whitelists*, *blackli
 
 ## Usage
 
-Define blacklists, throttles, and whitelists as blocks that return truthy of falsy values.
+Define blacklists, throttles, and whitelists as blocks that return truthy values if matched, falsy otherwise.
 A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
 
 ### Blacklists
