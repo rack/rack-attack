@@ -7,20 +7,20 @@ Rack::Attack.throttle("req/ip", :limit => 10, :period => 1) { |req| req.ip }
 
 # Throttle attempts to a particular path. 2 POSTs to /login per second per IP
 Rack::Attack.throttle "logins/ip", :limit => 2, :period => 1 do |req|
-  req.ip if req.post? && req.path_info =~ /^login/
+  req.post? && req.path == "/login" && req.ip
 end
 
 # Throttle login attempts per email, 10/minute/email
 Rack::Attack.throttle "logins/email", :limit => 2, :period => 60 do |req|
-  req.params['email'] unless req.params['email'].blank?
+  req.post? && req.path == "/login" && req.params['email']
 end
 
-# Blacklist cloud IPs from accessing PATH regexp
+# Blacklist bad IPs from accessing admin pages
 Rack::Attack.blacklist "bad_ips from logging in" do |req|
-  req.path =~ /^login/ && bad_ips.include?(req.ip)
+  req.path =~ /^\/admin/ && bad_ips.include?(req.ip)
 end
 
 # Whitelist a User-Agent
 Rack::Attack.whitelist 'internal user agent' do |req|
-  req.user_agent =~ 'InternalUserAgent'
+  req.user_agent == 'InternalUserAgent'
 end
