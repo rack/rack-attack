@@ -1,9 +1,10 @@
 require 'rack'
 module Rack::Attack
-  require 'rack/attack/cache'
-  require 'rack/attack/throttle'
-  require 'rack/attack/whitelist'
-  require 'rack/attack/blacklist'
+  autoload :Cache,     'rack/attack/cache'
+  autoload :Check,     'rack/attack/check'
+  autoload :Throttle,  'rack/attack/throttle'
+  autoload :Whitelist, 'rack/attack/whitelist'
+  autoload :Blacklist, 'rack/attack/blacklist'
 
   class << self
 

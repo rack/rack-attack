@@ -1,4 +1,3 @@
-require_relative 'check'
 module Rack
   module Attack
     class Blacklist < Check
