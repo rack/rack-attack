@@ -82,7 +82,7 @@ module Rack::Attack
     end
 
     def tracked?(req)
-      tracks.each do |name, tracker|
+      tracks.each_value do |tracker|
         tracker[req]
       end
     end
