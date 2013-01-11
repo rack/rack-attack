@@ -32,16 +32,31 @@ Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & w
 
 ## How it works
 
-The Rack::Attack middleware compares each request against *whitelists*, *blacklists*, and *throttles* that you define. There are none by default.
+The Rack::Attack middleware compares each request against *whitelists*, *blacklists*, *throttles*, and *tracks* that you define. There are none by default.
 
  * If the request matches any whitelist, it is allowed. Blacklists and throttles are not checked.
  * If the request matches any blacklist, it is blocked. Throttles are not checked.
  * If the request matches any throttle, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked and further throttles are not checked.
+ * If the request hasn't matched whitelisted, blacklisted, or throttled, all tracks are checked.
+
+## About tracks
+
+`Rack::Attack.track` doesn't affect request processing. It's an easy way to log and measure requests matching arbitrary attributes.
+
 
 ## Usage
 
-Define blacklists, throttles, and whitelists as blocks that return truthy values if matched, falsy otherwise.
+Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise.
 A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
+
+### Whitelists
+
+    # Always allow requests from localhost
+    # (blacklist & throttles are skipped)
+    Rack::Attack.whitelist('allow from localhost') do |req|
+      # Requests are allowed if the return value is truthy
+      '127.0.0.1' == req.ip
+    end
 
 ### Blacklists
 
@@ -71,17 +86,24 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
 
     # Throttle login attempts for a given email parameter to 6 reqs/minute
     Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
-      request.path == '/login' && req.post? && req.params['email']
+      req.path == '/login' && req.post? && req.params['email']
     end
 
-### Whitelists
+### Tracks
 
-    # Always allow requests from localhost
-    # (blacklist & throttles are skipped)
-    Rack::Attack.whitelist('allow from localhost') do |req|
-      # Requests are allowed if the return value is truthy
-      '127.0.0.1' == req.ip
+    # Track requests from a special user agent
+    Rack::Attack.track("special_agent") do |req|
+      req.user_agent == "SpecialAgent"
     end
+
+    # Track it using ActiveSupport::Notification
+    ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
+      if req.env['rack.attack.matched'] == "special_agent" && req.env['rack.attack.match_type'] == :track
+        Rails.logger.info "special_agent: #{req.path}"
+        STATSD.increment("special_agent")
+      end
+    end
+
 
 ## Responses
 
