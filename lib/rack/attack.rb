@@ -5,6 +5,7 @@ module Rack::Attack
   autoload :Throttle,  'rack/attack/throttle'
   autoload :Whitelist, 'rack/attack/whitelist'
   autoload :Blacklist, 'rack/attack/blacklist'
+  autoload :Track,     'rack/attack/track'
 
   class << self
 
@@ -22,9 +23,14 @@ module Rack::Attack
       self.throttles[name] = Throttle.new(name, options, block)
     end
 
+    def track(name, &block)
+      self.tracks[name] = Track.new(name, block)
+    end
+
     def whitelists; @whitelists ||= {}; end
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
+    def tracks;     @tracks     ||= {}; end
 
     def new(app)
       @app = app
@@ -52,6 +58,7 @@ module Rack::Attack
       elsif throttled?(req)
         throttled_response[env]
       else
+        tracked?(req)
         @app.call(env)
       end
     end
@@ -71,6 +78,12 @@ module Rack::Attack
     def throttled?(req)
       throttles.any? do |name, throttle|
         throttle[req]
+      end
+    end
+
+    def tracked?(req)
+      tracks.each do |name, tracker|
+        tracker[req]
       end
     end
 
