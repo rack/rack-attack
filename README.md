@@ -2,7 +2,7 @@
 *A DSL for blocking & throttling abusive clients*
 
 Rack::Attack is a rack middleware to protect your web app from bad clients.
-It allows *whitelisting*, *blacklisting*, and *throttling* based on arbitrary properties of the request.
+It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
 Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached.
 
@@ -34,15 +34,14 @@ Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & w
 
 The Rack::Attack middleware compares each request against *whitelists*, *blacklists*, *throttles*, and *tracks* that you define. There are none by default.
 
- * If the request matches any whitelist, it is allowed. Blacklists and throttles are not checked.
- * If the request matches any blacklist, it is blocked. Throttles are not checked.
- * If the request matches any throttle, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked and further throttles are not checked.
- * If the request hasn't matched whitelisted, blacklisted, or throttled, all tracks are checked.
+ * If the request matches any **whitelist**, it is allowed. Blacklists and throttles are not checked.
+ * If the request matches any **blacklist**, it is blocked. Throttles are not checked.
+ * If the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked and further throttles are not checked.
+ * If the request was not whitelisted, blacklisted, or throttled; all **tracks** are checked.
 
-## About tracks
+## About Tracks
 
-`Rack::Attack.track` doesn't affect request processing. It's an easy way to log and measure requests matching arbitrary attributes.
-
+`Rack::Attack.track` doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.
 
 ## Usage
 
