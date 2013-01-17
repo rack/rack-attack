@@ -34,10 +34,27 @@ Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & w
 
 The Rack::Attack middleware compares each request against *whitelists*, *blacklists*, *throttles*, and *tracks* that you define. There are none by default.
 
- * If the request matches any **whitelist**, it is allowed. Blacklists and throttles are not checked.
- * If the request matches any **blacklist**, it is blocked. Throttles are not checked.
- * If the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked and further throttles are not checked.
- * If the request was not whitelisted, blacklisted, or throttled; all **tracks** are checked.
+ * If the request matches any **whitelist**, it is allowed.
+ * Otherwise, if the request matches any **blacklist**, it is blocked.
+ * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked.
+ * Otherwise, all **tracks** are checked, and the request is allowed.
+
+The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
+
+    def call(env)
+      req = Rack::Request.new(env)
+
+      if whitelisted?(req)
+        @app.call(env)
+      elsif blacklisted?(req)
+        blacklisted_response[env]
+      elsif throttled?(req)
+        throttled_response[env]
+      else
+        tracked?(req)
+        @app.call(env)
+      end
+    end
 
 ## About Tracks
 

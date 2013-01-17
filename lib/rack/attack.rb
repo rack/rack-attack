@@ -50,10 +50,8 @@ module Rack::Attack
       req = Rack::Request.new(env)
 
       if whitelisted?(req)
-        return @app.call(env)
-      end
-
-      if blacklisted?(req)
+        @app.call(env)
+      elsif blacklisted?(req)
         blacklisted_response[env]
       elsif throttled?(req)
         throttled_response[env]
