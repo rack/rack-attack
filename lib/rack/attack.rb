@@ -95,7 +95,7 @@ module Rack::Attack
       @cache ||= Cache.new
     end
 
-   def clear!
+    def clear!
       @whitelists, @blacklists, @throttles = {}, {}, {}
     end
 
