@@ -167,7 +167,7 @@ less on short-term, one-off hacks to block a particular attack.
 Rack::Attack complements tools like iptables and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
 
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/kickstarter/rack-attack)
+[![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
 
 ## License
 
