@@ -125,11 +125,11 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
 
 Customize the response of blacklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
-    Rack:Attack.blacklisted_response = lambda do |env|
+    Rack::Attack.blacklisted_response = lambda do |env|
       [ 503, {}, ['Blocked']]
     end
 
-    Rack:Attack.throttled_response = lambda do |env|
+    Rack::Attack.throttled_response = lambda do |env|
       # name and other data about the matched throttle
       body = [
         env['rack.attack.matched'],
