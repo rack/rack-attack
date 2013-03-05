@@ -4,7 +4,7 @@
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
-Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached.
+Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis.
 
 ## Installation
 
