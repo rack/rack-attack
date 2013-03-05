@@ -2,6 +2,7 @@ require "rubygems"
 require "bundler/setup"
 
 require "minitest/autorun"
+require "minitest/pride"
 require "rack/test"
 require 'debugger'
 require 'active_support'
