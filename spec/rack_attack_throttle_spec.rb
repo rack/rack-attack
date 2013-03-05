@@ -1,4 +1,3 @@
-
 require_relative 'spec_helper'
 describe 'Rack::Attack.throttle' do
   before do
