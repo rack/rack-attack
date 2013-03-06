@@ -154,6 +154,19 @@ You can subscribe to 'rack.attack' events and log it, graph it, etc:
       puts req.inspect
     end
 
+## Performance
+
+The overhead of running Rack::Attack is typically neglible (a few milliseconds per request),
+but it depends on how many checks you've configured, and how long they take.
+Throttles usually require a network roundtrip to your cache server(s),
+so try to keep the number of throttle checks per request low.
+
+If a request is blacklisted or throttled, the response is a very simple Rack response.
+A single typical ruby web server thread can block several hundred requests per second.
+
+If you need something more efficient but less flexible than Rack::Attack,
+check out `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
+
 ## Motivation
 
 Abusive clients range from malicious login crackers to naively-written scrapers.
