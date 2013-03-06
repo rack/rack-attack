@@ -164,8 +164,7 @@ so try to keep the number of throttle checks per request low.
 If a request is blacklisted or throttled, the response is a very simple Rack response.
 A single typical ruby web server thread can block several hundred requests per second.
 
-If you need something more efficient but less flexible than Rack::Attack,
-check out `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
+Rack::Attack complements tools like `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
 
 ## Motivation
 
@@ -176,8 +175,6 @@ It is impractical if not impossible to block abusive clients completely.
 
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
-
-Rack::Attack complements tools like iptables and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
 
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
