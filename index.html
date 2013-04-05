@@ -3,60 +3,241 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
     <title>Rack-attack by kickstarter</title>
   </head>
 
   <body>
+    <div id="container">
+      <div class="inner">
 
-    <header>
-      <div class="container">
-        <h1>Rack-attack</h1>
-        <h2>Rack middleware for blocking &amp; throttling</h2>
+        <header>
+          <h1>Rack-attack</h1>
+          <h2>Rack middleware for blocking &amp; throttling</h2>
+        </header>
 
-        <section id="downloads">
-          <a href="https://github.com/kickstarter/rack-attack/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/kickstarter/rack-attack/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/kickstarter/rack-attack" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/kickstarter/rack-attack/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/kickstarter/rack-attack/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/kickstarter/rack-attack" id="view-on-github" class="button"><span>View on GitHub</span></a>
         </section>
-      </div>
-    </header>
 
-    <div class="container">
-      <section id="main_content">
-        <h3>Welcome to GitHub Pages.</h3>
+        <hr>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+        <section id="main_content">
+          <h1>Rack::Attack!!!</h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p><em>A DSL for blocking &amp; throttling abusive clients</em></p>
+
+<p>Rack::Attack is a rack middleware to protect your web app from bad clients.
+It allows <em>whitelisting</em>, <em>blacklisting</em>, <em>throttling</em>, and <em>tracking</em> based on arbitrary properties of the request.</p>
+
+<p>Throttle state is stored in a configurable cache (e.g. <code>Rails.cache</code>), presumably backed by memcached or redis.</p>
+
+<h2>Installation</h2>
+
+<p>Install the <a href="http://rubygems.org/gems/rack-attack">rack-attack</a> gem; or add it to you Gemfile with bundler:</p>
+
+<pre><code># In your Gemfile
+gem 'rack-attack'
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>Tell your app to use the Rack::Attack middleware.
+For Rails 3 apps:</p>
 
-<h3>Designer Templates</h3>
+<pre><code># In config/application.rb
+config.middleware.use Rack::Attack
+</code></pre>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Or for Rackup files:</p>
 
-<h3>Rather Drive Stick?</h3>
+<pre><code># In config.ru
+use Rack::Attack
+</code></pre>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Optionally configure the cache store for throttling:</p>
 
-<h3>Authors and Contributors</h3>
+<pre><code>Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
+</code></pre>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Note that <code>Rack::Attack.cache</code> is only used for throttling; not blacklisting &amp; whitelisting. Your cache store must implement <code>increment</code> and <code>write</code> like <a href="http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html">ActiveSupport::Cache::Store</a>.</p>
 
-<h3>Support or Contact</h3>
+<h2>How it works</h2>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
+<p>The Rack::Attack middleware compares each request against <em>whitelists</em>, <em>blacklists</em>, <em>throttles</em>, and <em>tracks</em> that you define. There are none by default.</p>
+
+<ul>
+<li>If the request matches any <strong>whitelist</strong>, it is allowed.</li>
+<li>Otherwise, if the request matches any <strong>blacklist</strong>, it is blocked.</li>
+<li>Otherwise, if the request matches any <strong>throttle</strong>, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked.</li>
+<li>Otherwise, all <strong>tracks</strong> are checked, and the request is allowed.</li>
+</ul><p>The algorithm is actually more concise in code: See <a href="https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb">Rack::Attack.call</a>:</p>
+
+<pre><code>def call(env)
+  req = Rack::Request.new(env)
+
+  if whitelisted?(req)
+    @app.call(env)
+  elsif blacklisted?(req)
+    blacklisted_response[env]
+  elsif throttled?(req)
+    throttled_response[env]
+  else
+    tracked?(req)
+    @app.call(env)
+  end
+end
+</code></pre>
+
+<h2>About Tracks</h2>
+
+<p><code>Rack::Attack.track</code> doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.</p>
+
+<h2>Usage</h2>
+
+<p>Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise.
+A <a href="http://rack.rubyforge.org/doc/classes/Rack/Request.html">Rack::Request</a> object is passed to the block (named 'req' in the examples).</p>
+
+<h3>Whitelists</h3>
+
+<pre><code># Always allow requests from localhost
+# (blacklist &amp; throttles are skipped)
+Rack::Attack.whitelist('allow from localhost') do |req|
+  # Requests are allowed if the return value is truthy
+  '127.0.0.1' == req.ip
+end
+</code></pre>
+
+<h3>Blacklists</h3>
+
+<pre><code># Block requests from 1.2.3.4
+Rack::Attack.blacklist('block 1.2.3.4') do |req|
+  # Request are blocked if the return value is truthy
+  '1.2.3.4' == req.ip
+end
+
+# Block logins from a bad user agent
+Rack::Attack.blacklist('block bad UA logins') do |req|
+  req.path == '/login' &amp;&amp; req.post? &amp;&amp; req.user_agent == 'BadUA'
+end
+</code></pre>
+
+<h3>Throttles</h3>
+
+<pre><code># Throttle requests to 5 requests per second per ip
+Rack::Attack.throttle('req/ip', :limit =&gt; 5, :period =&gt; 1.second) do |req|
+  # If the return value is truthy, the cache key for the return value
+  # is incremented and compared with the limit. In this case:
+  #   "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
+  #
+  # If falsy, the cache key is neither incremented nor checked.
+
+  req.ip
+end
+
+# Throttle login attempts for a given email parameter to 6 reqs/minute
+Rack::Attack.throttle('logins/email', :limit =&gt; 6, :period =&gt; 60.seconds) do |req|
+  req.path == '/login' &amp;&amp; req.post? &amp;&amp; req.params['email']
+end
+</code></pre>
+
+<h3>Tracks</h3>
+
+<pre><code># Track requests from a special user agent
+Rack::Attack.track("special_agent") do |req|
+  req.user_agent == "SpecialAgent"
+end
+
+# Track it using ActiveSupport::Notification
+ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
+  if req.env['rack.attack.matched'] == "special_agent" &amp;&amp; req.env['rack.attack.match_type'] == :track
+    Rails.logger.info "special_agent: #{req.path}"
+    STATSD.increment("special_agent")
+  end
+end
+</code></pre>
+
+<h2>Responses</h2>
+
+<p>Customize the response of blacklisted and throttled requests using an object that adheres to the <a href="http://rack.rubyforge.org/doc/SPEC.html">Rack app interface</a>.</p>
+
+<pre><code>Rack::Attack.blacklisted_response = lambda do |env|
+  [ 503, {}, ['Blocked']]
+end
+
+Rack::Attack.throttled_response = lambda do |env|
+  # name and other data about the matched throttle
+  body = [
+    env['rack.attack.matched'],
+    env['rack.attack.match_type'],
+    env['rack.attack.match_data']
+  ].inspect
+
+  [ 503, {}, [body]]
+end
+</code></pre>
+
+<p>For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:</p>
+
+<pre><code>request.env['rack.attack.throttle_data'][name] # =&gt; { :count =&gt; n, :period =&gt; p, :limit =&gt; l }
+</code></pre>
+
+<h2>Logging &amp; Instrumentation</h2>
+
+<p>Rack::Attack uses the <a href="http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html">ActiveSupport::Notifications</a> API if available.</p>
+
+<p>You can subscribe to 'rack.attack' events and log it, graph it, etc:</p>
+
+<pre><code>ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
+  puts req.inspect
+end
+</code></pre>
+
+<h2>Performance</h2>
+
+<p>The overhead of running Rack::Attack is typically neglible (a few milliseconds per request),
+but it depends on how many checks you've configured, and how long they take.
+Throttles usually require a network roundtrip to your cache server(s),
+so try to keep the number of throttle checks per request low.</p>
+
+<p>If a request is blacklisted or throttled, the response is a very simple Rack response.
+A single typical ruby web server thread can block several hundred requests per second.</p>
+
+<p>Rack::Attack complements tools like <code>iptables</code> and nginx's <a href="http://wiki.nginx.org/HttpLimitZoneModule">limit_zone module</a>.</p>
+
+<h2>Motivation</h2>
+
+<p>Abusive clients range from malicious login crackers to naively-written scrapers.
+They hinder the security, performance, &amp; availability of web applications.</p>
+
+<p>It is impractical if not impossible to block abusive clients completely.</p>
+
+<p>Rack::Attack aims to let developers quickly mitigate abusive requests and rely
+less on short-term, one-off hacks to block a particular attack.</p>
+
+<p><a href="https://travis-ci.org/kickstarter/rack-attack"><img src="https://travis-ci.org/kickstarter/rack-attack.png?branch=master" alt="Build Status"></a>
+<a href="https://codeclimate.com/github/kickstarter/rack-attack"><img src="https://codeclimate.com/github/kickstarter/rack-attack.png" alt="Code Climate"></a></p>
+
+<h2>License</h2>
+
+<p>Copyright (c) 2012 Kickstarter, Inc</p>
+
+<p>Released under an <a href="http://opensource.org/licenses/MIT">MIT License</a></p>
+        </section>
+
+        <footer>
+          Rack-attack is maintained by <a href="https://github.com/kickstarter">kickstarter</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
     </div>
-
-    
   </body>
 </html>
