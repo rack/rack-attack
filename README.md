@@ -176,6 +176,8 @@ It is impractical if not impossible to block abusive clients completely.
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
 
+See also: the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
+
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
 
