@@ -156,7 +156,7 @@ You can subscribe to 'rack.attack' events and log it, graph it, etc:
 
 ## Performance
 
-The overhead of running Rack::Attack is typically neglible (a few milliseconds per request),
+The overhead of running Rack::Attack is typically negligible (a few milliseconds per request),
 but it depends on how many checks you've configured, and how long they take.
 Throttles usually require a network roundtrip to your cache server(s),
 so try to keep the number of throttle checks per request low.
