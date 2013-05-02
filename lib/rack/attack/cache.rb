@@ -12,7 +12,7 @@ module Rack
       attr_reader :store
       def store=(store)
         # RedisStore#increment needs different behavior, so detect that
-        # (method has an arity of 2; must call #expire seperately
+        # (method has an arity of 2; must call #expire separately
         if defined?(::ActiveSupport::Cache::RedisStore) && store.is_a?(::ActiveSupport::Cache::RedisStore)
           # ActiveSupport::Cache::RedisStore doesn't expose any way to set an expiry,
           # so use the raw Redis::Store instead
