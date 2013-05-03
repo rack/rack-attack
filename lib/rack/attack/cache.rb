@@ -2,11 +2,10 @@ module Rack
   module Attack
     class Cache
 
-      attr_accessor :prefix
+      CACHE_PREFIX = 'rack::attack'
 
       def initialize
         self.store = ::Rails.cache if defined?(::Rails.cache)
-        @prefix = 'rack::attack'
       end
 
       attr_reader :store
@@ -25,7 +24,7 @@ module Rack
       def count(unprefixed_key, period)
         epoch_time = Time.now.to_i
         expires_in = period - (epoch_time % period)
-        key = "#{prefix}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
+        key = "#{CACHE_PREFIX}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
         do_count(key, expires_in)
       end
 
