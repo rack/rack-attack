@@ -18,7 +18,6 @@ module Rack
           # so use the raw Redis::Store instead
           @store = store.instance_variable_get(:@data)
         else
-          @redis_store = false
           @store = store
         end
       end
