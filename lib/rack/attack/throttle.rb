@@ -1,10 +1,11 @@
 module Rack
   module Attack
     class Throttle
+      MANDATORY_OPTIONS = [:limit, :period]
       attr_reader :name, :limit, :period, :block
       def initialize(name, options, block)
         @name, @block = name, block
-        [:limit, :period].each do |opt|
+        MANDATORY_OPTIONS.each do |opt|
           raise ArgumentError.new("Must pass #{opt.inspect} option") unless options[opt]
         end
         @limit  = options[:limit]
