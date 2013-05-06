@@ -4,10 +4,14 @@ require "bundler/setup"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-require 'debugger'
 require 'active_support'
-
 require "rack/attack"
+
+begin
+  require 'debugger'
+rescue LoadError
+ #nothing to do here
+end
 
 class Minitest::Spec
 
