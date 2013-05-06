@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'activesupport', '>= 3.0.0'
+  s.add_development_dependency 'debugger', '~> 1.5' unless RUBY_PLATFORM =~ /java/
   s.add_development_dependency 'redis-activesupport'
   s.add_development_dependency 'dalli'
 end
