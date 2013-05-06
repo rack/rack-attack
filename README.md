@@ -89,6 +89,8 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
 
 ### Throttles
 
+*NOTE:* If you are using Redis as backing store, Redis-ActiveSupport does not recognize `1.second` so just specify the `:period` parameter in seconds.
+    
     # Throttle requests to 5 requests per second per ip
     Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
       # If the return value is truthy, the cache key for the return value
