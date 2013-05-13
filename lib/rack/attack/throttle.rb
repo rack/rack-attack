@@ -9,7 +9,7 @@ module Rack
           raise ArgumentError.new("Must pass #{opt.inspect} option") unless options[opt]
         end
         @limit  = options[:limit]
-        @period = options[:period]
+        @period = options[:period].to_i
       end
 
       def cache
