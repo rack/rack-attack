@@ -62,7 +62,8 @@ The algorithm is actually more concise in code: See [Rack::Attack.call](https://
 
 ## Usage
 
-Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise.
+Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app 
+these go in an initializer in `config/initializers/`.
 A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
 
 ### Whitelists
@@ -153,6 +154,12 @@ You can subscribe to 'rack.attack' events and log it, graph it, etc:
     ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
       puts req.inspect
     end
+    
+## Testing
+
+A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will 
+need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html) 
+for more on how to do this. 
 
 ## Performance
 
