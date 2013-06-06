@@ -5,12 +5,13 @@ module Rack::Attack
   autoload :Throttle,  'rack/attack/throttle'
   autoload :Whitelist, 'rack/attack/whitelist'
   autoload :Blacklist, 'rack/attack/blacklist'
+  autoload :StrikeOut, 'rack/attack/strike_out'
   autoload :Track,     'rack/attack/track'
   autoload :StoreProxy,'rack/attack/store_proxy'
 
   class << self
 
-    attr_accessor :notifier, :blacklisted_response, :throttled_response
+    attr_accessor :notifier, :blacklisted_response, :throttled_response, :strike_out_response
 
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
@@ -27,11 +28,16 @@ module Rack::Attack
     def track(name, &block)
       self.tracks[name] = Track.new(name, block)
     end
+    
+    def strike_out(name, options, &block)
+      self.strike_outs[name] = StrikeOut.new(name, options, block)
+    end
 
-    def whitelists; @whitelists ||= {}; end
-    def blacklists; @blacklists ||= {}; end
-    def throttles;  @throttles  ||= {}; end
-    def tracks;     @tracks     ||= {}; end
+    def whitelists;   @whitelists   ||= {}; end
+    def blacklists;   @blacklists   ||= {}; end
+    def throttles;    @throttles    ||= {}; end
+    def tracks;       @tracks       ||= {}; end
+    def strike_outs;  @strike_outs  ||= {}; end
 
     def new(app)
       @app = app
@@ -43,6 +49,7 @@ module Rack::Attack
         retry_after = env['rack.attack.match_data'][:period] rescue nil
         [503, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
       }
+      @strike_out_response  ||= lambda {|env| [503, {}, ["Blocked\n"]] }
 
       self
     end
@@ -56,6 +63,8 @@ module Rack::Attack
         blacklisted_response[env]
       elsif throttled?(req)
         throttled_response[env]
+      elsif strike_out?(req)
+        strike_out_response[env]
       else
         tracked?(req)
         @app.call(env)
@@ -77,6 +86,12 @@ module Rack::Attack
     def throttled?(req)
       throttles.any? do |name, throttle|
         throttle[req]
+      end
+    end
+    
+    def strike_out?(req)
+      strike_outs.any? do |name, strike_out|
+        strike_out[req]
       end
     end
 
