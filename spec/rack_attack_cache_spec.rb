@@ -20,6 +20,7 @@ if ENV['TEST_INTEGRATION']
     ]
 
     cache_stores.each do |store|
+      store = Rack::Attack::StoreProxy.build(store)
       describe "with #{store.class}" do
 
         before {
