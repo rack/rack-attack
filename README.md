@@ -10,23 +10,31 @@ Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumabl
 
 Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to you Gemfile with bundler:
 
+```ruby
     # In your Gemfile
     gem 'rack-attack'
+```
 
 Tell your app to use the Rack::Attack middleware.
 For Rails 3 apps:
 
+```ruby
     # In config/application.rb
     config.middleware.use Rack::Attack
+```
 
 Or for Rackup files:
 
+```ruby
     # In config.ru
     use Rack::Attack
+```
 
 Optionally configure the cache store for throttling:
 
+```ruby
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
+```
 
 Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
@@ -41,6 +49,7 @@ The Rack::Attack middleware compares each request against *whitelists*, *blackli
 
 The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
 
+```ruby
     def call(env)
       req = Rack::Request.new(env)
 
@@ -55,6 +64,7 @@ The algorithm is actually more concise in code: See [Rack::Attack.call](https://
         @app.call(env)
       end
     end
+```
 
 ## About Tracks
 
@@ -62,21 +72,24 @@ The algorithm is actually more concise in code: See [Rack::Attack.call](https://
 
 ## Usage
 
-Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app 
+Define whitelists, blacklists, throttles, strike outs, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app 
 these go in an initializer in `config/initializers/`.
 A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
 
 ### Whitelists
 
+```ruby
     # Always allow requests from localhost
-    # (blacklist & throttles are skipped)
+    # (blacklist,throttles, and strike outs are skipped)
     Rack::Attack.whitelist('allow from localhost') do |req|
       # Requests are allowed if the return value is truthy
       '127.0.0.1' == req.ip
     end
+```
 
 ### Blacklists
 
+```ruby
     # Block requests from 1.2.3.4
     Rack::Attack.blacklist('block 1.2.3.4') do |req|
       # Request are blocked if the return value is truthy
@@ -87,9 +100,11 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
     Rack::Attack.blacklist('block bad UA logins') do |req|
       req.path == '/login' && req.post? && req.user_agent == 'BadUA'
     end
+```
 
 ### Throttles
 
+```ruby
     # Throttle requests to 5 requests per second per ip
     Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
       # If the return value is truthy, the cache key for the return value
@@ -105,9 +120,28 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
     Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
       req.path == '/login' && req.post? && req.params['email']
     end
+```
+
+### Strike Outs
+
+*"3 strikes, and you're out"*
+
+```ruby
+    # Detect and block malicious scanners trying to do penetration testing.
+    # Allow the IP doing this to attempt it 10 times in 24 hours, then ban the IP outright for 24 hours after that
+    Rack::Attack.strike_out('pen_test', :limit => 10, :period => 24.hours) do |req|
+      # When `strike!` is called, the value returned by the block will have it's count increased.
+      # If there was no `strike!`, check if this value has already had too many strikes previously, and block the 
+      # request if so. 
+      # Otherwise, let it through
+      strike! if CGI.unescape(req.query_string) =~ %r{/etc/passwd}
+      req.ip 
+    end
+```
 
 ### Tracks
 
+```ruby
     # Track requests from a special user agent
     Rack::Attack.track("special_agent") do |req|
       req.user_agent == "SpecialAgent"
@@ -120,12 +154,14 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
         STATSD.increment("special_agent")
       end
     end
+```
 
 
 ## Responses
 
 Customize the response of blacklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
+```ruby
     Rack::Attack.blacklisted_response = lambda do |env|
       [ 503, {}, ['Blocked']]
     end
@@ -140,10 +176,13 @@ Customize the response of blacklisted and throttled requests using an object tha
 
       [ 503, {}, [body]]
     end
+```
 
 For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
 
+```ruby
     request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
+```
 
 ## Logging & Instrumentation
 
@@ -151,9 +190,11 @@ Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/
 
 You can subscribe to 'rack.attack' events and log it, graph it, etc:
 
+```ruby
     ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
       puts req.inspect
     end
+```
     
 ## Testing
 
