@@ -33,7 +33,7 @@ module Rack
         else
           if strike
             count = cache.count(key, period)
-            if count && count > limit
+            if count && count >= limit
               cache.write(key, :struck_out, period)
             end
             
@@ -42,9 +42,9 @@ module Rack
               :count => count,
               :period => period,
               :limit => limit,
-              :struck_out => struck_out
+              :struck_out => !!struck_out
             }
-            (req.env['rack.attack.match_data'] ||= {})[name] = data
+            (req.env['rack.attack.strike_out_data'] ||= {})[name] = data
           elsif struck_out
             req.env['rack.attack.match_type'] = :struck_out
           end
