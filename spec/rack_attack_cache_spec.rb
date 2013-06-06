@@ -51,6 +51,28 @@ if ENV['TEST_INTEGRATION']
             @cache.send(:do_count, @key, @expires_in).must_equal 1
           end
         end
+        
+        describe "write" do
+          it "should write a value to the store with prefix" do
+            @cache.write("cache-test-key", "foobar", 1)
+            store.read(@key).must_equal "foobar"
+          end
+        end
+          
+        describe "write after expiry" do
+          it "must not have a value" do
+            @cache.write("cache-test-key", "foobar", @expires_in)
+            sleep @expires_in # tick... tick... tick...
+            store.read(@key).must_be :nil?
+          end
+        end
+        
+        describe "read" do
+          it "must read the value with a prefix" do
+            store.write(@key, "foobar", :expires_in => @expires_in)
+            @cache.read("cache-test-key").must_equal "foobar"
+          end
+        end
       end
 
     end
