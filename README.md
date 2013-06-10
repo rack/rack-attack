@@ -102,8 +102,9 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
     end
 
     # Throttle login attempts for a given email parameter to 6 reqs/minute
+    # Return the email as a discriminator on POST /login requests
     Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
-      req.path == '/login' && req.post? && req.params['email']
+      req.params['email'] if req.path == '/login' && req.post?
     end
 
 ### Tracks
@@ -154,7 +155,7 @@ You can subscribe to 'rack.attack' events and log it, graph it, etc:
     ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
       puts req.inspect
     end
-    
+
 ## Testing
 
 A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will 
