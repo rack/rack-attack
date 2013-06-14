@@ -6,14 +6,15 @@ module Rack
           bantime   = options[:bantime]   or raise ArgumentError, "Must pass bantime option"
           findtime  = options[:findtime]  or raise ArgumentError, "Must pass findtime option"
           maxretry  = options[:maxretry]  or raise ArgumentError, "Must pass maxretry option"
-          
-          if yield
+
+          if banned?(discriminator)
+            # Return true for blacklist
+            true
+          elsif yield
             fail!(name, discriminator, bantime, findtime, maxretry)
-          else
-            banned?(discriminator)
           end
         end
-        
+
         private
         def fail!(name, discriminator, bantime, findtime, maxretry)
           count = cache.count("#{name}:#{discriminator}", findtime)
@@ -24,7 +25,7 @@ module Rack
           # Return true for blacklist
           true
         end
-        
+
         def ban!(discriminator, bantime)
           cache.write("fail2ban:#{discriminator}", 1, bantime)
         end
