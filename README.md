@@ -88,6 +88,22 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
       req.path == '/login' && req.post? && req.user_agent == 'BadUA'
     end
 
+`Rack::Attack::Fail2Ban` can be combined with blacklists to block all requests from misbehaving clients.
+This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
+See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
+how the parameters work.
+
+    # Block requests from IP addresses that misbehave.
+    # Allow up to 3 bad requests within 10 minutes, then ban the IP for 5 minutes if exceeded
+    Rack::Attack.blacklist('fail2ban pentesters') do |req|
+      # `filter` returns truthy value if request fails, or if it's from a previously banned IP
+      # this causes `blacklist` to block the request
+      Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
+        # if block is truthy, the count for the IP is incremented
+        CGI.unescape(req.query_string) =~ %r{/etc/passwd} 
+      end
+    end
+
 ### Throttles
 
     # Throttle requests to 5 requests per second per ip
