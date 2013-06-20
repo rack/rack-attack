@@ -7,11 +7,11 @@ describe 'Rack::Attack.Fail2Ban' do
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     @f2b_options = {:bantime => @bantime, :findtime => @findtime, :maxretry => 2}
-    Rack::Attack.blacklist('pentest') do |req| 
+    Rack::Attack.blacklist('pentest') do |req|
       Rack::Attack::Fail2Ban.filter(req.ip, @f2b_options){req.query_string =~ /OMGHAX/}
     end
   end
-  
+
   describe 'discriminator has not been banned' do
     describe 'making ok request' do
       it 'succeeds' do
@@ -26,18 +26,18 @@ describe 'Rack::Attack.Fail2Ban' do
         it 'fails' do
           last_response.status.must_equal 503
         end
-        
+
         it 'increases fail count' do
           key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
           @cache.store.read(key).must_equal 1
         end
- 
+
         it 'is not banned' do
           key = "rack::attack:fail2ban:1.2.3.4"
           @cache.store.read(key).must_be_nil
         end
       end
-      
+
       describe 'when at maxretry' do
         before do
           # maxretry is 2 - so hit with an extra failed request first
@@ -96,7 +96,7 @@ describe 'Rack::Attack.Fail2Ban' do
         @cache.store.read(key).must_equal 1
       end
     end
-    
+
     describe 'making failing request' do
       before do
         get '/?foo=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4'
@@ -116,6 +116,6 @@ describe 'Rack::Attack.Fail2Ban' do
         @cache.store.read(key).must_equal 1
       end
     end
-    
+
   end
 end

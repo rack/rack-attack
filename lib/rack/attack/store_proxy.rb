@@ -38,7 +38,7 @@ module Rack
 
         def increment(key, amount, options={})
           count = nil
-          self.pipelined do 
+          self.pipelined do
             count = self.incrby(key, amount)
             self.expire(key, options[:expires_in]) if options[:expires_in]
           end

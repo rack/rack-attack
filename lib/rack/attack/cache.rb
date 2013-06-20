@@ -24,7 +24,7 @@ module Rack
       def read(unprefixed_key)
         store.read("#{prefix}:#{unprefixed_key}")
       end
-      
+
       def write(unprefixed_key, value, expires_in)
         store.write("#{prefix}:#{unprefixed_key}", value, :expires_in => expires_in)
       end

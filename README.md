@@ -100,7 +100,7 @@ how the parameters work.
       # this causes `blacklist` to block the request
       Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
         # if block is truthy, the count for the IP is incremented
-        CGI.unescape(req.query_string) =~ %r{/etc/passwd} 
+        CGI.unescape(req.query_string) =~ %r{/etc/passwd}
       end
     end
 
