@@ -90,7 +90,7 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
 
 #### Fail2Ban
 
-`Fail2Ban.filter` can be used within a blacklists to block all requests from misbehaving clients.
+`Fail2Ban.filter` can be used within a blacklist to block all requests from misbehaving clients.
 This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
 See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
 how the parameters work.
