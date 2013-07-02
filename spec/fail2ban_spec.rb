@@ -24,7 +24,7 @@ describe 'Rack::Attack.Fail2Ban' do
       describe 'when not at maxretry' do
         before { get '/?foo=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4' }
         it 'fails' do
-          last_response.status.must_equal 503
+          last_response.status.must_equal 401
         end
 
         it 'increases fail count' do
@@ -46,7 +46,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'fails' do
-          last_response.status.must_equal 503
+          last_response.status.must_equal 401
         end
 
         it 'increases fail count' do
@@ -83,7 +83,7 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 503
+        last_response.status.must_equal 401
       end
 
       it 'does not increase fail count' do
@@ -103,7 +103,7 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 503
+        last_response.status.must_equal 401
       end
 
       it 'does not increase fail count' do

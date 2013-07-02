@@ -26,7 +26,7 @@ describe 'Rack::Attack.throttle' do
       2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
     end
     it 'should block the last request' do
-      last_response.status.must_equal 503
+      last_response.status.must_equal 429
     end
     it 'should tag the env' do
       last_request.env['rack.attack.matched'].must_equal 'ip/sec'
