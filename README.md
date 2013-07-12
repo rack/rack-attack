@@ -165,6 +165,8 @@ Customize the response of blacklisted and throttled requests using an object tha
 
 ```ruby
     Rack::Attack.blacklisted_response = lambda do |env|
+      # Using 503 because it may make attacker think that they have successfully
+      # DOSed the site, Rack::Attack returns 401 for blacklists by default
       [ 503, {}, ['Blocked']]
     end
 
@@ -176,6 +178,8 @@ Customize the response of blacklisted and throttled requests using an object tha
         env['rack.attack.match_data']
       ].inspect
 
+      # Using 503 because it may make attacker think that they have successfully
+      # DOSed the site, Rack::Attack returns 401 for blacklists by default
       [ 503, {}, [body]]
     end
 ```
@@ -185,8 +189,6 @@ For responses that did not exceed a throttle limit, Rack::Attack annotates the e
 ```ruby
     request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 ```
-
-Note that Rack::Attack uses 503 Service Unavailable by default instead of 429 Too Many Requests for throttling because it may make attacker think that they have successfully DOSed the site.
 
 ## Logging & Instrumentation
 
