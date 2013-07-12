@@ -186,6 +186,8 @@ For responses that did not exceed a throttle limit, Rack::Attack annotates the e
     request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 ```
 
+Note that Rack::Attack uses 503 Service Unavailable by default instead of 429 Too Many Requests for throttling because it may make attacker think that they have successfully DOSed the site.
+
 ## Logging & Instrumentation
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
