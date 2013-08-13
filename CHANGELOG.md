@@ -1,6 +1,6 @@
 # Changlog
 
-## v2.2.1 - master
+## v2.2.1 - 13 August 2013
  * Add license to gemspec
  * Support ruby version 1.9.2
  * Change default blacklisted response code from 503 to 401; throttled response
