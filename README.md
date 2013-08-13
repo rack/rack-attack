@@ -6,6 +6,13 @@ It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on 
 
 Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis (at least v3.0.0).
 
+See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
+
+[![Gem Version](https://badge.fury.io/rb/rack-attack.png)](http://badge.fury.io/rb/rack-attack)
+[![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
+[![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
+
+
 ## Installation
 
 Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to you Gemfile with bundler:
@@ -229,11 +236,6 @@ It is impractical if not impossible to block abusive clients completely.
 
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
-
-See also: the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
-
-[![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
-[![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
 
 ## License
 
