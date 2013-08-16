@@ -4,7 +4,7 @@
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
-Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis (at least v3.0.0).
+Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
 
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
@@ -22,7 +22,7 @@ Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it t
     gem 'rack-attack'
 ```
 Tell your app to use the Rack::Attack middleware.
-For Rails 3 apps:
+For Rails 3+ apps:
 
 ```ruby
     # In config/application.rb
@@ -50,7 +50,7 @@ The Rack::Attack middleware compares each request against *whitelists*, *blackli
 
  * If the request matches any **whitelist**, it is allowed.
  * Otherwise, if the request matches any **blacklist**, it is blocked.
- * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If the throttle limit is exceeded, the request is blocked.
+ * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If any throttle's limit is exceeded, the request is blocked.
  * Otherwise, all **tracks** are checked, and the request is allowed.
 
 The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
