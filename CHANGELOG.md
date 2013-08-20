@@ -1,5 +1,8 @@
 # Changlog
 
+## v2.3.0 - unlreleased (master)
+ * Allow throttle `limit` argument to be a proc. (thanks @lunks)
+
 ## v2.2.1 - 13 August 2013
  * Add license to gemspec
  * Support ruby version 1.9.2
