@@ -3,3 +3,7 @@ rvm:
   - 1.9.3
   - 2.0.0
   - jruby-head
+
+gemfile:
+  - gemfiles/activesupport3.2
+  - gemfiles/activesupport4.0
