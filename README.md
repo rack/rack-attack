@@ -244,6 +244,12 @@ It is impractical if not impossible to block abusive clients completely.
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
 
+## Mailing list
+
+New releases of Rack::Attack are announced on
+<rack.attack.announce@librelist.com>. To subscribe, just send an email to
+<rack.attack.announce@librelist.com>.
+
 ## License
 
 Copyright (c) 2012 Kickstarter, Inc
