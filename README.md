@@ -147,6 +147,13 @@ how the parameters work.
     Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
       req.params['email'] if req.path == '/login' && req.post?
     end
+
+    # You can also set a limit using a proc instead of a number. For
+    # instance, after Rack::Auth::Basic has authenticated the user:
+    limit_based_on_proc = proc {|req| req.env["REMOTE_USER"] == "god" ? 100 : 1}
+    Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second) do |req|
+      req.ip
+    end
 ```
 
 ### Tracks

@@ -22,14 +22,15 @@ module Rack
 
         key = "#{name}:#{discriminator}"
         count = cache.count(key, period)
+        current_limit = limit.respond_to?(:call) ? limit.call(req) : limit
         data = {
           :count => count,
           :period => period,
-          :limit => limit
+          :limit => current_limit
         }
         (req.env['rack.attack.throttle_data'] ||= {})[name] = data
 
-        (count > limit).tap do |throttled|
+        (count > current_limit).tap do |throttled|
           if throttled
             req.env['rack.attack.matched']    = name
             req.env['rack.attack.match_type'] = :throttle
@@ -38,7 +39,6 @@ module Rack
           end
         end
       end
-
     end
   end
 end
