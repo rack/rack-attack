@@ -248,7 +248,8 @@ less on short-term, one-off hacks to block a particular attack.
 
 New releases of Rack::Attack are announced on
 <rack.attack.announce@librelist.com>. To subscribe, just send an email to
-<rack.attack.announce@librelist.com>.
+<rack.attack.announce@librelist.com>. See the
+[archives](http://librelist.com/browser/rack.attack.announce/).
 
 ## License
 
