@@ -128,6 +128,24 @@ how the parameters work.
     end
 ```
 
+#### Allow2Ban
+`Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
+clients until such time as they reach maxretry at which they are cut off as per normal.
+```ruby
+    # Lockout IP addresses that are hammering your login page.
+    # After 20 requests in 1 minute, block all requests from that IP for 1 hour.
+    Rack::Attack.blacklist('allow2ban login scrapers') do |req|
+      # `filter` returns false value if request is to your login page (but still
+      # increments the count) so request below the limit are not blocked until
+      # they hit the limit.  At that point, filter will return true and block.
+      Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
+        # The count for the IP is incremented if the return value is truthy.
+        req.path = '/login' and req.method == 'post'
+      end
+    end
+```
+
+
 ### Throttles
 
 ```ruby
