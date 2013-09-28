@@ -13,10 +13,9 @@ module Rack
           count = cache.count("#{key_prefix}:count:#{discriminator}", findtime)
           if count >= maxretry
             ban!(discriminator, bantime)
-            true
-          else
-            false
           end
+          # we may not block them this time, but they're banned for next time
+          false
         end
       end
     end

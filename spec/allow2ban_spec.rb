@@ -45,8 +45,8 @@ describe 'Rack::Attack.Allow2Ban' do
           get '/?foo=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4'
         end
 
-        it 'fails' do
-          last_response.status.must_equal 401
+        it 'succeeds' do
+          last_response.status.must_equal 200
         end
 
         it 'increases fail count' do
