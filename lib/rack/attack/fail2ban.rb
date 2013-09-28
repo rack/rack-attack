@@ -15,23 +15,28 @@ module Rack
           end
         end
 
-        private
+        protected
+        def key_prefix
+          'fail2ban'
+        end
+
         def fail!(discriminator, bantime, findtime, maxretry)
-          count = cache.count("fail2ban:count:#{discriminator}", findtime)
+          count = cache.count("#{key_prefix}:count:#{discriminator}", findtime)
           if count >= maxretry
             ban!(discriminator, bantime)
           end
 
-          # Return true for blacklist
           true
         end
 
+
+        private
         def ban!(discriminator, bantime)
-          cache.write("fail2ban:ban:#{discriminator}", 1, bantime)
+          cache.write("#{key_prefix}:ban:#{discriminator}", 1, bantime)
         end
 
         def banned?(discriminator)
-          cache.read("fail2ban:ban:#{discriminator}")
+          cache.read("#{key_prefix}:ban:#{discriminator}")
         end
 
         def cache

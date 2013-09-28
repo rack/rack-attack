@@ -8,6 +8,7 @@ module Rack::Attack
   autoload :Track,     'rack/attack/track'
   autoload :StoreProxy,'rack/attack/store_proxy'
   autoload :Fail2Ban,  'rack/attack/fail2ban'
+  autoload :Allow2Ban,  'rack/attack/allow2ban'
 
   class << self
 

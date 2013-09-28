@@ -1,0 +1,24 @@
+module Rack
+  module Attack
+    class Allow2Ban < Fail2Ban
+      class << self
+        protected
+        def key_prefix
+          'allow2ban'
+        end
+
+        # everything the same here except we return only return true
+        # (blocking the request) if they have tripped the limit.
+        def fail!(discriminator, bantime, findtime, maxretry)
+          count = cache.count("#{key_prefix}:count:#{discriminator}", findtime)
+          if count >= maxretry
+            ban!(discriminator, bantime)
+            true
+          else
+            false
+          end
+        end
+      end
+    end
+  end
+end
