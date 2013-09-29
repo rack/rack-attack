@@ -2,6 +2,7 @@
 
 ## v2.3.0 - unlreleased (master)
  * Allow throttle `limit` argument to be a proc. (thanks @lunks)
+ * Add Allow2Ban, complement of Fail2Ban. (thanks @jormon)
 
 ## v2.2.1 - 13 August 2013
  * Add license to gemspec
