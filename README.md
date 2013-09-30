@@ -138,7 +138,7 @@ clients until such time as they reach maxretry at which they are cut off as per 
       # `filter` returns false value if request is to your login page (but still
       # increments the count) so request below the limit are not blocked until
       # they hit the limit.  At that point, filter will return true and block.
-      Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
+      Rack::Attack::Allow2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
         # The count for the IP is incremented if the return value is truthy.
         req.path = '/login' and req.method == 'post'
       end
