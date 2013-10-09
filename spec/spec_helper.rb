@@ -13,7 +13,7 @@ rescue LoadError
  #nothing to do here
 end
 
-class Minitest::Spec
+class MiniTest::Spec
 
   include Rack::Test::Methods
 
