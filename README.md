@@ -18,28 +18,28 @@ See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hac
 Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to you Gemfile with bundler:
 
 ```ruby
-    # In your Gemfile
-    gem 'rack-attack'
+# In your Gemfile
+gem 'rack-attack'
 ```
 Tell your app to use the Rack::Attack middleware.
 For Rails 3+ apps:
 
 ```ruby
-    # In config/application.rb
-    config.middleware.use Rack::Attack
+# In config/application.rb
+config.middleware.use Rack::Attack
 ```
 
 Or for Rackup files:
 
 ```ruby
-    # In config.ru
-    use Rack::Attack
+# In config.ru
+use Rack::Attack
 ```
 
 Optionally configure the cache store for throttling:
 
 ```ruby
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
+Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
 ```
 
 Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
@@ -56,20 +56,20 @@ The Rack::Attack middleware compares each request against *whitelists*, *blackli
 The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
 
 ```ruby
-    def call(env)
-      req = Rack::Request.new(env)
+def call(env)
+  req = Rack::Request.new(env)
 
-      if whitelisted?(req)
-        @app.call(env)
-      elsif blacklisted?(req)
-        blacklisted_response[env]
-      elsif throttled?(req)
-        throttled_response[env]
-      else
-        tracked?(req)
-        @app.call(env)
-      end
-    end
+  if whitelisted?(req)
+    @app.call(env)
+  elsif blacklisted?(req)
+    blacklisted_response[env]
+  elsif throttled?(req)
+    throttled_response[env]
+  else
+    tracked?(req)
+    @app.call(env)
+  end
+end
 ```
 
 ## About Tracks
@@ -85,27 +85,27 @@ A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) objec
 ### Whitelists
 
 ```ruby
-    # Always allow requests from localhost
-    # (blacklist & throttles are skipped)
-    Rack::Attack.whitelist('allow from localhost') do |req|
-      # Requests are allowed if the return value is truthy
-      '127.0.0.1' == req.ip
-    end
+# Always allow requests from localhost
+# (blacklist & throttles are skipped)
+Rack::Attack.whitelist('allow from localhost') do |req|
+  # Requests are allowed if the return value is truthy
+  '127.0.0.1' == req.ip
+end
 ```
 
 ### Blacklists
 
 ```ruby
-    # Block requests from 1.2.3.4
-    Rack::Attack.blacklist('block 1.2.3.4') do |req|
-      # Request are blocked if the return value is truthy
-      '1.2.3.4' == req.ip
-    end
+# Block requests from 1.2.3.4
+Rack::Attack.blacklist('block 1.2.3.4') do |req|
+  # Request are blocked if the return value is truthy
+  '1.2.3.4' == req.ip
+end
 
-    # Block logins from a bad user agent
-    Rack::Attack.blacklist('block bad UA logins') do |req|
-      req.path == '/login' && req.post? && req.user_agent == 'BadUA'
-    end
+# Block logins from a bad user agent
+Rack::Attack.blacklist('block bad UA logins') do |req|
+  req.path == '/login' && req.post? && req.user_agent == 'BadUA'
+end
 ```
 
 #### Fail2Ban
@@ -116,79 +116,79 @@ See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0
 how the parameters work.
 
 ```ruby
-    # Block requests containing '/etc/password' in the params.
-    # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
-    Rack::Attack.blacklist('fail2ban pentesters') do |req|
-      # `filter` returns truthy value if request fails, or if it's from a previously banned IP
-      # so the request is blocked
-      Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
-        # The count for the IP is incremented if the return value is truthy.
-        CGI.unescape(req.query_string) =~ %r{/etc/passwd}
-      end
-    end
+# Block requests containing '/etc/password' in the params.
+# After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
+Rack::Attack.blacklist('fail2ban pentesters') do |req|
+  # `filter` returns truthy value if request fails, or if it's from a previously banned IP
+  # so the request is blocked
+  Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
+    # The count for the IP is incremented if the return value is truthy.
+    CGI.unescape(req.query_string) =~ %r{/etc/passwd}
+  end
+end
 ```
 
 #### Allow2Ban
 `Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
 clients until such time as they reach maxretry at which they are cut off as per normal.
 ```ruby
-    # Lockout IP addresses that are hammering your login page.
-    # After 20 requests in 1 minute, block all requests from that IP for 1 hour.
-    Rack::Attack.blacklist('allow2ban login scrapers') do |req|
-      # `filter` returns false value if request is to your login page (but still
-      # increments the count) so request below the limit are not blocked until
-      # they hit the limit.  At that point, filter will return true and block.
-      Rack::Attack::Allow2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
-        # The count for the IP is incremented if the return value is truthy.
-        req.path = '/login' and req.method == 'post'
-      end
-    end
+# Lockout IP addresses that are hammering your login page.
+# After 20 requests in 1 minute, block all requests from that IP for 1 hour.
+Rack::Attack.blacklist('allow2ban login scrapers') do |req|
+  # `filter` returns false value if request is to your login page (but still
+  # increments the count) so request below the limit are not blocked until
+  # they hit the limit.  At that point, filter will return true and block.
+  Rack::Attack::Allow2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
+    # The count for the IP is incremented if the return value is truthy.
+    req.path = '/login' and req.method == 'post'
+  end
+end
 ```
 
 
 ### Throttles
 
 ```ruby
-    # Throttle requests to 5 requests per second per ip
-    Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
-      # If the return value is truthy, the cache key for the return value
-      # is incremented and compared with the limit. In this case:
-      #   "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
-      #
-      # If falsy, the cache key is neither incremented nor checked.
+# Throttle requests to 5 requests per second per ip
+Rack::Attack.throttle('req/ip', :limit => 5, :period => 1.second) do |req|
+  # If the return value is truthy, the cache key for the return value
+  # is incremented and compared with the limit. In this case:
+  #   "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
+  #
+  # If falsy, the cache key is neither incremented nor checked.
 
-      req.ip
-    end
+  req.ip
+end
 
-    # Throttle login attempts for a given email parameter to 6 reqs/minute
-    # Return the email as a discriminator on POST /login requests
-    Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
-      req.params['email'] if req.path == '/login' && req.post?
-    end
+# Throttle login attempts for a given email parameter to 6 reqs/minute
+# Return the email as a discriminator on POST /login requests
+Rack::Attack.throttle('logins/email', :limit => 6, :period => 60.seconds) do |req|
+  req.params['email'] if req.path == '/login' && req.post?
+end
 
-    # You can also set a limit using a proc instead of a number. For
-    # instance, after Rack::Auth::Basic has authenticated the user:
-    limit_based_on_proc = proc {|req| req.env["REMOTE_USER"] == "admin" ? 100 : 1}
-    Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second) do |req|
-      req.ip
-    end
+# You can also set a limit using a proc instead of a number. For
+# instance, after Rack::Auth::Basic has authenticated the user:
+limit_based_on_proc = proc {|req| req.env["REMOTE_USER"] == "admin" ? 100 : 1}
+Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second) do |req|
+  req.ip
+end
 ```
 
 ### Tracks
 
 ```ruby
-    # Track requests from a special user agent
-    Rack::Attack.track("special_agent") do |req|
-      req.user_agent == "SpecialAgent"
-    end
+# Track requests from a special user agent
+Rack::Attack.track("special_agent") do |req|
+  req.user_agent == "SpecialAgent"
+end
 
-    # Track it using ActiveSupport::Notification
-    ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
-      if req.env['rack.attack.matched'] == "special_agent" && req.env['rack.attack.match_type'] == :track
-        Rails.logger.info "special_agent: #{req.path}"
-        STATSD.increment("special_agent")
-      end
-    end
+# Track it using ActiveSupport::Notification
+ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
+  if req.env['rack.attack.matched'] == "special_agent" && req.env['rack.attack.match_type'] == :track
+    Rails.logger.info "special_agent: #{req.path}"
+    STATSD.increment("special_agent")
+  end
+end
 ```
 
 ## Responses
@@ -196,30 +196,30 @@ clients until such time as they reach maxretry at which they are cut off as per 
 Customize the response of blacklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
 ```ruby
-    Rack::Attack.blacklisted_response = lambda do |env|
-      # Using 503 because it may make attacker think that they have successfully
-      # DOSed the site. Rack::Attack returns 401 for blacklists by default
-      [ 503, {}, ['Blocked']]
-    end
+Rack::Attack.blacklisted_response = lambda do |env|
+  # Using 503 because it may make attacker think that they have successfully
+  # DOSed the site. Rack::Attack returns 401 for blacklists by default
+  [ 503, {}, ['Blocked']]
+end
 
-    Rack::Attack.throttled_response = lambda do |env|
-      # name and other data about the matched throttle
-      body = [
-        env['rack.attack.matched'],
-        env['rack.attack.match_type'],
-        env['rack.attack.match_data']
-      ].inspect
+Rack::Attack.throttled_response = lambda do |env|
+  # name and other data about the matched throttle
+  body = [
+    env['rack.attack.matched'],
+    env['rack.attack.match_type'],
+    env['rack.attack.match_data']
+  ].inspect
 
-      # Using 503 because it may make attacker think that they have successfully
-      # DOSed the site. Rack::Attack returns 429 for throttling by default
-      [ 503, {}, [body]]
-    end
+  # Using 503 because it may make attacker think that they have successfully
+  # DOSed the site. Rack::Attack returns 429 for throttling by default
+  [ 503, {}, [body]]
+end
 ```
 
 For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
 
 ```ruby
-    request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
+request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 ```
 
 ## Logging & Instrumentation
@@ -229,9 +229,9 @@ Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/
 You can subscribe to 'rack.attack' events and log it, graph it, etc:
 
 ```ruby
-    ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
-      puts req.inspect
-    end
+ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
+  puts req.inspect
+end
 ```
 
 ## Testing
