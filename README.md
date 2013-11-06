@@ -140,7 +140,7 @@ Rack::Attack.blacklist('allow2ban login scrapers') do |req|
   # they hit the limit.  At that point, filter will return true and block.
   Rack::Attack::Allow2Ban.filter(req.ip, :maxretry => 20, :findtime => 1.minute, :bantime => 1.hour) do
     # The count for the IP is incremented if the return value is truthy.
-    req.path = '/login' and req.method == 'post'
+    req.path == '/login' and req.post?
   end
 end
 ```
