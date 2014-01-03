@@ -250,7 +250,7 @@ so try to keep the number of throttle checks per request low.
 If a request is blacklisted or throttled, the response is a very simple Rack response.
 A single typical ruby web server thread can block several hundred requests per second.
 
-Rack::Attack complements tools like `iptables` and nginx's [limit_zone module](http://wiki.nginx.org/HttpLimitZoneModule).
+Rack::Attack complements tools like `iptables` and nginx's [limit_conn_zone module](http://nginx.org/en/docs/http/ngx_http_limit_conn_module.html#limit_conn_zone).
 
 ## Motivation
 
