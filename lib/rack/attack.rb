@@ -9,10 +9,11 @@ module Rack::Attack
   autoload :StoreProxy,'rack/attack/store_proxy'
   autoload :Fail2Ban,  'rack/attack/fail2ban'
   autoload :Allow2Ban,  'rack/attack/allow2ban'
+  autoload :RetryLaterResponse, 'rack/attack/retry_later_response'
 
   class << self
 
-    attr_accessor :notifier, :blacklisted_response, :throttled_response
+    attr_accessor :notifier, :blacklisted_response, :throttled_response, :throttle_response_strategy
 
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
@@ -30,6 +31,10 @@ module Rack::Attack
       self.tracks[name] = Track.new(name, block)
     end
 
+    def respond_to_throttled_requests_with(throttle_response_strategy)
+      self.throttle_response_strategy = Rack::Attack::RetryLaterResponse
+    end
+
     def whitelists; @whitelists ||= {}; end
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
@@ -41,11 +46,7 @@ module Rack::Attack
       # Set defaults
       @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @blacklisted_response ||= lambda {|env| [401, {}, ["Unauthorized\n"]] }
-      @throttled_response   ||= lambda {|env|
-        retry_after = env['rack.attack.match_data'][:period] rescue nil
-        [429, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
-      }
-
+      @throttled_response   ||= (throttle_response_strategy || Rack::Attack::RetryLaterResponse).new
       self
     end
 

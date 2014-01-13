@@ -3,6 +3,13 @@ require_relative 'spec_helper'
 describe 'Rack::Attack' do
   allow_ok_requests
 
+  describe ".respond_to_throttled_requests_with" do
+    it "sets to retry later" do
+      Rack::Attack.respond_to_throttled_requests_with :retry_later
+      Rack::Attack.throttle_response_strategy.must_equal Rack::Attack::RetryLaterResponse
+    end
+  end
+
   describe 'blacklist' do
     before do
       @bad_ip = '1.2.3.4'
