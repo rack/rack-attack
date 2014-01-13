@@ -4,9 +4,9 @@ describe 'Rack::Attack' do
   allow_ok_requests
 
   describe ".respond_to_throttled_requests_with" do
-    it "sets to retry later" do
+    it "sets to a retry later responder" do
       Rack::Attack.respond_to_throttled_requests_with :retry_later
-      Rack::Attack.throttle_response_strategy.must_equal Rack::Attack::RetryLaterResponse
+      Rack::Attack.throttle_responder.must_equal Rack::Attack::RetryLaterResponder
     end
   end
 
