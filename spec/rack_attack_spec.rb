@@ -8,6 +8,11 @@ describe 'Rack::Attack' do
       Rack::Attack.respond_to_throttled_requests_with :retry_later
       Rack::Attack.throttle_responder.must_equal Rack::Attack::RetryLaterResponder
     end
+
+    it "sets to add recaptcha" do
+      Rack::Attack.respond_to_throttled_requests_with :add_recaptcha
+      Rack::Attack.throttle_responder.must_equal Rack::Attack::AddRecaptchaResponder
+    end
   end
 
   describe 'blacklist' do

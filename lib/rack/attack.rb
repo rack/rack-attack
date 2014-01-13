@@ -10,6 +10,7 @@ module Rack::Attack
   autoload :Fail2Ban,  'rack/attack/fail2ban'
   autoload :Allow2Ban,  'rack/attack/allow2ban'
   autoload :RetryLaterResponder, 'rack/attack/retry_later_responder'
+  autoload :AddRecaptchaResponder, 'rack/attack/add_recaptcha_responder'
 
   class << self
 
@@ -32,7 +33,12 @@ module Rack::Attack
     end
 
     def respond_to_throttled_requests_with(throttle_response_strategy)
-      self.throttle_responder = Rack::Attack::RetryLaterResponder
+      self.throttle_responder = case throttle_response_strategy
+                                        when :retry_later
+                                          Rack::Attack::RetryLaterResponder
+                                        when :add_recaptcha
+                                          Rack::Attack::AddRecaptchaResponder
+                                        end
     end
 
     def whitelists; @whitelists ||= {}; end
@@ -46,7 +52,7 @@ module Rack::Attack
       # Set defaults
       @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @blacklisted_response ||= lambda {|env| [401, {}, ["Unauthorized\n"]] }
-      @throttled_response   ||= (throttle_responder || Rack::Attack::RetryLaterResponder).new
+      @throttled_response   ||= (throttle_responder || Rack::Attack::RetryLaterResponder).new(@app)
       self
     end
 
