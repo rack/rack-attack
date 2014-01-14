@@ -9,10 +9,12 @@ module Rack::Attack
   autoload :StoreProxy,'rack/attack/store_proxy'
   autoload :Fail2Ban,  'rack/attack/fail2ban'
   autoload :Allow2Ban,  'rack/attack/allow2ban'
+  autoload :RetryLaterResponder, 'rack/attack/retry_later_responder'
+  autoload :AddRecaptchaResponder, 'rack/attack/add_recaptcha_responder'
 
   class << self
 
-    attr_accessor :notifier, :blacklisted_response, :throttled_response
+    attr_accessor :notifier, :blacklisted_response, :throttled_response, :throttle_responder
 
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
@@ -30,6 +32,15 @@ module Rack::Attack
       self.tracks[name] = Track.new(name, block)
     end
 
+    def respond_to_throttled_requests_with(throttle_response_strategy)
+      self.throttle_responder = case throttle_response_strategy
+                                        when :retry_later
+                                          Rack::Attack::RetryLaterResponder
+                                        when :add_recaptcha
+                                          Rack::Attack::AddRecaptchaResponder
+                                        end
+    end
+
     def whitelists; @whitelists ||= {}; end
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
@@ -41,11 +52,7 @@ module Rack::Attack
       # Set defaults
       @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
       @blacklisted_response ||= lambda {|env| [401, {}, ["Unauthorized\n"]] }
-      @throttled_response   ||= lambda {|env|
-        retry_after = env['rack.attack.match_data'][:period] rescue nil
-        [429, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
-      }
-
+      @throttled_response   ||= (throttle_responder || Rack::Attack::RetryLaterResponder).new(@app)
       self
     end
 
@@ -100,5 +107,9 @@ module Rack::Attack
       @whitelists, @blacklists, @throttles = {}, {}, {}
     end
 
+  end
+
+  if defined?(Rails)
+    require "rack/attack/rails"
   end
 end
