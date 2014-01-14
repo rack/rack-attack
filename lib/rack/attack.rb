@@ -108,4 +108,8 @@ module Rack::Attack
     end
 
   end
+
+  if defined?(Rails)
+    require "rack/attack/rails"
+  end
 end
