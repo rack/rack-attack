@@ -83,7 +83,7 @@ describe 'Rack::Attack.Allow2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 401
+        last_response.status.must_equal 403
       end
 
       it 'does not increase fail count' do
@@ -103,7 +103,7 @@ describe 'Rack::Attack.Allow2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 401
+        last_response.status.must_equal 403
       end
 
       it 'does not increase fail count' do
