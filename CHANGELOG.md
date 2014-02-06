@@ -1,5 +1,8 @@
 # Changlog
 
+## Master
+ * Change default blacklisted response to 403 Forbidden (thanks @carpodaster).
+
 ## v2.3.0 - 11 October 2013 (master)
  * Allow throttle `limit` argument to be a proc. (thanks @lunks)
  * Add Allow2Ban, complement of Fail2Ban. (thanks @jormon)
