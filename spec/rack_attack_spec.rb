@@ -16,6 +16,7 @@ describe 'Rack::Attack' do
       it "should return a blacklist response" do
         get '/', {}, 'REMOTE_ADDR' => @bad_ip
         last_response.status.must_equal 403
+        last_response.body.must_equal "Forbidden\n"
       end
       it "should tag the env" do
         last_request.env['rack.attack.matched'].must_equal "ip #{@bad_ip}"
