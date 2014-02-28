@@ -28,7 +28,7 @@ module Rack
             count = cache.count(key, period)
           rescue => e
             populate_env(req, name)
-            req.env['rack.attack.exception']    = e.message
+            req.env['rack.attack.exception'] = e.message
             Rack::Attack.instrument(req)
             return
           end
