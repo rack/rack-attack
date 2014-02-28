@@ -173,8 +173,9 @@ Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.seco
   req.ip
 end
 
-# By default, if the store that throttle uses throws is down or returning errors, the request will be rate limited.
-# If you want to let requests through in this case, set the proceed_on_error parameter to true.
+# By default, if the store that throttle uses throws an exception, the request will be rate limited. If
+# you want to let requests through in the case of the backend store going down or generating exceptions,
+# set the proceed_on_error parameter to true.
 Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second, :proceed_on_error => true) do |req|
   req.ip
 end
