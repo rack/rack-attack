@@ -172,6 +172,12 @@ limit_based_on_proc = proc {|req| req.env["REMOTE_USER"] == "admin" ? 100 : 1}
 Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second) do |req|
   req.ip
 end
+
+# By default, if the store that throttle uses throws is down or returning errors, the request will be rate limited.
+# If you want to let requests through in this case, set the proceed_on_error parameter to true.
+Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.second, :proceed_on_error => true) do |req|
+  req.ip
+end
 ```
 
 ### Tracks

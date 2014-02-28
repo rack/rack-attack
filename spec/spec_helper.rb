@@ -3,6 +3,8 @@ require "bundler/setup"
 
 require "minitest/autorun"
 require "minitest/pride"
+require "minitest/mock"
+require 'minitest/stub_any_instance'
 require "rack/test"
 require 'active_support'
 require "rack/attack"
