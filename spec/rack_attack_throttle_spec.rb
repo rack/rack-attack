@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'active_support/cache/redis_store'
 describe 'Rack::Attack.throttle' do
   before do
     @period = 60 # Use a long period; failures due to cache key rotation less likely
@@ -58,6 +59,36 @@ describe 'Rack::Attack.throttle with limit as proc' do
     it 'should populate throttle data' do
       data = { :count => 1, :limit => 1, :period => @period }
       last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
+    end
+  end
+end
+
+describe 'Rack::Attack throttle when store raises exception and proceed_on_error is not set' do
+  before do
+    Rack::Attack.cache.store = ActiveSupport::Cache::RedisStore.new("localhost")
+    period = 60
+    Rack::Attack.throttle('ip/sec', :limit => 1, :period => period) { |req| req.ip }
+  end
+  it 'should raise an exception' do
+      raises_exception = -> { raise Redis::CannotConnectError.new }
+      ActiveSupport::Cache::RedisStore.stub_any_instance :increment, raises_exception do
+        assert_raises(Redis::CannotConnectError) {
+          get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      }
+      end
+  end
+end
+
+describe 'Rack::Attack throttle when store raises exception and proceed_on_error is true' do
+  before do
+    Rack::Attack.cache.store = ActiveSupport::Cache::RedisStore.new("localhost")
+    period = 60
+    Rack::Attack.throttle('ip/sec', :limit => 1, :period => period, :proceed_on_error => true) { |req| req.ip }
+  end
+  it 'should not raise an exception' do
+    raises_exception = -> { raise Redis::CannotConnectError.new }
+    ActiveSupport::Cache::RedisStore.stub_any_instance :increment, raises_exception do
+      assert((get '/', {}, 'REMOTE_ADDR' => '1.2.3.4') != nil)
     end
   end
 end
