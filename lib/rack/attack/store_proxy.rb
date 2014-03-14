@@ -26,6 +26,8 @@ module Rack
 
         def read(key)
           self.get(key)
+          rescue Redis::BaseError
+            nil
         end
 
         def write(key, value, options={})
@@ -34,6 +36,8 @@ module Rack
           else
             self.set(key, value)
           end
+          rescue Redis::BaseError
+            nil
         end
 
         def increment(key, amount, options={})
@@ -43,6 +47,8 @@ module Rack
             self.expire(key, options[:expires_in]) if options[:expires_in]
           end
           count.value if count
+          rescue Redis::BaseError
+            nil
         end
 
       end
