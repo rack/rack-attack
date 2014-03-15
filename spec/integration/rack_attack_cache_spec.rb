@@ -86,9 +86,8 @@ describe Rack::Attack::Cache do
       @cache = Rack::Attack::Cache.new
       @key = "rack::attack:cache-test-key"
       @expires_in = 1
-      # Use ip reserved for documentation to ensure it does not exist
-      # http://tools.ietf.org/html/rfc5737
-      @cache.store = ActiveSupport::Cache::RedisStore.new(:host => '203.0.113.0', :port => 3333)
+      # Use presumably unused port for Redis client
+      @cache.store = ActiveSupport::Cache::RedisStore.new(:host => '127.0.0.1', :port => 3333)
     }
     describe "write" do
       it "should not raise exception" do
