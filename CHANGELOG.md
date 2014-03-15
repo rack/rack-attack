@@ -1,11 +1,12 @@
 # Changlog
 
-## Master
+## v3.0.0 - 15 March 2014
  * Change default blacklisted response to 403 Forbidden (thanks @carpodaster).
  * Fail gracefully when Redis store is not available; rescue exeption and don't
    throttle request. (thanks @wkimeria)
+ * TravisCI runs integration tests.
 
-## v2.3.0 - 11 October 2013 (master)
+## v2.3.0 - 11 October 2013
  * Allow throttle `limit` argument to be a proc. (thanks @lunks)
  * Add Allow2Ban, complement of Fail2Ban. (thanks @jormon)
  * Improved TravisCI testing
