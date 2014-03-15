@@ -2,6 +2,8 @@
 
 ## Master
  * Change default blacklisted response to 403 Forbidden (thanks @carpodaster).
+ * Fail gracefully when Redis store is not available; rescue exeption and don't
+   throttle request. (thanks @wkimeria)
 
 ## v2.3.0 - 11 October 2013 (master)
  * Allow throttle `limit` argument to be a proc. (thanks @lunks)
