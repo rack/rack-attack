@@ -9,6 +9,10 @@ describe Rack::Attack::Cache do
     end
   end
 
+  def sleep_until_expired
+    sleep(@expires_in * 1.1) # Add 10% to reduce errors
+  end
+
   require 'active_support/cache/dalli_store'
   require 'active_support/cache/redis_store'
   cache_stores = [
@@ -47,7 +51,7 @@ describe Rack::Attack::Cache do
       describe "do_count after expires_in" do
         it "must be 1" do
           @cache.send(:do_count, @key, @expires_in)
-          sleep @expires_in # sigh
+          sleep_until_expired
           @cache.send(:do_count, @key, @expires_in).must_equal 1
         end
       end
@@ -62,7 +66,7 @@ describe Rack::Attack::Cache do
       describe "write after expiry" do
         it "must not have a value" do
           @cache.write("cache-test-key", "foobar", @expires_in)
-          sleep @expires_in # tick... tick... tick...
+          sleep_until_expired
           store.read(@key).must_be :nil?
         end
       end
