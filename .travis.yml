@@ -11,3 +11,7 @@ rvm:
 gemfile:
   - gemfiles/activesupport3.2
   - gemfiles/activesupport4.0
+
+services:
+  - redis
+  - memcached
