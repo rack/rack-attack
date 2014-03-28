@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Track < Check
       def initialize(name, block)
         super

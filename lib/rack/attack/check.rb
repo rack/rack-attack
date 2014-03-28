@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Check
       attr_reader :name, :block, :type
       def initialize(name, block)
