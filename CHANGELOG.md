@@ -1,5 +1,8 @@
 # Changlog
 
+## master (unreleased)
+ * Implement proxy for Dalli with better Memcachier support. (thanks @hakanensari)
+
 ## v3.0.0 - 15 March 2014
  * Change default blacklisted response to 403 Forbidden (thanks @carpodaster).
  * Fail gracefully when Redis store is not available; rescue exeption and don't
