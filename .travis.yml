@@ -12,6 +12,8 @@ rvm:
 gemfile:
   - gemfiles/activesupport3.2
   - gemfiles/activesupport4.0
+  - gemfiles/dalli1.1
+  - gemfiles/dalli2
 
 services:
   - redis
