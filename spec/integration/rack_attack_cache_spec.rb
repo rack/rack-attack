@@ -19,6 +19,7 @@ describe Rack::Attack::Cache do
     ActiveSupport::Cache::MemoryStore.new,
     ActiveSupport::Cache::DalliStore.new("localhost"),
     ActiveSupport::Cache::RedisStore.new("localhost"),
+    Dalli::Client.new,
     Redis::Store.new
   ]
 
@@ -89,6 +90,38 @@ describe Rack::Attack::Cache do
       # Use presumably unused port for Redis client
       @cache.store = ActiveSupport::Cache::RedisStore.new(:host => '127.0.0.1', :port => 3333)
     }
+    describe "write" do
+      it "should not raise exception" do
+        @cache.write("cache-test-key", "foobar", 1)
+      end
+    end
+
+    describe "read" do
+      it "should not raise exception" do
+        @cache.read("cache-test-key")
+      end
+    end
+
+    describe "do_count" do
+      it "should not raise exception" do
+        @cache.send(:do_count, @key, @expires_in)
+      end
+    end
+  end
+
+  describe "should not error if memcached is not running" do
+    before {
+      Dalli.logger.level = Logger::FATAL
+      @cache = Rack::Attack::Cache.new
+      @key = "rack::attack:cache-test-key"
+      @expires_in = 1
+      @cache.store = Dalli::Client.new('127.0.0.1:22122')
+    }
+
+    after {
+      Dalli.logger.level = Logger::INFO
+    }
+
     describe "write" do
       it "should not raise exception" do
         @cache.write("cache-test-key", "foobar", 1)

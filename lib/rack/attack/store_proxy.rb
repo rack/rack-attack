@@ -14,6 +14,8 @@ module Rack
 
         if defined?(::Redis::Store) && store.is_a?(::Redis::Store)
           RedisStoreProxy.new(store)
+        elsif defined?(::Dalli) && store.is_a?(::Dalli::Client)
+          DalliProxy.new(store)
         else
           store
         end
@@ -49,6 +51,34 @@ module Rack
           count.value if count
           rescue Redis::BaseError
             nil
+        end
+
+      end
+
+      class DalliProxy < SimpleDelegator
+        def initialize(client)
+          super(client)
+        end
+
+        def read(key)
+          with do |client|
+            client.get(key)
+          end
+        rescue Dalli::DalliError
+        end
+
+        def write(key, value, options={})
+          with do |client|
+            client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+          end
+        rescue Dalli::DalliError
+        end
+
+        def increment(key, amount, options={})
+          with do |client|
+            client.incr(key, amount, options.fetch(:expires_in, 0), amount)
+          end
+        rescue Dalli::DalliError
         end
 
       end
