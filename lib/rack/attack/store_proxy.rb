@@ -14,8 +14,14 @@ module Rack
 
         if defined?(::Redis::Store) && store.is_a?(::Redis::Store)
           RedisStoreProxy.new(store)
-        elsif defined?(::Dalli) && store.is_a?(::Dalli::Client)
-          DalliProxy.new(store)
+        elsif store.respond_to?(:with)
+          store.with do |conn|
+            if defined?(::Dalli) && conn.is_a?(::Dalli::Client)
+              DalliProxy.new(store)
+            else
+              raise NotImplementedError
+            end
+          end
         else
           store
         end
@@ -81,6 +87,12 @@ module Rack
         rescue Dalli::DalliError
         end
 
+        def delete(key)
+          with do |client|
+            client.delete(key)
+          end
+        rescue Dalli::DalliError
+        end
       end
     end
   end
