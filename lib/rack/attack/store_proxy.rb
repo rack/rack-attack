@@ -14,9 +14,11 @@ module Rack
 
         if defined?(::Redis::Store) && store.is_a?(::Redis::Store)
           RedisStoreProxy.new(store)
-        elsif store.respond_to?(:with)
+        elsif defined?(::Dalli) && store.is_a?(::Dalli::Client)
+          DalliProxy.new(store)
+        elsif defined?(::ConnectionPool) && store.is_a?(::ConnectionPool)
           store.with do |conn|
-            if defined?(::Dalli) && conn.is_a?(::Dalli::Client)
+            if conn.is_a?(::Dalli::Client)
               DalliProxy.new(store)
             else
               raise NotImplementedError
