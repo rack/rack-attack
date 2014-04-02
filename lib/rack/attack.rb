@@ -1,4 +1,5 @@
 require 'rack'
+require 'forwardable'
 
 class Rack::Attack
   autoload :Cache,     'rack/attack/cache'
@@ -89,15 +90,21 @@ class Rack::Attack
   def call(env)
     req = Rack::Request.new(env)
 
-    if self.class.whitelisted?(req)
+    if whitelisted?(req)
       @app.call(env)
-    elsif self.class.blacklisted?(req)
+    elsif blacklisted?(req)
       self.class.blacklisted_response[env]
-    elsif self.class.throttled?(req)
+    elsif throttled?(req)
       self.class.throttled_response[env]
     else
-      self.class.tracked?(req)
+      tracked?(req)
       @app.call(env)
     end
   end
+
+  extend Forwardable
+  def_delegators self, :whitelisted?,
+                       :blacklisted?,
+                       :throttled?,
+                       :tracked?
 end
