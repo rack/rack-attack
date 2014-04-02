@@ -76,9 +76,9 @@ class Rack::Attack
   end
 
   # Set defaults
-  @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blacklisted_response ||= lambda {|env| [403, {}, ["Forbidden\n"]] }
-  @throttled_response   ||= lambda {|env|
+  @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+  @blacklisted_response = lambda {|env| [403, {}, ["Forbidden\n"]] }
+  @throttled_response   = lambda {|env|
     retry_after = env['rack.attack.match_data'][:period] rescue nil
     [429, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
   }
