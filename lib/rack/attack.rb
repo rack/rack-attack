@@ -10,7 +10,8 @@ class Rack::Attack
   autoload :Track,     'rack/attack/track'
   autoload :StoreProxy,'rack/attack/store_proxy'
   autoload :Fail2Ban,  'rack/attack/fail2ban'
-  autoload :Allow2Ban,  'rack/attack/allow2ban'
+  autoload :Allow2Ban, 'rack/attack/allow2ban'
+  autoload :Request,   'rack/attack/request'
 
   class << self
 
@@ -88,7 +89,7 @@ class Rack::Attack
   end
 
   def call(env)
-    req = Rack::Request.new(env)
+    req = Rack::Attack::Request.new(env)
 
     if whitelisted?(req)
       @app.call(env)
