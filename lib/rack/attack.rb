@@ -1,5 +1,7 @@
 require 'rack'
-module Rack::Attack
+require 'forwardable'
+
+class Rack::Attack
   autoload :Cache,     'rack/attack/cache'
   autoload :Check,     'rack/attack/check'
   autoload :Throttle,  'rack/attack/throttle'
@@ -34,35 +36,6 @@ module Rack::Attack
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
-
-    def new(app)
-      @app = app
-
-      # Set defaults
-      @notifier ||= ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-      @blacklisted_response ||= lambda {|env| [403, {}, ["Forbidden\n"]] }
-      @throttled_response   ||= lambda {|env|
-        retry_after = env['rack.attack.match_data'][:period] rescue nil
-        [429, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
-      }
-
-      self
-    end
-
-    def call(env)
-      req = Rack::Request.new(env)
-
-      if whitelisted?(req)
-        @app.call(env)
-      elsif blacklisted?(req)
-        blacklisted_response[env]
-      elsif throttled?(req)
-        throttled_response[env]
-      else
-        tracked?(req)
-        @app.call(env)
-      end
-    end
 
     def whitelisted?(req)
       whitelists.any? do |name, whitelist|
@@ -101,4 +74,37 @@ module Rack::Attack
     end
 
   end
+
+  # Set defaults
+  @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+  @blacklisted_response = lambda {|env| [403, {}, ["Forbidden\n"]] }
+  @throttled_response   = lambda {|env|
+    retry_after = env['rack.attack.match_data'][:period] rescue nil
+    [429, {'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+  }
+
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    req = Rack::Request.new(env)
+
+    if whitelisted?(req)
+      @app.call(env)
+    elsif blacklisted?(req)
+      self.class.blacklisted_response[env]
+    elsif throttled?(req)
+      self.class.throttled_response[env]
+    else
+      tracked?(req)
+      @app.call(env)
+    end
+  end
+
+  extend Forwardable
+  def_delegators self, :whitelisted?,
+                       :blacklisted?,
+                       :throttled?,
+                       :tracked?
 end

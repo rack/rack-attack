@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Allow2Ban < Fail2Ban
       class << self
         protected

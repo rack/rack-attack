@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Cache
 
       attr_accessor :prefix

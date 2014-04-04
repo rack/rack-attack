@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Throttle
       MANDATORY_OPTIONS = [:limit, :period]
       attr_reader :name, :limit, :period, :block
