@@ -3,6 +3,7 @@
 ## master (unreleased)
  * Implement proxy for Dalli with better Memcachier support. (thanks @hakanensari)
  * Rack::Attack.new returns an instance to ease testing (thanks @stevehodgkiss)
+ * Use Rack::Attack::Request subclass of Rack::Request for easier extending (thanks @tristandunn)
 
 ## v3.0.0 - 15 March 2014
  * Change default blacklisted response to 403 Forbidden (thanks @carpodaster).
