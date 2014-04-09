@@ -66,7 +66,7 @@ module Rack
       class DalliProxy < SimpleDelegator
         def initialize(client)
           super(client)
-          stub_with_method_on_older_clients
+          stub_with_method_if_missing
         end
 
         def read(key)
@@ -99,10 +99,11 @@ module Rack
 
         private
 
-        # So we support Dalli < 2.7.0
-        def stub_with_method_on_older_clients
+        def stub_with_method_if_missing
           unless __getobj__.respond_to?(:with)
-            def __getobj__.with; yield self; end
+            class << self
+              def with; yield __getobj__; end
+            end
           end
         end
 
