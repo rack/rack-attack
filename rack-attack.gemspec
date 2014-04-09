@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
+  s.add_development_dependency 'appraisal'
   s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency 'redis-activesupport'
   s.add_development_dependency 'dalli'
