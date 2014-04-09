@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Fail2Ban
       class << self
         def filter(discriminator, options)

@@ -1,5 +1,5 @@
 module Rack
-  module Attack
+  class Attack
     class Blacklist < Check
       def initialize(name, block)
         super

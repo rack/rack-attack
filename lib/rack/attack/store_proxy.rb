@@ -1,7 +1,7 @@
 require 'delegate'
 
 module Rack
-  module Attack
+  class Attack
     class StoreProxy
       def self.build(store)
         # RedisStore#increment needs different behavior, so detect that
