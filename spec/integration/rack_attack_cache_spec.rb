@@ -143,4 +143,11 @@ describe Rack::Attack::Cache do
     end
   end
 
+  describe "given an older Dalli::Client" do
+    it "should stub #with" do
+      proxy = Rack::Attack::StoreProxy::DalliProxy.new(Class.new)
+      proxy.must_respond_to :with
+    end
+  end
+
 end
