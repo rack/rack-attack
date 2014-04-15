@@ -34,3 +34,7 @@ class MiniTest::Spec
     end
   end
 end
+
+class Minitest::SharedExamples < Module
+  include Minitest::Spec::DSL
+end
