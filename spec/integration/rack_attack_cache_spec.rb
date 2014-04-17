@@ -30,7 +30,7 @@ describe Rack::Attack::Cache do
     describe "with #{store.class}" do
 
       before {
-        @cache ||= Rack::Attack::Cache.new
+        @cache = Rack::Attack::Cache.new
         @key = "rack::attack:cache-test-key"
         @expires_in = 1
         @cache.store = store
