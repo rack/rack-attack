@@ -36,6 +36,17 @@ Or for Rackup files:
 use Rack::Attack
 ```
 
+Add a `rack-attack.rb` file to `config/initalizers/`:
+```ruby
+# In config/initializers/rack-attack.rb
+module Rack::Attack
+  # configuration...
+end
+```
+
+*Tip:* The example in the wiki is a great way to get started:
+[Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
+
 Optionally configure the cache store for throttling:
 
 ```ruby
