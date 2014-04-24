@@ -1,3 +1,5 @@
 Gemfile.lock
+bin
 .bundle
 *.gem
+*.gemfile.lock
