@@ -13,7 +13,7 @@ See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hac
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
 
 
-## Installation
+## Getting started
 
 Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to you Gemfile with bundler:
 
@@ -40,7 +40,7 @@ Add a `rack-attack.rb` file to `config/initalizers/`:
 ```ruby
 # In config/initializers/rack-attack.rb
 module Rack::Attack
-  # configuration...
+  # your custom configuration...
 end
 ```
 
