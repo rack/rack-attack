@@ -18,8 +18,8 @@ describe Rack::Attack::Cache do
   require 'connection_pool'
   cache_stores = [
     ActiveSupport::Cache::MemoryStore.new,
-    ActiveSupport::Cache::DalliStore.new("localhost"),
-    ActiveSupport::Cache::RedisStore.new("localhost"),
+    ActiveSupport::Cache::DalliStore.new("127.0.0.1"),
+    ActiveSupport::Cache::RedisStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
     Redis::Store.new
