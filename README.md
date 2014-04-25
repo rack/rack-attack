@@ -1,5 +1,5 @@
 # Rack::Attack!!!
-*A DSL for blocking & throttling abusive clients*
+*Rack middleware for blocking & throttling abusive requests*
 
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
