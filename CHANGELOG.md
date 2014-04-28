@@ -1,8 +1,11 @@
 # Changlog
 
 ## master (unreleased)
+
+## v4.0.0 - 28 April 2014
  * Implement proxy for Dalli with better Memcachier support. (thanks @hakanensari)
- * Rack::Attack.new returns an instance to ease testing (thanks @stevehodgkiss)
+ * Rack::Attack.new returns an instance to ease testing. (thanks @stevehodgkiss)
+   [Changing a module to a class is not backwards compatible, hence v4.0.0.]
  * Use Rack::Attack::Request subclass of Rack::Request for easier extending (thanks @tristandunn)
  * Test more dalli versions.
 
