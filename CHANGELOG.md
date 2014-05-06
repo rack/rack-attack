@@ -1,6 +1,7 @@
 # Changlog
 
 ## master (unreleased)
+ * Add throttle discriminator to rack env (thanks @blahed)
 
 ## v4.0.0 - 28 April 2014
  * Implement proxy for Dalli with better Memcachier support. (thanks @hakanensari)
