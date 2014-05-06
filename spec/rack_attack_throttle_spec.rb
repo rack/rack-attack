@@ -32,6 +32,7 @@ describe 'Rack::Attack.throttle' do
       last_request.env['rack.attack.matched'].must_equal 'ip/sec'
       last_request.env['rack.attack.match_type'].must_equal :throttle
       last_request.env['rack.attack.match_data'].must_equal({:count => 2, :limit => 1, :period => @period})
+      last_request.env['rack.attack.match_discriminator'].must_equal('1.2.3.4')
     end
     it 'should set a Retry-After header' do
       last_response.headers['Retry-After'].must_equal @period.to_s
