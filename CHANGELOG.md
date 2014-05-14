@@ -1,6 +1,8 @@
 # Changlog
 
 ## master (unreleased)
+
+## v4.0.1 - 14 May 2014
  * Add throttle discriminator to rack env (thanks @blahed)
 
 ## v4.0.0 - 28 April 2014
