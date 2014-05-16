@@ -8,6 +8,7 @@ class Rack::Attack
   autoload :Whitelist,       'rack/attack/whitelist'
   autoload :Blacklist,       'rack/attack/blacklist'
   autoload :Track,           'rack/attack/track'
+  autoload :Meter,           'rack/attack/meter'
   autoload :StoreProxy,      'rack/attack/store_proxy'
   autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
   autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
@@ -35,10 +36,15 @@ class Rack::Attack
       self.tracks[name] = Track.new(name, block)
     end
 
+    def meter(name, options, &block)
+      self.meters[name] = Meter.new(name, options, block)
+    end
+
     def whitelists; @whitelists ||= {}; end
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
+    def meters;     @meters     ||= {}; end
 
     def whitelisted?(req)
       whitelists.any? do |name, whitelist|
@@ -64,6 +70,12 @@ class Rack::Attack
       end
     end
 
+    def metered?(req)
+      meters.any? do |name, meter|
+        meter[req]
+      end
+    end
+
     def instrument(req)
       notifier.instrument('rack.attack', req) if notifier
     end
@@ -73,7 +85,7 @@ class Rack::Attack
     end
 
     def clear!
-      @whitelists, @blacklists, @throttles = {}, {}, {}
+      @whitelists, @blacklists, @throttles, @meters = {}, {}, {}, {}
     end
 
   end
@@ -99,6 +111,8 @@ class Rack::Attack
       self.class.blacklisted_response[env]
     elsif throttled?(req)
       self.class.throttled_response[env]
+    elsif metered?(req)
+      @app.call(env)
     else
       tracked?(req)
       @app.call(env)
@@ -109,5 +123,6 @@ class Rack::Attack
   def_delegators self, :whitelisted?,
                        :blacklisted?,
                        :throttled?,
-                       :tracked?
+                       :tracked?,
+                       :metered?
 end

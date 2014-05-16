@@ -76,6 +76,8 @@ def call(env)
     blacklisted_response[env]
   elsif throttled?(req)
     throttled_response[env]
+  elsif metered?(req)
+    @app.call(env)
   else
     tracked?(req)
     @app.call(env)
@@ -87,9 +89,14 @@ end
 
 `Rack::Attack.track` doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.
 
+## About Meters
+
+`Rack::Attack.meter` doesn't affect request processing otherwise they work like throttles. Meters are an easy way to log and measure
+production requests matching potential throttle limits to determine if they are appropriate before the throttle is enabled.
+
 ## Usage
 
-Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
+Define whitelists, blacklists, throttles, meters and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
 these go in an initializer in `config/initializers/`.
 A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
 
@@ -157,7 +164,9 @@ end
 ```
 
 
-### Throttles
+### Throttles/Meters
+
+Use meter instead of throttle to log and measure throttle limits before enabling request throttling.
 
 ```ruby
 # Throttle requests to 5 requests per second per ip
