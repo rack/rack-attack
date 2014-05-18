@@ -39,7 +39,7 @@ use Rack::Attack
 Add a `rack-attack.rb` file to `config/initalizers/`:
 ```ruby
 # In config/initializers/rack-attack.rb
-module Rack::Attack
+class Rack::Attack
   # your custom configuration...
 end
 ```
