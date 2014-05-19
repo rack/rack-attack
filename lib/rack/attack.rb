@@ -73,7 +73,7 @@ class Rack::Attack
     end
 
     def clear!
-      @whitelists, @blacklists, @throttles = {}, {}, {}
+      @whitelists, @blacklists, @throttles, @tracks = {}, {}, {}, {}
     end
 
   end
