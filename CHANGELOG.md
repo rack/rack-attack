@@ -1,6 +1,7 @@
 # Changlog
 
 ## master (unreleased)
+ - Rack::Attack.clear! resets tracks
 
 ## v4.0.1 - 14 May 2014
  * Add throttle discriminator to rack env (thanks @blahed)
