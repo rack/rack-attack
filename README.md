@@ -188,7 +188,7 @@ end
 ### Tracks
 
 ```ruby
-# Track requests from a special user agent
+# Track requests from a special user agent, supports limit and period options like throttle.
 Rack::Attack.track("special_agent") do |req|
   req.user_agent == "SpecialAgent"
 end
