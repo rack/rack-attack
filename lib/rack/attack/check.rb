@@ -2,9 +2,9 @@ module Rack
   class Attack
     class Check
       attr_reader :name, :block, :type
-      def initialize(name, block)
+      def initialize(name, options = {}, block)
         @name, @block = name, block
-        @type = nil
+        @type = options.fetch(:type, nil)
       end
 
       def [](req)

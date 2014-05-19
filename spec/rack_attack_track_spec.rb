@@ -41,4 +41,18 @@ describe 'Rack::Attack.track' do
       Counter.check.must_equal 2
     end
   end
+
+  describe "without limit and period options" do
+    it "should delegate [] to check" do
+      tracker = Rack::Attack.track("homepage") { |req| req.path == "/"}
+      tracker.checker.class.must_equal Rack::Attack::Check
+    end
+  end
+
+  describe "with limit and period options" do
+    it "should delegate [] method to throttle" do
+      tracker = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/"}
+      tracker.checker.class.must_equal Rack::Attack::Throttle
+    end
+  end
 end

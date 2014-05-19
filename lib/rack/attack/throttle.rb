@@ -2,7 +2,7 @@ module Rack
   class Attack
     class Throttle
       MANDATORY_OPTIONS = [:limit, :period]
-      attr_reader :name, :limit, :period, :block
+      attr_reader :name, :limit, :period, :block, :type
       def initialize(name, options, block)
         @name, @block = name, block
         MANDATORY_OPTIONS.each do |opt|
@@ -10,6 +10,7 @@ module Rack
         end
         @limit  = options[:limit]
         @period = options[:period].to_i
+        @type   = options.fetch(:type, :throttle)
       end
 
       def cache
@@ -34,7 +35,7 @@ module Rack
           if throttled
             req.env['rack.attack.matched']             = name
             req.env['rack.attack.match_discriminator'] = discriminator
-            req.env['rack.attack.match_type']          = :throttle
+            req.env['rack.attack.match_type']          = type
             req.env['rack.attack.match_data']          = data
             Rack::Attack.instrument(req)
           end

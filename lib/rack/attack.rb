@@ -31,8 +31,8 @@ class Rack::Attack
       self.throttles[name] = Throttle.new(name, options, block)
     end
 
-    def track(name, &block)
-      self.tracks[name] = Track.new(name, block)
+    def track(name, options = {}, &block)
+      self.tracks[name] = Track.new(name, options, block)
     end
 
     def whitelists; @whitelists ||= {}; end
