@@ -1,6 +1,7 @@
 # Changlog
 
 ## master (unreleased)
+ - Default throttled/blacklist responses have Content-Type: text/plain
  - Rack::Attack.clear! resets tracks
 
 ## v4.0.1 - 14 May 2014
