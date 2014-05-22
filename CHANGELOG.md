@@ -1,7 +1,10 @@
 # Changlog
 
 ## master (unreleased)
- - Default throttled/blacklist responses have Content-Type: text/plain
+## v4.1.0 - 22 May 2014
+ - Tracks take an optional limit and period to only notify once a threshold
+   is reached (similar to throttles). Thanks @chiliburger!
+ - Default throttled & blacklist responses have Content-Type: text/plain
  - Rack::Attack.clear! resets tracks
 
 ## v4.0.1 - 14 May 2014
