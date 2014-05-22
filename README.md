@@ -188,8 +188,13 @@ end
 ### Tracks
 
 ```ruby
-# Track requests from a special user agent
+# Track requests from a special user agent.
 Rack::Attack.track("special_agent") do |req|
+  req.user_agent == "SpecialAgent"
+end
+
+# Supports optional limit and period, triggers the notification only when the limit is reached.
+Rack::Attack.track("special_agent", :limit 6, :period => 60.seconds) do |req|
   req.user_agent == "SpecialAgent"
 end
 
