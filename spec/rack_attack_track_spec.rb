@@ -43,16 +43,16 @@ describe 'Rack::Attack.track' do
   end
 
   describe "without limit and period options" do
-    it "should delegate [] to check" do
+    it "should assign the track filter to a Check instance" do
       tracker = Rack::Attack.track("homepage") { |req| req.path == "/"}
-      tracker.checker.class.must_equal Rack::Attack::Check
+      tracker.filter.class.must_equal Rack::Attack::Check
     end
   end
 
   describe "with limit and period options" do
-    it "should delegate [] method to throttle" do
+    it "should assign the track filter to a Throttle instance" do
       tracker = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/"}
-      tracker.checker.class.must_equal Rack::Attack::Throttle
+      tracker.filter.class.must_equal Rack::Attack::Throttle
     end
   end
 end

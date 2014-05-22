@@ -3,19 +3,19 @@ module Rack
     class Track
       extend Forwardable
 
-      attr_reader :checker
+      attr_reader :filter
 
       def initialize(name, options = {}, block)
         options[:type] = :track
 
         if options[:limit] && options[:period]
-          @checker = Throttle.new(name, options, block)
+          @filter = Throttle.new(name, options, block)
         else
-          @checker = Check.new(name, options, block)
+          @filter = Check.new(name, options, block)
         end
       end
 
-      def_delegator :@checker, :[], :[]
+      def_delegator :@filter, :[]
     end
   end
 end
