@@ -57,7 +57,7 @@ The algorithm is actually more concise in code: See [Rack::Attack.call](https://
 
 ```ruby
 def call(env)
-  req = Rack::Request.new(env)
+  req = Rack::Attack::Request.new(env)
 
   if whitelisted?(req)
     @app.call(env)
@@ -71,6 +71,10 @@ def call(env)
   end
 end
 ```
+
+Note: `Rack::Attack::Request` is just a subclass of `Rack::Attack` so that you
+can cleanly [monkey patch helper methods] onto the
+[request object](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack/request.rb).
 
 ## About Tracks
 
