@@ -14,6 +14,7 @@ class Rack::Attack
   autoload :Fail2Ban,        'rack/attack/fail2ban'
   autoload :Allow2Ban,       'rack/attack/allow2ban'
   autoload :Request,         'rack/attack/request'
+  autoload :Response,        'rack/attack/response'
 
   class << self
 
@@ -35,10 +36,15 @@ class Rack::Attack
       self.tracks[name] = Track.new(name, options, block)
     end
 
+    def track_response(name, options = {}, &block)
+      self.response_tracks[name] = Track.new(name, options, block)
+    end
+
     def whitelists; @whitelists ||= {}; end
     def blacklists; @blacklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
+    def response_tracks;     @response_tracks     ||= {}; end
 
     def whitelisted?(req)
       whitelists.any? do |name, whitelist|
@@ -64,6 +70,12 @@ class Rack::Attack
       end
     end
 
+    def tracked_response?(res)
+      response_tracks.each_value do |tracker|
+        tracker[res]
+      end
+    end
+
     def instrument(req)
       notifier.instrument('rack.attack', req) if notifier
     end
@@ -73,7 +85,7 @@ class Rack::Attack
     end
 
     def clear!
-      @whitelists, @blacklists, @throttles, @tracks = {}, {}, {}, {}
+      @whitelists, @blacklists, @throttles, @tracks, @response_tracks = {}, {}, {}, {}, {}
     end
 
   end
@@ -101,7 +113,9 @@ class Rack::Attack
       self.class.throttled_response[env]
     else
       tracked?(req)
-      @app.call(env)
+      res = Rack::Attack::Response.new(@app.call(env), req.env)
+      tracked_response?(res)
+      res.finish
     end
   end
 
@@ -109,5 +123,6 @@ class Rack::Attack
   def_delegators self, :whitelisted?,
                        :blacklisted?,
                        :throttled?,
-                       :tracked?
+                       :tracked?,
+                       :tracked_response?
 end
