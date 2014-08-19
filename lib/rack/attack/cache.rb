@@ -16,8 +16,17 @@ module Rack
 
       def count(unprefixed_key, period)
         epoch_time = Time.now.to_i
-        expires_in = period - (epoch_time % period)
-        key = "#{prefix}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
+        if period.is_a? Range
+          expires_in = period.end - epoch_time
+          # Manually create string representation to force cast both ends to int
+          # (instead of using Range#to_s)
+          period_key = "#{period.begin.to_i}..#{period.end.to_i}"
+        else
+          expires_in = period - (epoch_time % period)
+          period_key = (epoch_time/period).to_i
+        end
+
+        key = "#{prefix}:#{period_key}:#{unprefixed_key}"
         do_count(key, expires_in)
       end
 
