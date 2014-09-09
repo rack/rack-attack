@@ -16,7 +16,8 @@ module Rack
 
       def count(unprefixed_key, period)
         epoch_time = Time.now.to_i
-        expires_in = period - (epoch_time % period)
+        # Add 1 to expires_in to avoid timing error: http://git.io/i1PHXA
+        expires_in = period - (epoch_time % period) + 1
         key = "#{prefix}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
         do_count(key, expires_in)
       end
