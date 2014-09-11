@@ -1,6 +1,8 @@
 # Changlog
 
 ## master (unreleased)
+
+## v4.1.1 - 11 Sept 2014
  - Fix a race condition in throttles that could allow more requests than intended.
 
 ## v4.1.0 - 22 May 2014
