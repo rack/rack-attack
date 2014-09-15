@@ -26,6 +26,11 @@ module Rack
           cache.read("#{key_prefix}:ban:#{discriminator}") ? true : false
         end
 
+        def banned_until(discriminator)
+          time = cache.ttl("#{key_prefix}:ban:#{discriminator}")
+          time.seconds.from_now if time && time >= 0
+        end
+
         protected
         def key_prefix
           'fail2ban'
