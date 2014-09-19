@@ -9,7 +9,7 @@ module Rack
           raise ArgumentError.new("Must pass #{opt.inspect} option") unless options[opt]
         end
         @limit  = options[:limit]
-        @period = options[:period].to_i
+        @period = options[:period].respond_to?(:call) ? options[:period] : options[:period].to_i
         @type   = options.fetch(:type, :throttle)
       end
 
@@ -21,12 +21,14 @@ module Rack
         discriminator = block[req]
         return false unless discriminator
 
-        key = "#{name}:#{discriminator}"
-        count = cache.count(key, period)
-        current_limit = limit.respond_to?(:call) ? limit.call(req) : limit
+        current_period = period.respond_to?(:call) ? period.call(req) : period
+        current_limit  = limit.respond_to?(:call) ? limit.call(req) : limit
+        key            = "#{name}:#{discriminator}"
+        count          = cache.count(key, current_period)
+
         data = {
           :count => count,
-          :period => period,
+          :period => current_period,
           :limit => current_limit
         }
         (req.env['rack.attack.throttle_data'] ||= {})[name] = data
