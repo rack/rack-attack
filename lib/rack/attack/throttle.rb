@@ -17,12 +17,16 @@ module Rack
         Rack::Attack.cache
       end
 
+      def get_count(discriminator)
+        key = "#{name}:#{discriminator}"
+        cache.count(key, period)
+      end
+
       def [](req)
         discriminator = block[req]
         return false unless discriminator
 
-        key = "#{name}:#{discriminator}"
-        count = cache.count(key, period)
+        count = get_count(discriminator)
         current_limit = limit.respond_to?(:call) ? limit.call(req) : limit
         data = {
           :count => count,
