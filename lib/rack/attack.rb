@@ -5,6 +5,7 @@ class Rack::Attack
   autoload :Cache,           'rack/attack/cache'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
+  autoload :ConditionalThrottle,        'rack/attack/conditional_throttle'
   autoload :Whitelist,       'rack/attack/whitelist'
   autoload :Blacklist,       'rack/attack/blacklist'
   autoload :Track,           'rack/attack/track'
@@ -19,6 +20,10 @@ class Rack::Attack
 
     attr_accessor :notifier, :blacklisted_response, :throttled_response
 
+    def increment_throttle_counter(name, discriminator)
+      self.throttles[name].increment_counter(discriminator)
+    end
+
     def whitelist(name, &block)
       self.whitelists[name] = Whitelist.new(name, block)
     end
@@ -29,6 +34,10 @@ class Rack::Attack
 
     def throttle(name, options, &block)
       self.throttles[name] = Throttle.new(name, options, block)
+    end
+
+    def conditional_throttle(name, options, &block)
+      self.throttles[name] = ConditionalThrottle.new(name, options, block)
     end
 
     def track(name, options = {}, &block)

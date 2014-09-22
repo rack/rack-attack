@@ -12,6 +12,13 @@ module Rack
           super(store)
         end
 
+        def raw_read(key)
+          #https://github.com/redis-store/redis-store/issues/96
+          # if raw not specified results in 'marshal data too short' error
+          self.get(key, raw: true)
+        rescue Redis::BaseError
+        end
+
         def read(key)
           self.get(key)
         rescue Redis::BaseError

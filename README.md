@@ -189,6 +189,18 @@ Rack::Attack.throttle('req/ip', :limit => limit_based_on_proc, :period => 1.seco
 end
 ```
 
+### Conditional Throttles
+# Throttle failed logins
+ Rack::Attack.conditional_throttle('login', :limit =>5, :period => 1.hour) do |req|
+ # If the return value is truthy, the cache key for the return value is checked to determine
+ # whether to throttle. The value for the key is not incremented
+
+ # To increment the value returned by key
+ To increment counter
+ if(failed_login)
+     Rack::Attack.increment_throttle_counter('login', request.params['...
+ end
+
 ### Tracks
 
 ```ruby

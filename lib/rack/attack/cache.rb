@@ -14,12 +14,19 @@ module Rack
         @store = StoreProxy.build(store)
       end
 
+      def get_count(unprefixed_key, period)
+        if store.class == Rack::Attack::StoreProxy::RedisStoreProxy
+          store.raw_read(build_key(unprefixed_key, period))
+        else
+          store.read(build_key(unprefixed_key, period))
+        end
+      end
+
       def count(unprefixed_key, period)
         epoch_time = Time.now.to_i
         # Add 1 to expires_in to avoid timing error: http://git.io/i1PHXA
         expires_in = period - (epoch_time % period) + 1
-        key = "#{prefix}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
-        do_count(key, expires_in)
+        do_count(build_key(unprefixed_key, period), expires_in)
       end
 
       def read(unprefixed_key)
@@ -41,6 +48,10 @@ module Rack
         result || 1
       end
 
+      def build_key(unprefixed_key, period)
+        epoch_time = Time.now.to_i
+        "#{prefix}:#{(epoch_time/period).to_i}:#{unprefixed_key}"
+      end
     end
   end
 end
