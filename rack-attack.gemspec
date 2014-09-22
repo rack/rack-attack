@@ -5,7 +5,7 @@ $:.unshift lib unless $:.include?(lib)
 require 'rack/attack/version'
 
 Gem::Specification.new do |s|
-  s.name = 'rack-attack'
+  s.name = 'wkimeria-rack-attack'
   s.version = Rack::Attack::VERSION
   s.license = 'MIT'
 
