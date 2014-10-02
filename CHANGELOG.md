@@ -1,6 +1,8 @@
 # Changlog
 
 ## master (unreleased)
+ - Throttle's `period` argument now takes a proc as well as a number (thanks @gsamokovarov)
+ - Invoke the `#call` method on `blacklist_response` and `throttle_response` instead of `#[]`, as per the Rack spec. (thanks @gsamokovarov)
 
 ## v4.1.1 - 11 Sept 2014
  - Fix a race condition in throttles that could allow more requests than intended.
