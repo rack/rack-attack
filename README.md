@@ -73,9 +73,9 @@ def call(env)
   if whitelisted?(req)
     @app.call(env)
   elsif blacklisted?(req)
-    blacklisted_response[env]
+    self.class.blacklisted_response.call(env)
   elsif throttled?(req)
-    throttled_response[env]
+    self.class.throttled_response.call(env)
   else
     tracked?(req)
     @app.call(env)
