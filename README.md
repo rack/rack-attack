@@ -36,7 +36,7 @@ Or for Rackup files:
 use Rack::Attack
 ```
 
-Add a `rack-attack.rb` file to `config/initalizers/`:
+Add a `rack_attack.rb` file to `config/initalizers/`:
 ```ruby
 # In config/initializers/rack-attack.rb
 class Rack::Attack
