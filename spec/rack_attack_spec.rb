@@ -9,7 +9,9 @@ describe 'Rack::Attack' do
       Rack::Attack.blacklist("ip #{@bad_ip}") {|req| req.ip == @bad_ip }
     end
 
-    it('has a blacklist') { Rack::Attack.blacklists.key?("ip #{@bad_ip}") }
+    it('has a blacklist') {
+      Rack::Attack.blacklists.key?("ip #{@bad_ip}").must_equal true
+    }
 
     describe "a bad request" do
       before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
