@@ -95,7 +95,7 @@ can cleanly monkey patch helper methods onto the
 
 Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
 these go in an initializer in `config/initializers/`.
-A [Rack::Request](http://rack.rubyforge.org/doc/classes/Rack/Request.html) object is passed to the block (named 'req' in the examples).
+A [Rack::Request](https://github.com/rack/rack/blob/master/lib/rack/request.rb) object is passed to the block (named 'req' in the examples).
 
 ### Whitelists
 
