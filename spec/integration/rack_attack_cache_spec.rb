@@ -80,6 +80,15 @@ describe Rack::Attack::Cache do
           @cache.read("cache-test-key").must_equal "foobar"
         end
       end
+
+      describe "delete" do
+        it "must delete the value" do
+          store.write(@key, "foobar", :expires_in => @expires_in)
+          @cache.read('cache-test-key').must_equal "foobar"
+          store.delete(@key)
+          @cache.read('cache-test-key').must_equal nil
+        end
+      end
     end
 
   end
