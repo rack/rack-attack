@@ -1,5 +1,9 @@
 # Changlog
 
+## master (unreleased)
+
+  - Redis proxy passes `raw: true` (thanks @stanhu)
+
 ## v4.2.0 - 26 Oct 2014
  - Throttle's `period` argument now takes a proc as well as a number (thanks @gsamokovarov)
  - Invoke the `#call` method on `blacklist_response` and `throttle_response` instead of `#[]`, as per the Rack spec. (thanks @gsamokovarov)
