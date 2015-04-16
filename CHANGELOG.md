@@ -3,6 +3,7 @@
 ## master (unreleased)
 
   - Redis proxy passes `raw: true` (thanks @stanhu)
+  - Redis supports `delete` method to be consistent with Dalli (thanks @stanhu)
 
 ## v4.2.0 - 26 Oct 2014
  - Throttle's `period` argument now takes a proc as well as a number (thanks @gsamokovarov)
