@@ -36,6 +36,10 @@ module Rack
         rescue Redis::BaseError
         end
 
+        def delete(key, options={})
+          self.del(key)
+        rescue Redis::BaseError
+        end
       end
     end
   end
