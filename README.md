@@ -199,7 +199,7 @@ Rack::Attack.track("special_agent") do |req|
 end
 
 # Supports optional limit and period, triggers the notification only when the limit is reached.
-Rack::Attack.track("special_agent", :limit 6, :period => 60.seconds) do |req|
+Rack::Attack.track("special_agent", :limit => 6, :period => 60.seconds) do |req|
   req.user_agent == "SpecialAgent"
 end
 
