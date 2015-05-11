@@ -58,7 +58,27 @@ describe 'Rack::Attack.Fail2Ban' do
           key = "rack::attack:fail2ban:ban:1.2.3.4"
           @cache.store.read(key).must_equal 1
         end
+      end
 
+      describe 'reset after success' do
+        before do
+          get '/?test=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4'
+          Rack::Attack::Fail2Ban.reset('1.2.3.4', @f2b_options)
+          get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+        end
+
+        it 'succeeds' do
+          last_response.status.must_equal 200
+        end
+
+        it 'resets fail count' do
+          key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+          @cache.store.read(key).must_equal nil
+        end
+
+        it 'IP is not banned' do
+          Rack::Attack::Fail2Ban.banned?('1.2.3.4').must_equal false
+        end
       end
     end
   end
