@@ -15,7 +15,7 @@ See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hac
 
 ## Getting started
 
-Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to you Gemfile with bundler:
+Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to your Gemfile with bundler:
 
 ```ruby
 # In your Gemfile
@@ -36,7 +36,7 @@ Or for Rackup files:
 use Rack::Attack
 ```
 
-Add a `rack-attack.rb` file to `config/initalizers/`:
+Add a `rack-attack.rb` file to `config/initializers/`:
 ```ruby
 # In config/initializers/rack-attack.rb
 class Rack::Attack
