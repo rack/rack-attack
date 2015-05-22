@@ -15,6 +15,17 @@ module Rack
           end
         end
 
+        def reset(discriminator, options)
+          findtime = options[:findtime] or raise ArgumentError, "Must pass findtime option"
+          cache.reset_count("#{key_prefix}:count:#{discriminator}", findtime)
+          # Clear ban flag just in case it's there
+          cache.delete("#{key_prefix}:ban:#{discriminator}")
+        end
+
+        def banned?(discriminator)
+          cache.read("#{key_prefix}:ban:#{discriminator}") ? true : false
+        end
+
         protected
         def key_prefix
           'fail2ban'
@@ -33,10 +44,6 @@ module Rack
         private
         def ban!(discriminator, bantime)
           cache.write("#{key_prefix}:ban:#{discriminator}", 1, bantime)
-        end
-
-        def banned?(discriminator)
-          cache.read("#{key_prefix}:ban:#{discriminator}")
         end
 
         def cache
