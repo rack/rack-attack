@@ -1,6 +1,9 @@
 require_relative '../spec_helper'
 
 describe Rack::Attack::Cache do
+
+  # A convenience method for deleting a key from cache.
+  # Slightly differnet than @cache.delete, which adds a prefix.
   def delete(key)
     if @cache.store.respond_to?(:delete)
       @cache.store.delete(key)
