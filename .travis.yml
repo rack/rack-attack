@@ -10,6 +10,7 @@ gemfile:
   - gemfiles/activesupport3.2.gemfile
   - gemfiles/activesupport4.0.gemfile
   - gemfiles/activesupport4.1.gemfile
+  - gemfiles/activesupport4.2.gemfile
   - gemfiles/dalli1.1.gemfile
   - gemfiles/dalli2.gemfile
 
