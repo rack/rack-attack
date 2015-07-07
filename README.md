@@ -283,6 +283,12 @@ It is impractical if not impossible to block abusive clients completely.
 Rack::Attack aims to let developers quickly mitigate abusive requests and rely
 less on short-term, one-off hacks to block a particular attack.
 
+## Contributing
+
+Pull requests and issues are greatly appreciated. This project is intended to be
+a safe, welcoming space for collaboration, and contributors are expected to
+adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Mailing list
 
 New releases of Rack::Attack are announced on
