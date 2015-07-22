@@ -76,6 +76,17 @@ class Rack::Attack
       @whitelists, @blacklists, @throttles, @tracks = {}, {}, {}, {}
     end
 
+    def disable!
+      @disabled = true
+    end
+
+    def enable!
+      @disabled = false
+    end
+
+    def disabled?
+      !!@disabled
+    end
   end
 
   # Set defaults
@@ -91,6 +102,8 @@ class Rack::Attack
   end
 
   def call(env)
+    return @app.call(env) if disabled?
+
     req = Rack::Attack::Request.new(env)
 
     if whitelisted?(req)
@@ -109,5 +122,6 @@ class Rack::Attack
   def_delegators self, :whitelisted?,
                        :blacklisted?,
                        :throttled?,
-                       :tracked?
+                       :tracked?,
+                       :disabled?
 end
