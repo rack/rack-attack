@@ -4,7 +4,7 @@
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
-Throttle state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
+Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
 
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
@@ -47,13 +47,13 @@ end
 *Tip:* The example in the wiki is a great way to get started:
 [Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
 
-Optionally configure the cache store for throttling:
+Optionally configure the cache store for throttling or fail2ban filtering:
 
 ```ruby
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
 ```
 
-Note that `Rack::Attack.cache` is only used for throttling; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
+Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
 ## How it works
 
@@ -128,17 +128,21 @@ end
 `Fail2Ban.filter` can be used within a blacklist to block all requests from misbehaving clients.
 This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
 See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
-how the parameters work.
+how the parameters work.  All fail2ban filters share the same match counter, using one filter per app is recommended.
 
 ```ruby
-# Block requests containing '/etc/password' in the params.
+# Block suspicious requests for '/etc/password' or wordpress specific paths.
 # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
 Rack::Attack.blacklist('fail2ban pentesters') do |req|
   # `filter` returns truthy value if request fails, or if it's from a previously banned IP
   # so the request is blocked
   Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
-    # The count for the IP is incremented if the return value is truthy.
-    CGI.unescape(req.query_string) =~ %r{/etc/passwd}
+    # The count for the IP is incremented if the return value is truthy
+    CGI.unescape(req.query_string) =~ %r{/etc/passwd} || 
+    req.path.include?('/etc/passwd') ||
+    req.path.include?('wp-admin') || 
+    req.path.include?('wp-login')
+    
   end
 end
 ```
