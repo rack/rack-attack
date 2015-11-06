@@ -128,7 +128,7 @@ end
 `Fail2Ban.filter` can be used within a blacklist to block all requests from misbehaving clients.
 This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
 See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
-how the parameters work.  All fail2ban filters share the same match counter, using one filter per app is recommended.
+how the parameters work.  For multiple filters, be sure to put each filter in a separate blacklist and use a unique discriminator for each fail2ban filter.
 
 ```ruby
 # Block suspicious requests for '/etc/password' or wordpress specific paths.
@@ -136,7 +136,7 @@ how the parameters work.  All fail2ban filters share the same match counter, usi
 Rack::Attack.blacklist('fail2ban pentesters') do |req|
   # `filter` returns truthy value if request fails, or if it's from a previously banned IP
   # so the request is blocked
-  Rack::Attack::Fail2Ban.filter(req.ip, :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
+  Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
     # The count for the IP is incremented if the return value is truthy
     CGI.unescape(req.query_string) =~ %r{/etc/passwd} || 
     req.path.include?('/etc/passwd') ||
