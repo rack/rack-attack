@@ -143,6 +143,8 @@ Rack::Attack.blacklist('fail2ban pentesters') do |req|
 end
 ```
 
+Note that `Fail2Ban` filters are not automatically scoped to the blacklist, so when using multiple filters in an application the scoping must be added to the discriminator e.g. `"pentest:#{req.ip}"`.
+
 #### Allow2Ban
 `Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
 clients until such time as they reach maxretry at which they are cut off as per normal.
