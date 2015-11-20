@@ -1,6 +1,7 @@
 # Changlog
 
 ## master (unreleased)
+  - Remove support for ruby 1.9.x
 
 ## v4.3.0 - 22 May 2015
 
