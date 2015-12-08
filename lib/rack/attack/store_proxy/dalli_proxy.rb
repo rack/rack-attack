@@ -12,7 +12,7 @@ module Rack
           if defined?(::ConnectionPool) && store.is_a?(::ConnectionPool)
             store.with { |conn| conn.is_a?(::Dalli::Client) }
           else
-            store.is_a?(::Dalli::Client)
+            store.is_a?(::Dalli::Client) || store.is_a?(::ActiveSupport::Cache::MemCacheStore)
           end
         end
 
