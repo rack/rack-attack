@@ -1,7 +1,7 @@
 module Rack
   class Attack
     module StoreProxy
-      PROXIES = [DalliProxy, RedisStoreProxy]
+      PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy]
 
       def self.build(store)
         # RedisStore#increment needs different behavior, so detect that
@@ -14,7 +14,7 @@ module Rack
           # We also want to use the underlying Dalli client instead of ::ActiveSupport::Cache::MemCacheStore,
           # but not the Memcache client if using Rails 3.x
           client = store.instance_variable_get(:@data)
-          if client.is_a?(Redis::Store) || client.is_a?(Dalli::Client)
+          if client.is_a?(Redis::Store) || client.is_a?(Dalli::Client) || client.is_a?(MemCache)
             store = store.instance_variable_get(:@data)
           end
         end
