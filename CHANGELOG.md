@@ -1,7 +1,13 @@
 # Changlog
 
 ## master (unreleased)
+
+## v4.3.1 - 18 Dec 2015
+  - SECURITY FIX: Normalize request paths when using ActionDispatch. Thanks
+    Andres Riancho at @includesecurity for reporting it.
   - Remove support for ruby 1.9.x
+  - Add Code of Conduct
+  - Several documentation and testing improvements
 
 ## v4.3.0 - 22 May 2015
 
