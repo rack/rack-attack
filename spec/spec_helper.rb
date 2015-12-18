@@ -5,6 +5,11 @@ require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
 require 'active_support'
+require 'action_dispatch'
+
+# Load Journey for Rails 3.2
+require 'journey' if ActionPack::VERSION::MAJOR == 3
+
 require "rack/attack"
 
 begin
