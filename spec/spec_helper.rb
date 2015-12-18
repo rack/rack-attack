@@ -8,9 +8,9 @@ require 'active_support'
 require "rack/attack"
 
 begin
-  require 'debugger'
+  require 'pry'
 rescue LoadError
- #nothing to do here
+  #nothing to do here
 end
 
 class MiniTest::Spec
