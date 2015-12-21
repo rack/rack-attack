@@ -2,6 +2,13 @@
 
 source "https://rubygems.org"
 
-gem "actionpack", "~> 4.2.1"
+gem "activesupport", "~> 4.2.0"
+gem "actionpack", "~> 4.2.0"
+
+group :development do
+  gem "pry"
+  gem "guard"
+  gem "guard-minitest"
+end
 
 gemspec :path => "../"
