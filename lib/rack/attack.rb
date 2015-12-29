@@ -3,6 +3,7 @@ require 'forwardable'
 
 class Rack::Attack
   autoload :Cache,              'rack/attack/cache'
+  autoload :PathNormalizer,     'rack/attack/path_normalizer'
   autoload :Check,              'rack/attack/check'
   autoload :Throttle,           'rack/attack/throttle'
   autoload :Whitelist,          'rack/attack/whitelist'
@@ -92,6 +93,7 @@ class Rack::Attack
   end
 
   def call(env)
+    env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
     req = Rack::Attack::Request.new(env)
 
     if whitelisted?(req)

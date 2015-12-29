@@ -3,6 +3,17 @@ require_relative 'spec_helper'
 describe 'Rack::Attack' do
   allow_ok_requests
 
+  describe 'normalizing paths' do
+    before do
+      Rack::Attack.blacklist("banned_path") {|req| req.path == '/foo' }
+    end
+
+    it 'blocks requests with trailing slash' do
+      get '/foo/'
+      last_response.status.must_equal 403
+    end
+  end
+
   describe 'blacklist' do
     before do
       @bad_ip = '1.2.3.4'
