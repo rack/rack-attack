@@ -12,9 +12,10 @@ module Rack
           # ActiveSupport::Cache::RedisStore doesn't expose any way to set an expiry,
           # so use the raw Redis::Store instead.
           # We also want to use the underlying Dalli client instead of ::ActiveSupport::Cache::MemCacheStore,
-          # but not the Memcache client if using Rails 3.x
+          # and the MemCache client if using Rails 3.x
           client = store.instance_variable_get(:@data)
-          if client.is_a?(Redis::Store) || client.is_a?(Dalli::Client) || client.is_a?(MemCache)
+          if (defined?(::Redis::Store) && client.is_a?(Redis::Store)) ||
+            (defined?(Dalli::Client) && client.is_a?(Dalli::Client)) || (defined?(MemCache) && client.is_a?(MemCache))
             store = store.instance_variable_get(:@data)
           end
         end
