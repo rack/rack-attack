@@ -3,7 +3,6 @@
 source "https://rubygems.org"
 
 gem "activesupport", "~> 3.2.0"
-gem "memcache-client"
 gem "actionpack", "~> 3.2.0"
 
 group :development do
