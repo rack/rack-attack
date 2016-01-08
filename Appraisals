@@ -25,3 +25,11 @@ end
 appraise 'dalli2' do
   gem 'dalli', '~> 2.0'
 end
+
+appraise 'mongo2.1' do
+  gem 'mongo', '~> 2.1'
+end
+
+appraise 'mongo2.2' do
+  gem 'mongo', '~> 2.2'
+end

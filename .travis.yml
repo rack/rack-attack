@@ -12,7 +12,10 @@ gemfile:
   - gemfiles/activesupport4.2.gemfile
   - gemfiles/dalli1.1.gemfile
   - gemfiles/dalli2.gemfile
+  - gemfiles/mongo2.1.gemfile
+  - gemfiles/mongo2.2.gemfile
 
 services:
   - redis
   - memcached
+  - mongo

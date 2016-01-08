@@ -4,7 +4,7 @@
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
-Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
+Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached, redis or mongodb ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
 
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
@@ -49,8 +49,22 @@ end
 
 Optionally configure the cache store for throttling or fail2ban filtering:
 
+### Key value stores
 ```ruby
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
+```
+### Mongo store
+
+```ruby
+Rack::Attack.cache.store = Mongo::Client.new([ '127.0.0.1:27017' ], database: 'rack_testing')
+```
+MongoProxy uses dedicated collection 'events' to store all data.
+
+*Important!* You have to create following indexes in mongo:
+
+```ruby
+:001 > Rack::Attack.cache.store[:events].indexes.create_one({ "expires_in" => 0 }, { expireAfterSeconds: 0 })
+:002 > Rack::Attack.cache.store[:events].indexes.create_one({ key: 1, expires_in: 1}, {background: true})
 ```
 
 Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
