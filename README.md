@@ -83,7 +83,7 @@ def call(env)
 end
 ```
 
-Note: `Rack::Attack::Request` is just a subclass of `Rack::Attack` so that you
+Note: `Rack::Attack::Request` is just a subclass of `Rack::Request` so that you
 can cleanly monkey patch helper methods onto the
 [request object](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack/request.rb).
 
