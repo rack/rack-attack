@@ -18,17 +18,26 @@ describe Rack::Attack::Cache do
 
   require 'active_support/cache/dalli_store'
   require 'active_support/cache/redis_store'
+  require 'mongo'
   require 'connection_pool'
+
+  Mongo::Logger.logger.level = ::Logger::FATAL
+
   cache_stores = [
     ActiveSupport::Cache::MemoryStore.new,
     ActiveSupport::Cache::DalliStore.new("127.0.0.1"),
     ActiveSupport::Cache::RedisStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
-    Redis::Store.new
+    Redis::Store.new,
+    Mongo::Client.new([ '127.0.0.1:27017' ], database: 'rack_testing')
   ]
 
   cache_stores.each do |store|
+    if store.is_a?(::Mongo::Client) && store[:events].indexes.select { |v|  v["name"] == 'expires_in_0'}.empty?
+      store[:events].indexes.create_one({ "expires_in" => 0 }, { expireAfterSeconds: 0 })
+    end
+
     store = Rack::Attack::StoreProxy.build(store)
     describe "with #{store.class}" do
 

@@ -32,4 +32,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redis-activesupport'
   s.add_development_dependency 'dalli'
   s.add_development_dependency 'connection_pool'
+  s.add_development_dependency 'mongo', '>= 2.1'
 end

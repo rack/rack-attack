@@ -12,6 +12,7 @@ class Rack::Attack
   autoload :StoreProxy,      'rack/attack/store_proxy'
   autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
   autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
+  autoload :MongoProxy,      'rack/attack/store_proxy/mongo_proxy'
   autoload :Fail2Ban,        'rack/attack/fail2ban'
   autoload :Allow2Ban,       'rack/attack/allow2ban'
   autoload :Request,         'rack/attack/request'
