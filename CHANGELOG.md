@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+## v4.4.0 - 10 Feb 2016
+
+  - New: support for MemCacheStore (#157). Thanks @elhu.
+  - Some documentation and test harness improvements.
+
 ## v4.3.1 - 18 Dec 2015
   - SECURITY FIX: Normalize request paths when using ActionDispatch. Thanks
     Andres Riancho at @includesecurity for reporting it.
