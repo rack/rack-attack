@@ -4,7 +4,7 @@
 
 ## v4.4.0 - 10 Feb 2016
 
-  - New: support for MemCacheStore (#157). Thanks @elhu.
+  - New: support for MemCacheStore (#153). Thanks @elhu.
   - Some documentation and test harness improvements.
 
 ## v4.3.1 - 18 Dec 2015
