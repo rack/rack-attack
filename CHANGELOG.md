@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+  - Fix an error affecting apps using Redis::Store saying that dalli was a
+    required dependency. Learn about ActiveSupport autoloading. (#165)
+
 ## v4.4.0 - 10 Feb 2016
 
   - New: support for MemCacheStore (#153). Thanks @elhu.
