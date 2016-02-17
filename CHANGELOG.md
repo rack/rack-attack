@@ -2,8 +2,10 @@
 
 ## master (unreleased)
 
-  - Fix an error affecting apps using Redis::Store saying that dalli was a
-    required dependency. Learn about ActiveSupport autoloading. (#165)
+## v4.4.1 17 Feb 2016
+
+  - Fix a bug affecting apps using Redis::Store and ActiveSupport that could generate an error
+    saying dalli was a required dependency. I learned all about ActiveSupport autoloading. (#165)
 
 ## v4.4.0 - 10 Feb 2016
 
