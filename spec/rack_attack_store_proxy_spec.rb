@@ -28,7 +28,7 @@ describe Rack::Attack::StoreProxy do
 
     it 'ActiveSupport::Cache::MemCacheStore' do
       store = Rack::Attack::StoreProxy.build(ActiveSupport::Cache::MemCacheStore.new)
-      if ActiveSupport.version < '4.0.0'
+      if ActiveSupport.version.to_s < '4.0.0'
         store.class.must_equal Rack::Attack::StoreProxy::MemCacheProxy
       else
         store.class.must_equal Rack::Attack::StoreProxy::DalliProxy
