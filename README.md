@@ -304,6 +304,6 @@ New releases of Rack::Attack are announced on
 
 ## License
 
-Copyright Kickstarter, Inc.
+Copyright Kickstarter, PBC.
 
 Released under an [MIT License](http://opensource.org/licenses/MIT).
