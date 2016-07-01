@@ -1,9 +1,9 @@
 module Rack
   class Attack
-    class Whitelist < Check
+    class Safelist < Check
       def initialize(name, block)
         super
-        @type = :whitelist
+        @type = :safelist
       end
 
     end

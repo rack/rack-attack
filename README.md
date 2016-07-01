@@ -2,7 +2,7 @@
 *Rack middleware for blocking & throttling abusive requests*
 
 Rack::Attack is a rack middleware to protect your web app from bad clients.
-It allows *whitelisting*, *blacklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
+It allows *safelisting*, *blocklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
 Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
 
@@ -53,14 +53,14 @@ Optionally configure the cache store for throttling or fail2ban filtering:
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
 ```
 
-Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blacklisting & whitelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
+Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
 ## How it works
 
-The Rack::Attack middleware compares each request against *whitelists*, *blacklists*, *throttles*, and *tracks* that you define. There are none by default.
+The Rack::Attack middleware compares each request against *safelists*, *blocklists*, *throttles*, and *tracks* that you define. There are none by default.
 
- * If the request matches any **whitelist**, it is allowed.
- * Otherwise, if the request matches any **blacklist**, it is blocked.
+ * If the request matches any **safelist**, it is allowed.
+ * Otherwise, if the request matches any **blocklist**, it is blocked.
  * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If any throttle's limit is exceeded, the request is blocked.
  * Otherwise, all **tracks** are checked, and the request is allowed.
 
@@ -70,10 +70,10 @@ The algorithm is actually more concise in code: See [Rack::Attack.call](https://
 def call(env)
   req = Rack::Attack::Request.new(env)
 
-  if whitelisted?(req)
+  if safelisted?(req)
     @app.call(env)
-  elsif blacklisted?(req)
-    self.class.blacklisted_response.call(env)
+  elsif blocklisted?(req)
+    self.class.blocklisted_response.call(env)
   elsif throttled?(req)
     self.class.throttled_response.call(env)
   else
@@ -93,47 +93,47 @@ can cleanly monkey patch helper methods onto the
 
 ## Usage
 
-Define whitelists, blacklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
+Define safelists, blocklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
 these go in an initializer in `config/initializers/`.
 A [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request) object is passed to the block (named 'req' in the examples).
 
-### Whitelists
+### safelists
 
 ```ruby
 # Always allow requests from localhost
-# (blacklist & throttles are skipped)
-Rack::Attack.whitelist('allow from localhost') do |req|
+# (blocklist & throttles are skipped)
+Rack::Attack.safelist('allow from localhost') do |req|
   # Requests are allowed if the return value is truthy
   '127.0.0.1' == req.ip || '::1' == req.ip
 end
 ```
 
-### Blacklists
+### blocklists
 
 ```ruby
 # Block requests from 1.2.3.4
-Rack::Attack.blacklist('block 1.2.3.4') do |req|
+Rack::Attack.blocklist('block 1.2.3.4') do |req|
   # Requests are blocked if the return value is truthy
   '1.2.3.4' == req.ip
 end
 
 # Block logins from a bad user agent
-Rack::Attack.blacklist('block bad UA logins') do |req|
+Rack::Attack.blocklist('block bad UA logins') do |req|
   req.path == '/login' && req.post? && req.user_agent == 'BadUA'
 end
 ```
 
 #### Fail2Ban
 
-`Fail2Ban.filter` can be used within a blacklist to block all requests from misbehaving clients.
+`Fail2Ban.filter` can be used within a blocklist to block all requests from misbehaving clients.
 This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
 See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
-how the parameters work.  For multiple filters, be sure to put each filter in a separate blacklist and use a unique discriminator for each fail2ban filter.
+how the parameters work.  For multiple filters, be sure to put each filter in a separate blocklist and use a unique discriminator for each fail2ban filter.
 
 ```ruby
 # Block suspicious requests for '/etc/password' or wordpress specific paths.
 # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
-Rack::Attack.blacklist('fail2ban pentesters') do |req|
+Rack::Attack.blocklist('fail2ban pentesters') do |req|
   # `filter` returns truthy value if request fails, or if it's from a previously banned IP
   # so the request is blocked
   Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
@@ -147,7 +147,7 @@ Rack::Attack.blacklist('fail2ban pentesters') do |req|
 end
 ```
 
-Note that `Fail2Ban` filters are not automatically scoped to the blacklist, so when using multiple filters in an application the scoping must be added to the discriminator e.g. `"pentest:#{req.ip}"`.
+Note that `Fail2Ban` filters are not automatically scoped to the blocklist, so when using multiple filters in an application the scoping must be added to the discriminator e.g. `"pentest:#{req.ip}"`.
 
 #### Allow2Ban
 `Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
@@ -155,7 +155,7 @@ clients until such time as they reach maxretry at which they are cut off as per 
 ```ruby
 # Lockout IP addresses that are hammering your login page.
 # After 20 requests in 1 minute, block all requests from that IP for 1 hour.
-Rack::Attack.blacklist('allow2ban login scrapers') do |req|
+Rack::Attack.blocklist('allow2ban login scrapers') do |req|
   # `filter` returns false value if request is to your login page (but still
   # increments the count) so request below the limit are not blocked until
   # they hit the limit.  At that point, filter will return true and block.
@@ -220,12 +220,12 @@ end
 
 ## Responses
 
-Customize the response of blacklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
+Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
 ```ruby
-Rack::Attack.blacklisted_response = lambda do |env|
+Rack::Attack.blocklisted_response = lambda do |env|
   # Using 503 because it may make attacker think that they have successfully
-  # DOSed the site. Rack::Attack returns 403 for blacklists by default
+  # DOSed the site. Rack::Attack returns 403 for blocklists by default
   [ 503, {}, ['Blocked']]
 end
 
@@ -274,7 +274,7 @@ but it depends on how many checks you've configured, and how long they take.
 Throttles usually require a network roundtrip to your cache server(s),
 so try to keep the number of throttle checks per request low.
 
-If a request is blacklisted or throttled, the response is a very simple Rack response.
+If a request is blocklisted or throttled, the response is a very simple Rack response.
 A single typical ruby web server thread can block several hundred requests per second.
 
 Rack::Attack complements tools like `iptables` and nginx's [limit_conn_zone module](http://nginx.org/en/docs/http/ngx_http_limit_conn_module.html#limit_conn_zone).

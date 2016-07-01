@@ -8,7 +8,7 @@ module Rack
           maxretry  = options[:maxretry]  or raise ArgumentError, "Must pass maxretry option"
 
           if banned?(discriminator)
-            # Return true for blacklist
+            # Return true for blocklist
             true
           elsif yield
             fail!(discriminator, bantime, findtime, maxretry)

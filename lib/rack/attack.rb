@@ -6,8 +6,8 @@ class Rack::Attack
   autoload :PathNormalizer,  'rack/attack/path_normalizer'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
-  autoload :Whitelist,       'rack/attack/whitelist'
-  autoload :Blacklist,       'rack/attack/blacklist'
+  autoload :Safelist,       'rack/attack/safelist'
+  autoload :Blocklist,       'rack/attack/blocklist'
   autoload :Track,           'rack/attack/track'
   autoload :StoreProxy,      'rack/attack/store_proxy'
   autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
@@ -19,14 +19,24 @@ class Rack::Attack
 
   class << self
 
-    attr_accessor :notifier, :blacklisted_response, :throttled_response
+    attr_accessor :notifier, :blocklisted_response, :throttled_response
 
+    def safelist(name, &block)
+      self.safelists[name] = Safelist.new(name, block)
+    end
+    
     def whitelist(name, &block)
-      self.whitelists[name] = Whitelist.new(name, block)
+      warn "[DEPRECATION] 'whitelist' is deprecated.  Please use 'safelist' instead."
+      safelist(name, &block)
+    end
+
+    def blocklist(name, &block)
+      self.blocklists[name] = Blocklist.new(name, block)
     end
 
     def blacklist(name, &block)
-      self.blacklists[name] = Blacklist.new(name, block)
+      warn "[DEPRECATION] 'blacklist' is deprecated.  Please use 'blocklist' instead."
+      blocklist(name, &block)
     end
 
     def throttle(name, options, &block)
@@ -37,21 +47,41 @@ class Rack::Attack
       self.tracks[name] = Track.new(name, options, block)
     end
 
-    def whitelists; @whitelists ||= {}; end
-    def blacklists; @blacklists ||= {}; end
+    def safelists; @safelists ||= {}; end
+    def blocklists; @blocklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
 
-    def whitelisted?(req)
-      whitelists.any? do |name, whitelist|
-        whitelist[req]
+    def whitelists
+      warn "[DEPRECATION] 'whitelists' is deprecated.  Please use 'safelists' instead."
+      safelists
+    end
+
+    def blacklists
+      warn "[DEPRECATION] 'blacklists' is deprecated.  Please use 'blocklists' instead."
+      blocklists
+    end
+
+    def safelisted?(req)
+      safelists.any? do |name, safelist|
+        safelist[req]
       end
     end
 
-    def blacklisted?(req)
-      blacklists.any? do |name, blacklist|
-        blacklist[req]
+    def whitelisted?
+      warn "[DEPRECATION] 'whitelisted?' is deprecated.  Please use 'safelisted?' instead."
+      safelisted?
+    end
+
+    def blocklisted?(req)
+      blocklists.any? do |name, blocklist|
+        blocklist[req]
       end
+    end
+
+    def blacklisted?
+      warn "[DEPRECATION] 'blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
+      blocklisted?
     end
 
     def throttled?(req)
@@ -75,14 +105,14 @@ class Rack::Attack
     end
 
     def clear!
-      @whitelists, @blacklists, @throttles, @tracks = {}, {}, {}, {}
+      @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
     end
 
   end
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blacklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
+  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
   @throttled_response   = lambda {|env|
     retry_after = (env['rack.attack.match_data'] || {})[:period]
     [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
@@ -96,10 +126,10 @@ class Rack::Attack
     env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
     req = Rack::Attack::Request.new(env)
 
-    if whitelisted?(req)
+    if safelisted?(req)
       @app.call(env)
-    elsif blacklisted?(req)
-      self.class.blacklisted_response.call(env)
+    elsif blocklisted?(req)
+      self.class.blocklisted_response.call(env)
     elsif throttled?(req)
       self.class.throttled_response.call(env)
     else
@@ -109,8 +139,8 @@ class Rack::Attack
   end
 
   extend Forwardable
-  def_delegators self, :whitelisted?,
-                       :blacklisted?,
+  def_delegators self, :safelisted?,
+                       :blocklisted?,
                        :throttled?,
                        :tracked?
 end

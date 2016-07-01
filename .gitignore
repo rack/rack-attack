@@ -3,3 +3,5 @@ bin
 .bundle
 *.gem
 *.gemfile.lock
+.ruby-version
+.ruby-gemset
