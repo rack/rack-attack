@@ -97,7 +97,7 @@ Define safelists, blocklists, throttles, and tracks as blocks that return truthy
 these go in an initializer in `config/initializers/`.
 A [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request) object is passed to the block (named 'req' in the examples).
 
-### safelists
+### Safelists
 
 ```ruby
 # Always allow requests from localhost
@@ -108,7 +108,7 @@ Rack::Attack.safelist('allow from localhost') do |req|
 end
 ```
 
-### blocklists
+### Blocklists
 
 ```ruby
 # Block requests from 1.2.3.4
@@ -138,11 +138,11 @@ Rack::Attack.blocklist('fail2ban pentesters') do |req|
   # so the request is blocked
   Rack::Attack::Fail2Ban.filter("pentesters-#{req.ip}", :maxretry => 3, :findtime => 10.minutes, :bantime => 5.minutes) do
     # The count for the IP is incremented if the return value is truthy
-    CGI.unescape(req.query_string) =~ %r{/etc/passwd} || 
+    CGI.unescape(req.query_string) =~ %r{/etc/passwd} ||
     req.path.include?('/etc/passwd') ||
-    req.path.include?('wp-admin') || 
+    req.path.include?('wp-admin') ||
     req.path.include?('wp-login')
-    
+
   end
 end
 ```

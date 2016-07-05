@@ -2,6 +2,15 @@
 
 ## master (unreleased)
 
+## v5.0.0 (beta)
+
+  - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. (#181,
+    thanks @renee-travisci).
+
+To upgrade and fix deprecations, find and replace instances of `whitelist` and
+`blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`,
+note that it will have values like `:safelist`/`:blocklist`.
+
 ## v4.4.1 17 Feb 2016
 
   - Fix a bug affecting apps using Redis::Store and ActiveSupport that could generate an error

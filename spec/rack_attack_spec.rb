@@ -23,12 +23,12 @@ describe 'Rack::Attack' do
     it('has a blocklist') {
       Rack::Attack.blocklists.key?("ip #{@bad_ip}").must_equal true
     }
-    
+
     it('has a blacklist with a deprication warning') {
-      stdout, stderror  = capture_io do
+      _, stderror  = capture_io do
         Rack::Attack.blacklists.key?("ip #{@bad_ip}").must_equal true
       end
-      assert_match "[DEPRECATION] 'blacklists' is deprecated.  Please use 'blocklists' instead.", stderror
+      assert_match "[DEPRECATION] 'Rack::Attack.blacklists' is deprecated.  Please use 'blocklists' instead.", stderror
     }
 
     describe "a bad request" do
@@ -55,10 +55,10 @@ describe 'Rack::Attack' do
       it('has a safelist'){ Rack::Attack.safelists.key?("good ua") }
 
       it('has a whitelist with a deprication warning') {
-        stdout, stderror  = capture_io do
+        _, stderror  = capture_io do
           Rack::Attack.whitelists.key?("good ua")
         end
-        assert_match "[DEPRECATION] 'whitelists' is deprecated.  Please use 'safelists' instead.", stderror
+        assert_match "[DEPRECATION] 'Rack::Attack.whitelists' is deprecated.  Please use 'safelists' instead.", stderror
       }
 
       describe "with a request match both safelist & blocklist" do
@@ -73,6 +73,27 @@ describe 'Rack::Attack' do
         end
       end
     end
+
+    describe '#blocklisted_response' do
+      it 'should exist' do
+        Rack::Attack.blocklisted_response.must_respond_to :call
+      end
+
+      it 'should give a deprication warning for blacklisted_response' do
+        _, stderror  = capture_io do
+          Rack::Attack.blacklisted_response
+        end
+        assert_match "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead.", stderror
+
+      end
+    end
+
+    describe '#throttled_response' do
+      it 'should exist' do
+        Rack::Attack.throttled_response.must_respond_to :call
+      end
+    end
+
   end
 
 end
