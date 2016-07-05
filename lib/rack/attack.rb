@@ -24,9 +24,9 @@ class Rack::Attack
     def safelist(name, &block)
       self.safelists[name] = Safelist.new(name, block)
     end
-    
+
     def whitelist(name, &block)
-      warn "[DEPRECATION] 'whitelist' is deprecated.  Please use 'safelist' instead."
+      warn "[DEPRECATION] 'Rack::Attack.whitelist' is deprecated.  Please use 'safelist' instead."
       safelist(name, &block)
     end
 
@@ -35,7 +35,7 @@ class Rack::Attack
     end
 
     def blacklist(name, &block)
-      warn "[DEPRECATION] 'blacklist' is deprecated.  Please use 'blocklist' instead."
+      warn "[DEPRECATION] 'Rack::Attack.blacklist' is deprecated.  Please use 'blocklist' instead."
       blocklist(name, &block)
     end
 
@@ -53,12 +53,12 @@ class Rack::Attack
     def tracks;     @tracks     ||= {}; end
 
     def whitelists
-      warn "[DEPRECATION] 'whitelists' is deprecated.  Please use 'safelists' instead."
+      warn "[DEPRECATION] 'Rack::Attack.whitelists' is deprecated.  Please use 'safelists' instead."
       safelists
     end
 
     def blacklists
-      warn "[DEPRECATION] 'blacklists' is deprecated.  Please use 'blocklists' instead."
+      warn "[DEPRECATION] 'Rack::Attack.blacklists' is deprecated.  Please use 'blocklists' instead."
       blocklists
     end
 
@@ -69,7 +69,7 @@ class Rack::Attack
     end
 
     def whitelisted?
-      warn "[DEPRECATION] 'whitelisted?' is deprecated.  Please use 'safelisted?' instead."
+      warn "[DEPRECATION] 'Rack::Attack.whitelisted?' is deprecated.  Please use 'safelisted?' instead."
       safelisted?
     end
 
@@ -80,7 +80,7 @@ class Rack::Attack
     end
 
     def blacklisted?
-      warn "[DEPRECATION] 'blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
+      warn "[DEPRECATION] 'Rack::Attack.blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
       blocklisted?
     end
 
@@ -106,6 +106,16 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+    end
+
+    def blacklisted_response=(res)
+      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response=' is deprecated.  Please use 'blocklisted_response=' instead."
+      self.blocklisted_response=(res)
+    end
+
+    def blacklisted_response
+      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead."
+      self.blocklisted_response
     end
 
   end
