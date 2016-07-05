@@ -2,14 +2,11 @@
 
 ## master (unreleased)
 
-## v5.0.0 (beta)
+## v5.0.0.beta1 4 July 2016
 
   - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. (#181,
-    thanks @renee-travisci).
-
-To upgrade and fix deprecations, find and replace instances of `whitelist` and
-`blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`,
-note that it will have values like `:safelist`/`:blocklist`.
+    thanks @renee-travisci).  To upgrade and fix deprecations, find and replace instances of `whitelist` and `blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`, note that it will have values like `:safelist`/`:blocklist`.
+  - Remove test coverage for unsupported ruby dependencies: ruby 2.0, activesupport 3.2/4.0, and dalli 1.
 
 ## v4.4.1 17 Feb 2016
 
