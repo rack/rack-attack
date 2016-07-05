@@ -9,7 +9,7 @@ describe 'Rack::Attack' do
         end
       end
 
-      Rack::Attack.whitelist('valid IP') do |req|
+      Rack::Attack.safelist('valid IP') do |req|
         req.remote_ip == "127.0.0.1"
       end
     end

@@ -9,7 +9,7 @@
 #     end
 #   end
 #
-#   Rack::Attack.whitelist("localhost") {|req| req.localhost? }
+#   Rack::Attack.safelist("localhost") {|req| req.localhost? }
 #
 module Rack
   class Attack

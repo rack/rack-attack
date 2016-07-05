@@ -15,12 +15,12 @@ Rack::Attack.throttle "logins/email", :limit => 2, :period => 60 do |req|
   req.post? && req.path == "/login" && req.params['email']
 end
 
-# Blacklist bad IPs from accessing admin pages
-Rack::Attack.blacklist "bad_ips from logging in" do |req|
+# blocklist bad IPs from accessing admin pages
+Rack::Attack.blocklist "bad_ips from logging in" do |req|
   req.path =~ /^\/admin/ && bad_ips.include?(req.ip)
 end
 
-# Whitelist a User-Agent
-Rack::Attack.whitelist 'internal user agent' do |req|
+# safelist a User-Agent
+Rack::Attack.safelist 'internal user agent' do |req|
   req.user_agent == 'InternalUserAgent'
 end

@@ -7,7 +7,7 @@ describe 'Rack::Attack.Allow2Ban' do
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     @f2b_options = {:bantime => @bantime, :findtime => @findtime, :maxretry => 2}
-    Rack::Attack.blacklist('pentest') do |req|
+    Rack::Attack.blocklist('pentest') do |req|
       Rack::Attack::Allow2Ban.filter(req.ip, @f2b_options){req.query_string =~ /OMGHAX/}
     end
   end
