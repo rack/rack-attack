@@ -1,5 +1,5 @@
 require 'active_support/cache'
-require 'active_support/cache/redis_store'
+require 'redis-activesupport'
 require 'dalli'
 require_relative '../spec_helper'
 
