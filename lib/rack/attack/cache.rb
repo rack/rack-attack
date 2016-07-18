@@ -16,7 +16,7 @@ module Rack
 
       def count(unprefixed_key, period)
         key, expires_in = key_and_expiry(unprefixed_key, period)
-        do_count(key, expires_in)
+        [do_count(key, expires_in), expires_in]
       end
 
       def read(unprefixed_key)

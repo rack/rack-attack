@@ -136,18 +136,47 @@ class Rack::Attack
     env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
     req = Rack::Attack::Request.new(env)
 
-    if safelisted?(req)
-      @app.call(env)
-    elsif blocklisted?(req)
-      self.class.blocklisted_response.call(env)
-    elsif throttled?(req)
-      self.class.throttled_response.call(env)
-    else
-      tracked?(req)
-      @app.call(env)
+    response = case
+      when safelisted?(req) then @app.call(env)
+      when blocklisted?(req) then self.class.blocklisted_response.call(env)
+      when throttled?(req) then self.class.throttled_response.call(env)
+      else 
+        tracked?(req)
+        @app.call(env)
     end
+    add_throttle_headers(response, env)
   end
 
+  # always returns response object
+  def add_throttle_headers(response, env)
+    return response unless env['rack.attack.throttle_data']
+    data = env['rack.attack.match_data'] || env['rack.attack.throttle_data']
+    
+    headers = case env["rack.attack.match_type"]
+      when :throttle then throttle_headers(data)
+      else
+        # sort by number of remaining requests and time to expire if many throttles matched
+        throttle_headers(
+          data.values.sort_by {|data| [throttle_remaining(data), data[:expires_in]]}.first
+        )
+    end
+    response[1].merge!(headers)
+    response
+  end
+  
+  def throttle_headers(data)
+    {
+      'X-RateLimit-Limit'       => data[:limit],
+      'X-RateLimit-Remaining'   => throttle_remaining(data),
+      'X-RateLimit-Reset'       => data[:expires_in]
+    }
+  end
+  
+  def throttle_remaining(data)
+    dif = data[:limit] - data[:count]
+    dif < 0 ? 0 : dif
+  end
+  
   extend Forwardable
   def_delegators self, :safelisted?,
                        :blocklisted?,

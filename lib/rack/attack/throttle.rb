@@ -21,15 +21,16 @@ module Rack
         discriminator = block[req]
         return false unless discriminator
 
-        current_period = period.respond_to?(:call) ? period.call(req) : period
-        current_limit  = limit.respond_to?(:call) ? limit.call(req) : limit
-        key            = "#{name}:#{discriminator}"
-        count          = cache.count(key, current_period)
+        current_period    = period.respond_to?(:call) ? period.call(req) : period
+        current_limit     = limit.respond_to?(:call) ? limit.call(req) : limit
+        key               = "#{name}:#{discriminator}"
+        count, expires_in = cache.count(key, current_period)
 
         data = {
           :count => count,
           :period => current_period,
-          :limit => current_limit
+          :limit => current_limit,
+          :expires_in => expires_in
         }
         (req.env['rack.attack.throttle_data'] ||= {})[name] = data
 
