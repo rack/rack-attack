@@ -139,3 +139,25 @@ describe 'Rack::Attack.throttle with period as proc' do
     end
   end
 end
+
+describe 'Rack::Attack.throttle with block retuning nil' do
+  before do
+    @period = 60
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.throttle('ip/sec', :limit => 1, :period => @period) { |_| nil }
+  end
+
+  allow_ok_requests
+
+  describe 'a single request' do
+    before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+    it 'should not set the counter' do
+      key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
+      Rack::Attack.cache.store.read(key).must_equal nil
+    end
+
+    it 'should not populate throttle data' do
+      last_request.env['rack.attack.throttle_data'].must_equal nil
+    end
+  end
+end
