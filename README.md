@@ -230,18 +230,39 @@ Rack::Attack.blocklisted_response = lambda do |env|
 end
 
 Rack::Attack.throttled_response = lambda do |env|
-  # name and other data about the matched throttle
-  body = [
-    env['rack.attack.matched'],
-    env['rack.attack.match_type'],
-    env['rack.attack.match_data']
-  ].inspect
+  # NB: you have access to the name and other data about the matched throttle
+  #  env['rack.attack.matched'],
+  #  env['rack.attack.match_type'],
+  #  env['rack.attack.match_data']
 
   # Using 503 because it may make attacker think that they have successfully
   # DOSed the site. Rack::Attack returns 429 for throttling by default
-  [ 503, {}, [body]]
+  [ 503, {}, ["Server Error\n"]]
 end
 ```
+
+### X-RateLimit headers for well-behaved clients
+
+While Rack::Attack's primary focus is minimizing harm from abusive clients, it
+can also be used to return rate limit data that's helpful for well-behaved clients.
+
+Here's an example response that includes conventional `X-RateLimit-*` headers:
+
+```ruby
+Rack::Attack.throttled_response = lambda do |env|
+  now = Time.now
+  match_data = env['rack.attack.match_data']
+
+  headers = {
+    'X-RateLimit-Limit' => match_data[:limit].to_s,
+    'X-RateLimit-Remaining' => '0',
+    'X-RateLimit-Reset' => (now + (match_data[:period] - now.to_i % match_data[:period])).to_s
+  }
+
+  [ 429, headers, ["Throttled\n"]]
+end
+```
+
 
 For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
 
