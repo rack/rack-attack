@@ -24,7 +24,7 @@ class Rack::Attack
 
   class << self
 
-    attr_accessor :notifier, :blocklisted_response, :throttled_response
+    attr_accessor :notifier
 
     def safelist(name, &block)
       self.safelists[name] = Safelist.new(name, block)
@@ -111,6 +111,22 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+    end
+
+    def blocklisted_response=(res)
+      @blocklisted_response = res
+    end
+
+    def blocklisted_response
+      @blocklisted_response
+    end
+
+    def throttled_response=(res)
+      @throttled_response = res
+    end
+
+    def throttled_response
+      @throttled_response
     end
 
     def blacklisted_response=(res)
