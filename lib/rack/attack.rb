@@ -164,9 +164,9 @@ class Rack::Attack
     if safelisted?(req)
       @app.call(env)
     elsif blocklisted?(req)
-      self.class.blocklisted_response.call(env)
+      self.class.blocklisted_response(env[MATCHED]).call(env)
     elsif throttled?(req)
-      self.class.throttled_response.call(env)
+      self.class.throttled_response(env[MATCHED]).call(env)
     else
       tracked?(req)
       @app.call(env)
