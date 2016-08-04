@@ -24,6 +24,12 @@ class Rack::Attack
   MATCH_DATA = 'rack.attack.match_data'
 
   class << self
+    extend Forwardable
+    def_delegator :@blocklisted_response_registry, :default=, :blocklisted_response=
+    def_delegator :@blocklisted_response_registry, :[], :blocklisted_response
+
+    def_delegator :@throttled_response_registry, :default=, :throttled_response=
+    def_delegator :@throttled_response_registry, :[], :throttled_response
 
     attr_accessor :notifier
 
@@ -112,22 +118,6 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
-    end
-
-    def blocklisted_response=(res)
-      @blocklisted_response_registry.default = res
-    end
-
-    def blocklisted_response(name=nil)
-      @blocklisted_response_registry[name]
-    end
-
-    def throttled_response=(res)
-      @throttled_response_registry.default = res
-    end
-
-    def throttled_response(name=nil)
-      @throttled_response_registry[name]
     end
 
     def blacklisted_response=(res)
