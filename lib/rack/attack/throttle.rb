@@ -35,10 +35,10 @@ module Rack
 
         (count > current_limit).tap do |throttled|
           if throttled
-            req.env['rack.attack.matched']             = name
-            req.env['rack.attack.match_discriminator'] = discriminator
-            req.env['rack.attack.match_type']          = type
-            req.env['rack.attack.match_data']          = data
+            req.env[Rack::Attack::MATCHED]             = name
+            req.env[Rack::Attack::MATCH_DISCRIMINATOR] = discriminator
+            req.env[Rack::Attack::MATCH_TYPE]          = type
+            req.env[Rack::Attack::MATCH_DATA]          = data
             Rack::Attack.instrument(req)
           end
         end

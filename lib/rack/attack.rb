@@ -17,6 +17,11 @@ class Rack::Attack
   autoload :Allow2Ban,       'rack/attack/allow2ban'
   autoload :Request,         'rack/attack/request'
 
+  MATCHED = 'rack.attack.matched'
+  MATCH_TYPE = 'rack.attack.match_type'
+  MATCH_DISCRIMINATOR = 'rack.attack.match_discriminator'
+  MATCH_DATA = 'rack.attack.match_data'
+
   class << self
 
     attr_accessor :notifier, :blocklisted_response, :throttled_response
@@ -124,7 +129,7 @@ class Rack::Attack
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
   @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
   @throttled_response   = lambda {|env|
-    retry_after = (env['rack.attack.match_data'] || {})[:period]
+    retry_after = (env[MATCH_DATA] || {})[:period]
     [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
   }
 
