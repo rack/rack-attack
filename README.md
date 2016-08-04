@@ -316,6 +316,23 @@ Pull requests and issues are greatly appreciated. This project is intended to be
 a safe, welcoming space for collaboration, and contributors are expected to
 adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
+### Testing pull requests
+
+To run the rspec test suite, you will need both [Redis](http://redis.io/) and
+[Memcached](https://memcached.org/) running locally and bound to IP `127.0.0.1` on
+default ports (`6379` for Redis, and `11211` for Memcached) and able to be
+accessed without authentication.
+
+Install dependencies by running
+```sh
+bundle install
+```
+
+Then run the test suite by running
+```sh
+bundle exec rake
+```
+
 ## Mailing list
 
 New releases of Rack::Attack are announced on
