@@ -318,7 +318,7 @@ adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Testing pull requests
 
-To run the rspec test suite, you will need both [Redis](http://redis.io/) and
+To run the minitest test suite, you will need both [Redis](http://redis.io/) and
 [Memcached](https://memcached.org/) running locally and bound to IP `127.0.0.1` on
 default ports (`6379` for Redis, and `11211` for Memcached) and able to be
 accessed without authentication.
