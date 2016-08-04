@@ -16,6 +16,7 @@ class Rack::Attack
   autoload :Fail2Ban,        'rack/attack/fail2ban'
   autoload :Allow2Ban,       'rack/attack/allow2ban'
   autoload :Request,         'rack/attack/request'
+  autoload :ResponseRegistry, 'rack/attack/response_registry'
 
   MATCHED = 'rack.attack.matched'
   MATCH_TYPE = 'rack.attack.match_type'
@@ -114,19 +115,19 @@ class Rack::Attack
     end
 
     def blocklisted_response=(res)
-      @blocklisted_responses[:default] = res
+      @blocklisted_response_registry.default = res
     end
 
     def blocklisted_response(name=nil)
-      @blocklisted_responses[name] || @blocklisted_responses[:default]
+      @blocklisted_response_registry[name]
     end
 
     def throttled_response=(res)
-      @throttled_responses[:default] = res
+      @throttled_response_registry.default = res
     end
 
     def throttled_response(name=nil)
-      @throttled_responses[name] || @throttled_responses[:default]
+      @throttled_response_registry[name]
     end
 
     def blacklisted_response=(res)
@@ -143,15 +144,15 @@ class Rack::Attack
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_responses = {
+  @blocklisted_response_registry = ResponseRegistry.new(
     default: lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  }
-  @throttled_responses   = {
+  )
+  @throttled_response_registry = ResponseRegistry.new(
     default: lambda {|env|
       retry_after = (env[MATCH_DATA] || {})[:period]
       [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
     }
-  }
+  )
 
   def initialize(app)
     @app = app
