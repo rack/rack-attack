@@ -31,6 +31,7 @@ class Rack::Attack
 
     def_delegator :@throttled_response_registry, :default=, :throttled_response=
     def_delegator :@throttled_response_registry, :[], :throttled_response
+    def_delegator :@throttled_response_registry, :[]=, :set_named_throttled_response
 
     attr_accessor :notifier
 

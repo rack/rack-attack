@@ -136,6 +136,15 @@ describe 'Rack::Attack' do
           Rack::Attack.throttled_response = lambda {|env|
             [418, {'Content-Type' => 'text/plain'}, ["I'm a teapot\n"]]
           }
+
+          Rack::Attack.set_named_throttled_response("too furious", lambda {|env|
+            [420, {'Content-Type' => 'text/plain'}, ["enhance your calm\n"]]
+          })
+
+          @furious_ip  = '2.3.4.5'
+          Rack::Attack.throttle("too furious", limit: 2, period: 60) do |req|
+            req.ip if req.post?
+          end
         end
 
         describe "when no named responses match" do
@@ -143,6 +152,14 @@ describe 'Rack::Attack' do
             5.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
             last_response.status.must_equal 418
             last_response.body.must_equal "I'm a teapot\n"
+          end
+        end
+
+        describe "when a named response does match" do
+          it "should return a custom blocklist response" do
+            3.times { post '/', {}, 'REMOTE_ADDR' => @furious_ip }
+            last_response.status.must_equal 420
+            last_response.body.must_equal "enhance your calm\n"
           end
         end
       end
