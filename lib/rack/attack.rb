@@ -27,6 +27,7 @@ class Rack::Attack
     extend Forwardable
     def_delegator :@blocklisted_response_registry, :default=, :blocklisted_response=
     def_delegator :@blocklisted_response_registry, :[], :blocklisted_response
+    def_delegator :@blocklisted_response_registry, :[]=, :set_named_blocklisted_response
 
     def_delegator :@throttled_response_registry, :default=, :throttled_response=
     def_delegator :@throttled_response_registry, :[], :throttled_response

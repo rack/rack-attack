@@ -48,6 +48,13 @@ describe 'Rack::Attack' do
           Rack::Attack.blocklisted_response = lambda {|env|
             [418, {'Content-Type' => 'text/plain'}, ["I'm a teapot\n"]]
           }
+
+          Rack::Attack.set_named_blocklisted_response("geoblocked", lambda {|env|
+            [451, {'Content-Type' => 'text/plain'}, ["lawyer says no\n"]]
+          })
+
+          @banstralia_ip = '61.2.3.4'
+          Rack::Attack.blocklist("geoblocked") {|req| req.ip == @banstralia_ip }
         end
 
         describe "when no named responses match" do
@@ -55,6 +62,14 @@ describe 'Rack::Attack' do
             get '/', {}, 'REMOTE_ADDR' => @bad_ip
             last_response.status.must_equal 418
             last_response.body.must_equal "I'm a teapot\n"
+          end
+        end
+
+        describe "when a named response does match" do
+          it "should return a custom blocklist response" do
+            get '/', {}, 'REMOTE_ADDR' => @banstralia_ip
+            last_response.status.must_equal 451
+            last_response.body.must_equal "lawyer says no\n"
           end
         end
       end
