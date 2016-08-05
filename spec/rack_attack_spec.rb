@@ -43,6 +43,22 @@ describe 'Rack::Attack' do
         last_request.env['rack.attack.match_type'].must_equal :blocklist
       end
 
+      describe "with a custom blocklisted response" do
+        before do
+          Rack::Attack.blocklisted_response = lambda {|env|
+            [418, {'Content-Type' => 'text/plain'}, ["I'm a teapot\n"]]
+          }
+        end
+
+        describe "when no named responses match" do
+          it "should return a custom blocklist response" do
+            get '/', {}, 'REMOTE_ADDR' => @bad_ip
+            last_response.status.must_equal 418
+            last_response.body.must_equal "I'm a teapot\n"
+          end
+        end
+      end
+
       allow_ok_requests
     end
 
