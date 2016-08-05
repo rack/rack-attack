@@ -118,8 +118,17 @@ describe 'Rack::Attack' do
     describe "throttled request" do
       before do
         @fast_ip = '1.2.3.4'
+        @furious_ip  = '2.3.4.5'
         4.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
       end
+
+      after do
+        Rack::Attack.cache.reset_count("too fast:#{@fast_ip}", 60)
+        Rack::Attack.cache.reset_count("too furious:#{@fast_ip}", 60)
+        Rack::Attack.cache.reset_count("too fast:#{@furious_ip}", 60)
+        Rack::Attack.cache.reset_count("too furious:#{@furious_ip}", 60)
+      end
+
       it "should return a throttled response" do
         get '/', {}, 'REMOTE_ADDR' => @fast_ip
         last_response.status.must_equal 429
