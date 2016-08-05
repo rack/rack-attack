@@ -1,7 +1,7 @@
 module Rack
   class Attack
     class ResponseRegistry
-      def initialize(default:)
+      def initialize(default)
         @responses = {default: default}
       end
 
