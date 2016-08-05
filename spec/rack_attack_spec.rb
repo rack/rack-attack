@@ -106,6 +106,76 @@ describe 'Rack::Attack' do
     end
   end
 
+  describe 'throttle' do
+    before do
+      Rack::Attack.throttle("too fast", limit: 4, period: 60) {|req| req.ip }
+    end
+
+    it('has a throttle') {
+      Rack::Attack.throttles.key?("too fast").must_equal true
+    }
+
+    describe "throttled request" do
+      before do
+        @fast_ip = '1.2.3.4'
+        4.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
+      end
+      it "should return a throttled response" do
+        get '/', {}, 'REMOTE_ADDR' => @fast_ip
+        last_response.status.must_equal 429
+        last_response.body.must_equal "Retry later\n"
+        last_response.headers["Retry-After"].must_equal "60"
+      end
+      it "should tag the env" do
+        last_request.env['rack.attack.matched'].must_equal "too fast"
+        last_request.env['rack.attack.match_type'].must_equal :throttle
+      end
+
+      describe "with a custom throttled response" do
+        before do
+          Rack::Attack.throttled_response = lambda {|env|
+            [418, {'Content-Type' => 'text/plain'}, ["I'm a teapot\n"]]
+          }
+        end
+
+        describe "when no named responses match" do
+          it "should return a custom blocklist response" do
+            5.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
+            last_response.status.must_equal 418
+            last_response.body.must_equal "I'm a teapot\n"
+          end
+        end
+      end
+
+      allow_ok_requests
+    end
+
+    describe "and safelist" do
+      before do
+        @good_ua = 'GoodUA'
+        @fast_ip = '1.2.3.4'
+        Rack::Attack.safelist("good ua") {|req| req.user_agent == @good_ua }
+      end
+
+      it('has a safelist'){ Rack::Attack.safelists.key?("good ua") }
+
+      describe "with a request match both safelist & throttled" do
+        before do
+          10.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip, 'HTTP_USER_AGENT' => @good_ua }
+        end
+
+        it "should allow safelists before blocklists" do
+          get '/', {}, 'REMOTE_ADDR' => @fast_ip, 'HTTP_USER_AGENT' => @good_ua
+          last_response.status.must_equal 200
+        end
+        it "should tag the env" do
+          last_request.env['rack.attack.matched'].must_equal 'good ua'
+          last_request.env['rack.attack.match_type'].must_equal :safelist
+        end
+      end
+    end
+  end
+
   describe '#blocklisted_response' do
     it 'should exist' do
       Rack::Attack.blocklisted_response.must_respond_to :call
