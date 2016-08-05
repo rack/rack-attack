@@ -108,7 +108,7 @@ describe 'Rack::Attack' do
 
   describe 'throttle' do
     before do
-      Rack::Attack.throttle("too fast", limit: 4, period: 60) {|req| req.ip }
+      Rack::Attack.throttle("too fast", limit: 4, period: 60000) {|req| req.ip }
     end
 
     it('has a throttle') {
@@ -124,7 +124,7 @@ describe 'Rack::Attack' do
         get '/', {}, 'REMOTE_ADDR' => @fast_ip
         last_response.status.must_equal 429
         last_response.body.must_equal "Retry later\n"
-        last_response.headers["Retry-After"].must_equal "60"
+        last_response.headers["Retry-After"].must_equal "60000"
       end
       it "should tag the env" do
         last_request.env['rack.attack.matched'].must_equal "too fast"
@@ -142,7 +142,7 @@ describe 'Rack::Attack' do
           })
 
           @furious_ip  = '2.3.4.5'
-          Rack::Attack.throttle("too furious", limit: 2, period: 60) do |req|
+          Rack::Attack.throttle("too furious", limit: 2, period: 60000) do |req|
             req.ip if req.post?
           end
         end
