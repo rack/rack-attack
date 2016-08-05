@@ -1,6 +1,10 @@
 require_relative 'spec_helper'
 
 describe 'Rack::Attack' do
+  before do
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+  end
+
   allow_ok_requests
 
   describe 'normalizing paths' do
@@ -120,13 +124,6 @@ describe 'Rack::Attack' do
         @fast_ip = '1.2.3.4'
         @furious_ip  = '2.3.4.5'
         4.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
-      end
-
-      after do
-        Rack::Attack.cache.reset_count("too fast:#{@fast_ip}", 60)
-        Rack::Attack.cache.reset_count("too furious:#{@fast_ip}", 60)
-        Rack::Attack.cache.reset_count("too fast:#{@furious_ip}", 60)
-        Rack::Attack.cache.reset_count("too furious:#{@furious_ip}", 60)
       end
 
       it "should return a throttled response" do
