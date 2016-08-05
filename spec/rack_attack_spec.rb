@@ -104,27 +104,25 @@ describe 'Rack::Attack' do
         end
       end
     end
-
-    describe '#blocklisted_response' do
-      it 'should exist' do
-        Rack::Attack.blocklisted_response.must_respond_to :call
-      end
-
-      it 'should give a deprication warning for blacklisted_response' do
-        _, stderror  = capture_io do
-          Rack::Attack.blacklisted_response
-        end
-        assert_match "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead.", stderror
-
-      end
-    end
-
-    describe '#throttled_response' do
-      it 'should exist' do
-        Rack::Attack.throttled_response.must_respond_to :call
-      end
-    end
-
   end
 
+  describe '#blocklisted_response' do
+    it 'should exist' do
+      Rack::Attack.blocklisted_response.must_respond_to :call
+    end
+
+    it 'should give a deprication warning for blacklisted_response' do
+      _, stderror  = capture_io do
+        Rack::Attack.blacklisted_response
+      end
+      assert_match "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead.", stderror
+
+    end
+  end
+
+  describe '#throttled_response' do
+    it 'should exist' do
+      Rack::Attack.throttled_response.must_respond_to :call
+    end
+  end
 end
