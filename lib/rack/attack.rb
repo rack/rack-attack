@@ -118,6 +118,8 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @blocklisted_response_registry = ResponseRegistry.new(default: @default_blocklisted_response)
+      @throttled_response_registry = ResponseRegistry.new(default: @default_throttled_response)
     end
 
     def blacklisted_response=(res)
@@ -134,15 +136,14 @@ class Rack::Attack
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response_registry = ResponseRegistry.new(
-    default: lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  )
-  @throttled_response_registry = ResponseRegistry.new(
-    default: lambda {|env|
-      retry_after = (env[MATCH_DATA] || {})[:period]
-      [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
-    }
-  )
+  @default_blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
+  @blocklisted_response_registry = ResponseRegistry.new(default: @default_blocklisted_response)
+
+  @default_throttled_response = lambda {|env|
+    retry_after = (env[MATCH_DATA] || {})[:period]
+    [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+  }
+  @throttled_response_registry = ResponseRegistry.new(default: @default_throttled_response)
 
   def initialize(app)
     @app = app
