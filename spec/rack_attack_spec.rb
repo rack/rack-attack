@@ -127,6 +127,7 @@ describe 'Rack::Attack' do
         last_response.headers["Retry-After"].must_equal "60"
       end
       it "should tag the env" do
+        get '/', {}, 'REMOTE_ADDR' => @fast_ip
         last_request.env['rack.attack.matched'].must_equal "too fast"
         last_request.env['rack.attack.match_type'].must_equal :throttle
       end
@@ -148,15 +149,16 @@ describe 'Rack::Attack' do
 
         describe "when no named responses match" do
           it "should return a custom blocklist response" do
-            5.times { get '/', {}, 'REMOTE_ADDR' => @fast_ip }
+            get '/', {}, 'REMOTE_ADDR' => @fast_ip
             last_response.status.must_equal 418
             last_response.body.must_equal "I'm a teapot\n"
           end
         end
 
         describe "when a named response does match" do
+          before { 2.times { post '/', {}, 'REMOTE_ADDR' => @furious_ip } }
           it "should return a custom blocklist response" do
-            3.times { post '/', {}, 'REMOTE_ADDR' => @furious_ip }
+            post '/', {}, 'REMOTE_ADDR' => @furious_ip
             last_response.status.must_equal 420
             last_response.body.must_equal "enhance your calm\n"
           end
