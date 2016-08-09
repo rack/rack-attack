@@ -1,6 +1,8 @@
 # Changlog
 
-## master (unreleased)
+## [New Releases here](https://github.com/kickstarter/rack-attack/releases)
+
+This file is kept for historical documentation.
 
 ## v5.0.0.beta1 4 July 2016
 
