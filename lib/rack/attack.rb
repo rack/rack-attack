@@ -68,9 +68,9 @@ class Rack::Attack
       end
     end
 
-    def whitelisted?
+    def whitelisted?(req)
       warn "[DEPRECATION] 'Rack::Attack.whitelisted?' is deprecated.  Please use 'safelisted?' instead."
-      safelisted?
+      safelisted?(req)
     end
 
     def blocklisted?(req)
@@ -79,9 +79,9 @@ class Rack::Attack
       end
     end
 
-    def blacklisted?
+    def blacklisted?(req)
       warn "[DEPRECATION] 'Rack::Attack.blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
-      blocklisted?
+      blocklisted?(req)
     end
 
     def throttled?(req)
