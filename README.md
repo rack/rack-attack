@@ -196,6 +196,27 @@ Rack::Attack.throttle('req/ip', :limit => limit_proc, :period => period_proc) do
 end
 ```
 
+### Throttle with leaky bucket
+[Leaky bucket](https://en.wikipedia.org/wiki/Leaky_bucket) is an algorithm that
+limits like a bucket with a hole. If you fill it slower then it leaks, it will
+not overflow. You can have short bursts, if they are accompanied with short
+pauses or if the leak rate is higher than the fill rate. This is exactly how
+this algorithm works. You specify the buckets capacity (which defines the
+burst), and the leak (the amount of requests allowed per second). It then leaks
+at a consistent rate, draining each bucket, resulting in a very natural throttle.
+
+``` ruby
+# Limit users to 2 requests per seconds with bursts/peaks of 300 requests
+Rack::Attack.throttle_with_leaky_bucket("req/ip", :leak => 2, :capacity => 300) do
+  req.ip
+end
+# or (identical)
+Rack::Attack.throttle_with_leaky_bucket("req/ip", :leak => 2, :capacity => 300, &:ip)
+```
+
+`leak` allows floats, but `capacity` has to be an integer. Both have to be larger
+than zero.
+
 ### Tracks
 
 ```ruby

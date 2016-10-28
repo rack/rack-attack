@@ -2,20 +2,22 @@ require 'rack'
 require 'forwardable'
 
 class Rack::Attack
-  autoload :Cache,           'rack/attack/cache'
-  autoload :PathNormalizer,  'rack/attack/path_normalizer'
-  autoload :Check,           'rack/attack/check'
-  autoload :Throttle,        'rack/attack/throttle'
-  autoload :Safelist,       'rack/attack/safelist'
-  autoload :Blocklist,       'rack/attack/blocklist'
-  autoload :Track,           'rack/attack/track'
-  autoload :StoreProxy,      'rack/attack/store_proxy'
-  autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
-  autoload :MemCacheProxy,   'rack/attack/store_proxy/mem_cache_proxy'
-  autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
-  autoload :Fail2Ban,        'rack/attack/fail2ban'
-  autoload :Allow2Ban,       'rack/attack/allow2ban'
-  autoload :Request,         'rack/attack/request'
+  autoload :Cache,                   'rack/attack/cache'
+  autoload :PathNormalizer,          'rack/attack/path_normalizer'
+  autoload :Check,                   'rack/attack/check'
+  autoload :Throttle,                'rack/attack/throttle'
+  autoload :ThrottleWithLeakyBucket, 'rack/attack/throttle_with_leaky_bucket'
+  autoload :LeakyBucket,             'rack/attack/leaky_bucket'
+  autoload :Safelist,                'rack/attack/safelist'
+  autoload :Blocklist,               'rack/attack/blocklist'
+  autoload :Track,                   'rack/attack/track'
+  autoload :StoreProxy,              'rack/attack/store_proxy'
+  autoload :DalliProxy,              'rack/attack/store_proxy/dalli_proxy'
+  autoload :MemCacheProxy,           'rack/attack/store_proxy/mem_cache_proxy'
+  autoload :RedisStoreProxy,         'rack/attack/store_proxy/redis_store_proxy'
+  autoload :Fail2Ban,                'rack/attack/fail2ban'
+  autoload :Allow2Ban,               'rack/attack/allow2ban'
+  autoload :Request,                 'rack/attack/request'
 
   class << self
 
@@ -43,14 +45,19 @@ class Rack::Attack
       self.throttles[name] = Throttle.new(name, options, block)
     end
 
+    def throttle_with_leaky_bucket(name, options, &block)
+      self.throttles_with_leaky_bucket[name] = ThrottleWithLeakyBucket.new(name, options, block)
+    end
+
     def track(name, options = {}, &block)
       self.tracks[name] = Track.new(name, options, block)
     end
 
     def safelists; @safelists ||= {}; end
     def blocklists; @blocklists ||= {}; end
-    def throttles;  @throttles  ||= {}; end
-    def tracks;     @tracks     ||= {}; end
+    def throttles;  @throttles ||= {}; end
+    def throttles_with_leaky_bucket; @throttles_with_leaky_bucket ||= {}; end
+    def tracks; @tracks ||= {}; end
 
     def whitelists
       warn "[DEPRECATION] 'Rack::Attack.whitelists' is deprecated.  Please use 'safelists' instead."
@@ -90,6 +97,12 @@ class Rack::Attack
       end
     end
 
+    def throttled_with_leaky_bucket?(req)
+      throttles_with_leaky_bucket.any? do |_, throttle_with_leaky_bucket|
+        throttle_with_leaky_bucket[req]
+      end
+    end
+
     def tracked?(req)
       tracks.each_value do |tracker|
         tracker[req]
@@ -105,7 +118,7 @@ class Rack::Attack
     end
 
     def clear!
-      @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @safelists, @blocklists, @throttles, @tracks, @throttles_with_leaky_bucket = {}, {}, {}, {}, {}
     end
 
     def blacklisted_response=(res)
@@ -142,6 +155,8 @@ class Rack::Attack
       self.class.blocklisted_response.call(env)
     elsif throttled?(req)
       self.class.throttled_response.call(env)
+    elsif throttled_with_leaky_bucket?(req)
+      self.class.throttled_response.call(env)
     else
       tracked?(req)
       @app.call(env)
@@ -152,5 +167,6 @@ class Rack::Attack
   def_delegators self, :safelisted?,
                        :blocklisted?,
                        :throttled?,
+                       :throttled_with_leaky_bucket?,
                        :tracked?
 end
