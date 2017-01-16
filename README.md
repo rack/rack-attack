@@ -8,9 +8,9 @@ Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache
 
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
-[![Gem Version](https://badge.fury.io/rb/rack-attack.png)](http://badge.fury.io/rb/rack-attack)
-[![Build Status](https://travis-ci.org/kickstarter/rack-attack.png?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
-[![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.png)](https://codeclimate.com/github/kickstarter/rack-attack)
+[![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](http://badge.fury.io/rb/rack-attack)
+[![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
+[![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
 
 
 ## Getting started
