@@ -24,6 +24,7 @@ describe Rack::Attack::Cache do
     ActiveSupport::Cache::MemoryStore.new,
     ActiveSupport::Cache::DalliStore.new("127.0.0.1"),
     ActiveSupport::Cache::RedisStore.new("127.0.0.1"),
+    ActiveSupport::Cache::RedisStore.new(%w[127.0.0.1/1 127.0.0.1/2]),
     ActiveSupport::Cache::MemCacheStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
