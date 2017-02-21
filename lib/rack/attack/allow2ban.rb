@@ -7,7 +7,7 @@ module Rack
           'allow2ban'
         end
 
-        # everything the same here except we return only return true
+        # everything is the same here except we only return true
         # (blocking the request) if they have tripped the limit.
         def fail!(discriminator, bantime, findtime, maxretry)
           count = cache.count("#{key_prefix}:count:#{discriminator}", findtime)
