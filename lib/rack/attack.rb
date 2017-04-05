@@ -2,24 +2,38 @@ require 'rack'
 require 'forwardable'
 
 class Rack::Attack
-  autoload :Cache,           'rack/attack/cache'
-  autoload :PathNormalizer,  'rack/attack/path_normalizer'
-  autoload :Check,           'rack/attack/check'
-  autoload :Throttle,        'rack/attack/throttle'
-  autoload :Safelist,       'rack/attack/safelist'
-  autoload :Blocklist,       'rack/attack/blocklist'
-  autoload :Track,           'rack/attack/track'
-  autoload :StoreProxy,      'rack/attack/store_proxy'
-  autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
-  autoload :MemCacheProxy,   'rack/attack/store_proxy/mem_cache_proxy'
-  autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
-  autoload :Fail2Ban,        'rack/attack/fail2ban'
-  autoload :Allow2Ban,       'rack/attack/allow2ban'
-  autoload :Request,         'rack/attack/request'
+  autoload :Cache,            'rack/attack/cache'
+  autoload :PathNormalizer,   'rack/attack/path_normalizer'
+  autoload :Check,            'rack/attack/check'
+  autoload :Throttle,         'rack/attack/throttle'
+  autoload :Safelist,         'rack/attack/safelist'
+  autoload :Blocklist,        'rack/attack/blocklist'
+  autoload :Track,            'rack/attack/track'
+  autoload :StoreProxy,       'rack/attack/store_proxy'
+  autoload :DalliProxy,       'rack/attack/store_proxy/dalli_proxy'
+  autoload :MemCacheProxy,    'rack/attack/store_proxy/mem_cache_proxy'
+  autoload :RedisStoreProxy,  'rack/attack/store_proxy/redis_store_proxy'
+  autoload :Fail2Ban,         'rack/attack/fail2ban'
+  autoload :Allow2Ban,        'rack/attack/allow2ban'
+  autoload :Request,          'rack/attack/request'
+  autoload :ResponseRegistry, 'rack/attack/response_registry'
+
+  MATCHED = 'rack.attack.matched'
+  MATCH_TYPE = 'rack.attack.match_type'
+  MATCH_DISCRIMINATOR = 'rack.attack.match_discriminator'
+  MATCH_DATA = 'rack.attack.match_data'
 
   class << self
+    extend Forwardable
+    def_delegator :@blocklisted_response_registry, :default=, :blocklisted_response=
+    def_delegator :@blocklisted_response_registry, :[], :blocklisted_response
+    def_delegator :@blocklisted_response_registry, :[]=, :set_named_blocklisted_response
 
-    attr_accessor :notifier, :blocklisted_response, :throttled_response
+    def_delegator :@throttled_response_registry, :default=, :throttled_response=
+    def_delegator :@throttled_response_registry, :[], :throttled_response
+    def_delegator :@throttled_response_registry, :[]=, :set_named_throttled_response
+
+    attr_accessor :notifier
 
     def safelist(name, &block)
       self.safelists[name] = Safelist.new(name, block)
@@ -106,6 +120,8 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @blocklisted_response_registry = ResponseRegistry.new(@default_blocklisted_response)
+      @throttled_response_registry = ResponseRegistry.new(@default_throttled_response)
     end
 
     def blacklisted_response=(res)
@@ -122,11 +138,14 @@ class Rack::Attack
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  @throttled_response   = lambda {|env|
-    retry_after = (env['rack.attack.match_data'] || {})[:period]
+  @default_blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
+  @blocklisted_response_registry = ResponseRegistry.new(@default_blocklisted_response)
+
+  @default_throttled_response = lambda {|env|
+    retry_after = (env[MATCH_DATA] || {})[:period]
     [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
   }
+  @throttled_response_registry = ResponseRegistry.new(@default_throttled_response)
 
   def initialize(app)
     @app = app
@@ -139,9 +158,9 @@ class Rack::Attack
     if safelisted?(req)
       @app.call(env)
     elsif blocklisted?(req)
-      self.class.blocklisted_response.call(env)
+      self.class.blocklisted_response(env[MATCHED]).call(env)
     elsif throttled?(req)
-      self.class.throttled_response.call(env)
+      self.class.throttled_response(env[MATCHED]).call(env)
     else
       tracked?(req)
       @app.call(env)

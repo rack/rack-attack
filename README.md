@@ -274,6 +274,21 @@ For responses that did not exceed a throttle limit, Rack::Attack annotates the e
 request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 ```
 
+### Custom responses for specific blocklist/throttle matches
+
+Specific custom responses can be set for individual matches with
+`#set_named_blocklisted_response` and `#set_named_throttled_response`
+
+```ruby
+Rack::Attack.set_named_blocklisted_response("geoblocked", lambda do |env|
+  [451, {'Content-Type' => 'text/plain'}, ["lawyer says no\n"]]
+end)
+
+Rack::Attack.blocklist("geoblocked") do |req|
+  ["Banstralia", "New Zeabanned"].include? MyCountryDB.find_by_ip(req.ip)
+end
+```
+
 ## Logging & Instrumentation
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
