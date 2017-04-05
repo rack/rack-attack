@@ -35,6 +35,10 @@ module Rack
       def delete(unprefixed_key)
         store.delete("#{prefix}:#{unprefixed_key}")
       end
+	
+      def ttl(unprefixed_key)
+        store.ttl("#{prefix}:#{unprefixed_key}")
+      end
 
       private
 
