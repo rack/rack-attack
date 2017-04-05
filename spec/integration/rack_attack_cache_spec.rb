@@ -23,11 +23,14 @@ describe Rack::Attack::Cache do
   cache_stores = [
     ActiveSupport::Cache::MemoryStore.new,
     ActiveSupport::Cache::DalliStore.new("127.0.0.1"),
+    ActiveSupport::Cache::DalliStore.new("127.0.0.1", pool_size: 2),
     ActiveSupport::Cache::RedisStore.new("127.0.0.1"),
+    ActiveSupport::Cache::RedisStore.new("127.0.0.1", pool_size: 2),
     ActiveSupport::Cache::MemCacheStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
-    Redis::Store.new
+    Redis::Store.new,
+    ConnectionPool.new { Redis::Store.new },
   ]
 
   cache_stores.each do |store|
