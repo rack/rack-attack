@@ -4,7 +4,7 @@ module Rack
       PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy]
 
       ACTIVE_SUPPORT_WRAPPER_CLASSES = Set.new(['ActiveSupport::Cache::MemCacheStore', 'ActiveSupport::Cache::RedisStore']).freeze
-      ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Dalli::Client', 'MemCache']).freeze
+      ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Dalli::Client', 'MemCache', 'ConnectionPool']).freeze
 
       def self.build(store)
         client = unwrap_active_support_stores(store)
