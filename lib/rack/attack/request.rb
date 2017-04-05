@@ -1,3 +1,5 @@
+require 'ipaddr'
+
 # Rack::Attack::Request is the same as ::Rack::Request by default.
 #
 # This is a safe place to add custom helper methods to the request object
@@ -14,6 +16,10 @@
 module Rack
   class Attack
     class Request < ::Rack::Request
+      # A memoized instance of an IPAddr, derived from the "ip" value.
+      def ip_addr
+        @ip_addr ||= IPAddr.new(ip)
+      end
     end
   end
 end

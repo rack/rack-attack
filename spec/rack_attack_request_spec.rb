@@ -15,5 +15,13 @@ describe 'Rack::Attack' do
     end
 
     allow_ok_requests
+
+    it 'lazily instantiates and memoizes an IPAddr object around the ip' do
+      req = Rack::Attack::Request.new({'REMOTE_ADDR' => '1.2.3.4'})
+      ip_addr = req.ip_addr
+
+      ip_addr.must_be_instance_of IPAddr
+      ip_addr.must_be_same_as req.ip_addr
+    end
   end
 end
