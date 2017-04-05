@@ -274,6 +274,13 @@ For responses that did not exceed a throttle limit, Rack::Attack annotates the e
 request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
 ```
 
+Special headers are added to all throttled responses:
+
+```ruby
+  X-RateLimit-Limit       - number of total allowed requests in a given :period
+  X-RateLimit-Remaining   - number of requests left until end of :period
+  X-RateLimit-Reset       - time remaining to clear counters
+```
 ## Logging & Instrumentation
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
