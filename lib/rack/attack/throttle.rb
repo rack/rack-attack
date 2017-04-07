@@ -21,6 +21,8 @@ module Rack
         discriminator = block[req]
         return false unless discriminator
 
+        (req.env['rack.attack.hit_names'] ||= []) << name
+
         current_period = period.respond_to?(:call) ? period.call(req) : period
         current_limit  = limit.respond_to?(:call) ? limit.call(req) : limit
         key            = "#{name}:#{discriminator}"
