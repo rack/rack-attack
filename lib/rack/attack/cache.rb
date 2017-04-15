@@ -50,7 +50,7 @@ module Rack
 
         # NB: Some stores return nil when incrementing uninitialized values
         if result.nil?
-          store.write(key, 1, :expires_in => expires_in)
+          store.write(key, 1, :expires_in => expires_in, :raw => true)
         end
         result || 1
       end
