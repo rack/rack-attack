@@ -5,13 +5,13 @@ module Rack
 
       attr_reader :filter
 
-      def initialize(name, options = {}, block)
+      def initialize(name, options = {}, &block)
         options[:type] = :track
 
         if options[:limit] && options[:period]
-          @filter = Throttle.new(name, options, block)
+          @filter = Throttle.new(name, options, &block)
         else
-          @filter = Check.new(name, options, block)
+          @filter = Check.new(name, options, &block)
         end
       end
 
