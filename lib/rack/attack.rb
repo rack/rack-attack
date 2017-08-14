@@ -2,9 +2,10 @@ require 'rack'
 require 'forwardable'
 
 class Rack::Attack
+  ERROR_MESSAGE = 'Must pass callback/block for rule `%s`'.freeze
+
   autoload :Cache,           'rack/attack/cache'
   autoload :PathNormalizer,  'rack/attack/path_normalizer'
-  autoload :HandlerError,    'rack/attack/error'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
   autoload :Safelist,        'rack/attack/safelist'

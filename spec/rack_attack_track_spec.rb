@@ -16,7 +16,6 @@ describe 'Rack::Attack.track' do
   end
 
   before do
-
     Rack::Attack.track("everything"){|req| true }
   end
   allow_ok_requests

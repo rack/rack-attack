@@ -3,7 +3,7 @@ module Rack
     class Check
       attr_reader :name, :block, :type
       def initialize(name, options = {}, &block)
-        raise Rack::Attack::HandlerError.new(name) unless Kernel.block_given?
+        raise ArgumentError.new(format(Rack::Attack::ERROR_MESSAGE, name)) unless Kernel.block_given?
         @name, @block = name, block
         @type = options.fetch(:type, nil)
       end

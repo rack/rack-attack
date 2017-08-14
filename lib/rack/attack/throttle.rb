@@ -4,7 +4,7 @@ module Rack
       MANDATORY_OPTIONS = [:limit, :period]
       attr_reader :name, :limit, :period, :block, :type
       def initialize(name, options, &block)
-        raise Rack::Attack::HandlerError unless Kernel.block_given?
+        raise ArgumentError.new(format(Rack::Attack::ERROR_MESSAGE, name)) unless Kernel.block_given?
 
         @name, @block = name, block
         MANDATORY_OPTIONS.each do |opt|
