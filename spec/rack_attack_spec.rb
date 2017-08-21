@@ -93,7 +93,5 @@ describe 'Rack::Attack' do
         Rack::Attack.throttled_response.must_respond_to :call
       end
     end
-
   end
-
 end

@@ -2,11 +2,13 @@ require 'rack'
 require 'forwardable'
 
 class Rack::Attack
+  ERROR_MESSAGE = 'Must pass callback/block for rule `%s`'.freeze
+
   autoload :Cache,           'rack/attack/cache'
   autoload :PathNormalizer,  'rack/attack/path_normalizer'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
-  autoload :Safelist,       'rack/attack/safelist'
+  autoload :Safelist,        'rack/attack/safelist'
   autoload :Blocklist,       'rack/attack/blocklist'
   autoload :Track,           'rack/attack/track'
   autoload :StoreProxy,      'rack/attack/store_proxy'
@@ -22,7 +24,7 @@ class Rack::Attack
     attr_accessor :notifier, :blocklisted_response, :throttled_response
 
     def safelist(name, &block)
-      self.safelists[name] = Safelist.new(name, block)
+      self.safelists[name] = Safelist.new(name, &block)
     end
 
     def whitelist(name, &block)
@@ -31,7 +33,7 @@ class Rack::Attack
     end
 
     def blocklist(name, &block)
-      self.blocklists[name] = Blocklist.new(name, block)
+      self.blocklists[name] = Blocklist.new(name, &block)
     end
 
     def blacklist(name, &block)
@@ -40,14 +42,14 @@ class Rack::Attack
     end
 
     def throttle(name, options, &block)
-      self.throttles[name] = Throttle.new(name, options, block)
+      self.throttles[name] = Throttle.new(name, options, &block)
     end
 
     def track(name, options = {}, &block)
-      self.tracks[name] = Track.new(name, options, block)
+      self.tracks[name] = Track.new(name, options, &block)
     end
 
-    def safelists; @safelists ||= {}; end
+    def safelists;  @safelists ||= {}; end
     def blocklists; @blocklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
