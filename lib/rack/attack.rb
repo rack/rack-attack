@@ -47,7 +47,7 @@ class Rack::Attack
       self.tracks[name] = Track.new(name, options, block)
     end
 
-    def safelists; @safelists ||= {}; end
+    def safelists;  @safelists  ||= {}; end
     def blocklists; @blocklists ||= {}; end
     def throttles;  @throttles  ||= {}; end
     def tracks;     @tracks     ||= {}; end
