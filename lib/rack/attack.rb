@@ -6,7 +6,7 @@ class Rack::Attack
   autoload :PathNormalizer,  'rack/attack/path_normalizer'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
-  autoload :Safelist,       'rack/attack/safelist'
+  autoload :Safelist,        'rack/attack/safelist'
   autoload :Blocklist,       'rack/attack/blocklist'
   autoload :Track,           'rack/attack/track'
   autoload :StoreProxy,      'rack/attack/store_proxy'
