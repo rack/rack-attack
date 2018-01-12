@@ -100,7 +100,7 @@ class Rack::Attack
     end
 
     def instrument(req)
-      notifier.instrument('rack.attack', req) if notifier
+      notifier.instrument('rack.attack', request: req) if notifier
     end
 
     def cache
