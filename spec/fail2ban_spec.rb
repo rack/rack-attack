@@ -73,7 +73,7 @@ describe 'Rack::Attack.Fail2Ban' do
 
         it 'resets fail count' do
           key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
-          @cache.store.read(key).must_equal nil
+          @cache.store.read(key).must_be_nil
         end
 
         it 'IP is not banned' do
