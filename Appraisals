@@ -1,25 +1,16 @@
-appraise 'activesupport3.2' do
-  gem 'activesupport', '~> 3.2.0'
-  gem 'actionpack', '~> 3.2.0'
+appraise 'rails_5-1' do
+  gem 'activesupport', '~> 5.1.0'
+  gem 'actionpack', '~> 5.1.0'
 end
 
-appraise 'activesupport4.0' do
-  gem 'activesupport', '~> 4.0.0'
-  gem 'actionpack', '~> 4.0.0'
+appraise 'rails_5-0' do
+  gem 'activesupport', '~> 5.0.0'
+  gem 'actionpack', '~> 5.0.0'
 end
 
-appraise 'activesupport4.1' do
-  gem 'activesupport', '~> 4.1.0'
-  gem 'actionpack', '~> 4.1.0'
-end
-
-appraise 'activesupport4.2' do
+appraise 'rails_4-2' do
   gem 'activesupport', '~> 4.2.0'
   gem 'actionpack', '~> 4.2.0'
-end
-
-appraise 'dalli1.1' do
-  gem 'dalli', '1.1.5'
 end
 
 appraise 'dalli2' do
