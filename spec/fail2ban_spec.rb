@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+
 describe 'Rack::Attack.Fail2Ban' do
   before do
     # Use a long findtime; failures due to cache key rotation less likely
@@ -7,6 +8,7 @@ describe 'Rack::Attack.Fail2Ban' do
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     @f2b_options = {:bantime => @bantime, :findtime => @findtime, :maxretry => 2}
+
     Rack::Attack.blocklist('pentest') do |req|
       Rack::Attack::Fail2Ban.filter(req.ip, @f2b_options){req.query_string =~ /OMGHAX/}
     end
@@ -23,6 +25,7 @@ describe 'Rack::Attack.Fail2Ban' do
     describe 'making failing request' do
       describe 'when not at maxretry' do
         before { get '/?foo=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+
         it 'fails' do
           last_response.status.must_equal 403
         end
@@ -136,6 +139,5 @@ describe 'Rack::Attack.Fail2Ban' do
         @cache.store.read(key).must_equal 1
       end
     end
-
   end
 end

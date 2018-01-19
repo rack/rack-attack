@@ -18,7 +18,9 @@ describe 'Rack::Attack.track' do
   before do
     Rack::Attack.track("everything"){ |req| true }
   end
+
   allow_ok_requests
+
   it "should tag the env" do
     get '/'
     last_request.env['rack.attack.matched'].must_equal 'everything'
@@ -34,6 +36,7 @@ describe 'Rack::Attack.track' do
       ActiveSupport::Notifications.subscribe("rack.attack") do |*args|
         Counter.incr
       end
+
       get "/"
     end
 
