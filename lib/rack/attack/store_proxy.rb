@@ -20,7 +20,10 @@ module Rack
         # We also want to use the underlying Dalli client instead of ::ActiveSupport::Cache::MemCacheStore,
         # and the MemCache client if using Rails 3.x
 
-        client = store.instance_variable_get(:@data)
+        if store.instance_variable_defined?(:@data)
+          client = store.instance_variable_get(:@data)
+        end
+
         if ACTIVE_SUPPORT_WRAPPER_CLASSES.include?(store.class.to_s) && ACTIVE_SUPPORT_CLIENTS.include?(client.class.to_s)
           client
         else

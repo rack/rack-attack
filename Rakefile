@@ -10,7 +10,6 @@ namespace :test do
 
   Rake::TestTask.new(:integration) do |t|
     t.pattern = "spec/integration/*_spec.rb"
-    t.warning = false
   end
 end
 
