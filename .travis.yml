@@ -1,13 +1,19 @@
 language: ruby
 rvm:
-  - 2.1.9
-  - 2.2.5
-  - 2.3.1
+  - 2.5.0
+  - 2.4.3
+  - 2.3.6
+  - 2.2.9
   - jruby-9.1.14.0
 
+before_install:
+  - gem update --system
+  - gem install bundler
+
 gemfile:
-  - gemfiles/activesupport4.1.gemfile
-  - gemfiles/activesupport4.2.gemfile
+  - gemfiles/rails_5_1.gemfile
+  - gemfiles/rails_5_0.gemfile
+  - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
 
 services:
