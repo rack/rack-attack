@@ -99,11 +99,11 @@ describe 'Rack::Attack.throttle with block retuning nil' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
     it 'should not set the counter' do
       key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
-      Rack::Attack.cache.store.read(key).must_equal nil
+      assert_nil Rack::Attack.cache.store.read(key)
     end
 
     it 'should not populate throttle data' do
-      last_request.env['rack.attack.throttle_data'].must_equal nil
+      assert_nil last_request.env['rack.attack.throttle_data']
     end
   end
 end

@@ -92,7 +92,7 @@ describe Rack::Attack::Cache do
           store.write(@key, "foobar", :expires_in => @expires_in)
           @cache.read('cache-test-key').must_equal "foobar"
           store.delete(@key)
-          @cache.read('cache-test-key').must_equal nil
+          assert_nil @cache.read('cache-test-key')
         end
       end
 
@@ -113,7 +113,7 @@ describe Rack::Attack::Cache do
           period_key, _ = @cache.send(:key_and_expiry, 'cache-test-key', period)
           store.read(period_key).to_i.must_equal 1
           @cache.reset_count(unprefixed_key, period)
-          store.read(period_key).must_equal nil
+          assert_nil store.read(period_key)
         end
       end
     end
