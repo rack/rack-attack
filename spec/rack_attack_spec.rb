@@ -33,11 +33,13 @@ describe 'Rack::Attack' do
 
     describe "a bad request" do
       before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
+
       it "should return a blocklist response" do
         get '/', {}, 'REMOTE_ADDR' => @bad_ip
         last_response.status.must_equal 403
         last_response.body.must_equal "Forbidden\n"
       end
+
       it "should tag the env" do
         last_request.env['rack.attack.matched'].must_equal "ip #{@bad_ip}"
         last_request.env['rack.attack.match_type'].must_equal :blocklist
@@ -52,7 +54,7 @@ describe 'Rack::Attack' do
         Rack::Attack.safelist("good ua") {|req| req.user_agent == @good_ua }
       end
 
-      it('has a safelist'){ Rack::Attack.safelists.key?("good ua") }
+      it('has a safelist') { Rack::Attack.safelists.key?("good ua") }
 
       it('has a whitelist with a deprication warning') {
         _, stderror  = capture_io do
@@ -63,10 +65,12 @@ describe 'Rack::Attack' do
 
       describe "with a request match both safelist & blocklist" do
         before { get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua }
+
         it "should allow safelists before blocklists" do
           get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua
           last_response.status.must_equal 200
         end
+
         it "should tag the env" do
           last_request.env['rack.attack.matched'].must_equal 'good ua'
           last_request.env['rack.attack.match_type'].must_equal :safelist
@@ -84,7 +88,6 @@ describe 'Rack::Attack' do
           Rack::Attack.blacklisted_response
         end
         assert_match "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead.", stderror
-
       end
     end
 
@@ -93,7 +96,5 @@ describe 'Rack::Attack' do
         Rack::Attack.throttled_response.must_respond_to :call
       end
     end
-
   end
-
 end
