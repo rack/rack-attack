@@ -26,7 +26,7 @@ Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it t
 gem 'rack-attack'
 ```
 Tell your app to use the Rack::Attack middleware.
-For Rails 3+ apps:
+For Rails apps:
 
 ```ruby
 # In config/application.rb

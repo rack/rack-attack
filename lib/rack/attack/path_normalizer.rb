@@ -15,11 +15,8 @@ class Rack::Attack
   end
 
   PathNormalizer = if defined?(::ActionDispatch::Journey::Router::Utils)
-                 # For Rails 4+ apps
+                 # For Rails apps
                  ::ActionDispatch::Journey::Router::Utils
-               elsif defined?(::Journey::Router::Utils)
-                 # for Rails 3.2
-                 ::Journey::Router::Utils
                else
                  FallbackPathNormalizer
                end
