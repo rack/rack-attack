@@ -1,7 +1,8 @@
 module Rack
   class Attack
     class Throttle
-      MANDATORY_OPTIONS = [:limit, :period]
+      MANDATORY_OPTIONS = [:limit, :period].freeze
+
       attr_reader :name, :limit, :period, :block, :type
       def initialize(name, options, block)
         @name, @block = name, block
