@@ -115,7 +115,7 @@ class Rack::Attack
 
     def blacklisted_response
       warn "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead."
-      self.blocklisted_response
+      blocklisted_response
     end
 
   end
