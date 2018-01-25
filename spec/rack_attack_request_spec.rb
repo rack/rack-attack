@@ -14,6 +14,6 @@ describe 'Rack::Attack' do
       end
     end
 
-    allow_ok_requests
+    it_allows_ok_requests
   end
 end
