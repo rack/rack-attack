@@ -35,7 +35,6 @@ describe 'Rack::Attack' do
       before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
 
       it "should return a blocklist response" do
-        get '/', {}, 'REMOTE_ADDR' => @bad_ip
         last_response.status.must_equal 403
         last_response.body.must_equal "Forbidden\n"
       end
@@ -67,7 +66,6 @@ describe 'Rack::Attack' do
         before { get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua }
 
         it "should allow safelists before blocklists" do
-          get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua
           last_response.status.must_equal 200
         end
 
