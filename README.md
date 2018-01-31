@@ -187,7 +187,7 @@ end
 
 # Throttle login attempts for a given email parameter to 6 reqs/minute
 # Return the email as a discriminator on POST /login requests
-Rack::Attack.throttle('logins/email', limit: 6, period: 60.seconds) do |req|
+Rack::Attack.throttle('logins/email', limit: 6, period: 60) do |req|
   req.params['email'] if req.path == '/login' && req.post?
 end
 
@@ -209,7 +209,7 @@ Rack::Attack.track("special_agent") do |req|
 end
 
 # Supports optional limit and period, triggers the notification only when the limit is reached.
-Rack::Attack.track("special_agent", limit: 6, period: 60.seconds) do |req|
+Rack::Attack.track("special_agent", limit: 6, period: 60) do |req|
   req.user_agent == "SpecialAgent"
 end
 
