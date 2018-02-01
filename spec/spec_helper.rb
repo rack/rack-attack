@@ -19,7 +19,10 @@ class MiniTest::Spec
 
   include Rack::Test::Methods
 
-  after { Rack::Attack.clear! }
+  after do
+    Rack::Attack.clear!
+    Rack::Attack.instance_variable_set(:@cache, nil)
+  end
 
   def app
     Rack::Builder.new {

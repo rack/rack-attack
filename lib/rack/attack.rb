@@ -2,6 +2,9 @@ require 'rack'
 require 'forwardable'
 
 class Rack::Attack
+  class MisconfiguredStoreError < StandardError; end
+  class MissingStoreError < StandardError; end
+
   autoload :Cache,           'rack/attack/cache'
   autoload :PathNormalizer,  'rack/attack/path_normalizer'
   autoload :Check,           'rack/attack/check'

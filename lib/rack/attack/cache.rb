@@ -46,15 +46,20 @@ module Rack
       end
 
       def do_count(key, expires_in)
-        result = store.increment(key, 1, :expires_in => expires_in)
+        if store.nil?
+          raise Rack::Attack::MissingStoreError
+        elsif !store.respond_to?(:increment)
+          raise Rack::Attack::MisconfiguredStoreError, "Store needs to respond to #increment"
+        else
+          result = store.increment(key, 1, :expires_in => expires_in)
 
-        # NB: Some stores return nil when incrementing uninitialized values
-        if result.nil?
-          store.write(key, 1, :expires_in => expires_in)
+          # NB: Some stores return nil when incrementing uninitialized values
+          if result.nil?
+            store.write(key, 1, :expires_in => expires_in)
+          end
+          result || 1
         end
-        result || 1
       end
-
     end
   end
 end
