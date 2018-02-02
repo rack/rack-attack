@@ -15,6 +15,10 @@ rescue LoadError
   #nothing to do here
 end
 
+if RUBY_ENGINE == "ruby"
+  require "byebug"
+end
+
 class MiniTest::Spec
 
   include Rack::Test::Methods

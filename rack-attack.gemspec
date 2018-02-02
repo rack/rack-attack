@@ -41,4 +41,9 @@ Gem::Specification.new do |s|
   #
   # See https://github.com/guard/guard-minitest/pull/131
   s.add_development_dependency 'guard'
+
+  # byebug only works with MRI
+  if RUBY_ENGINE == "ruby"
+    s.add_development_dependency 'byebug'
+  end
 end
