@@ -33,4 +33,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'dalli'
   s.add_development_dependency 'connection_pool'
   s.add_development_dependency 'memcache-client'
+
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'guard-minitest'
+  # Need to explicitly depend on guard because guard-minitest doesn't declare
+  # the dependency intentionally
+  #
+  # See https://github.com/guard/guard-minitest/pull/131
+  s.add_development_dependency 'guard'
 end

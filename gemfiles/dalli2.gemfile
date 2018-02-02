@@ -4,10 +4,4 @@ source "https://rubygems.org"
 
 gem "dalli", "~> 2.0"
 
-group :development do
-  gem "pry"
-  gem "guard"
-  gem "guard-minitest"
-end
-
 gemspec path: "../"
