@@ -40,9 +40,9 @@ Or for Rackup files:
 use Rack::Attack
 ```
 
-Add a `rack-attack.rb` file to `config/initializers/`:
+Add a `rack_attack.rb` file to `config/initializers/`:
 ```ruby
-# In config/initializers/rack-attack.rb
+# In config/initializers/rack_attack.rb
 class Rack::Attack
   # your custom configuration...
 end
