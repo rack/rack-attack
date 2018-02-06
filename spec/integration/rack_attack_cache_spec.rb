@@ -27,7 +27,8 @@ describe Rack::Attack::Cache do
     ActiveSupport::Cache::MemCacheStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
-    Redis::Store.new
+    Redis::Store.new,
+    Redis.new
   ]
 
   cache_stores.each do |store|
