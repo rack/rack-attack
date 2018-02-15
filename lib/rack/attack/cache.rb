@@ -3,6 +3,7 @@ module Rack
     class Cache
 
       attr_accessor :prefix
+      attr_reader :last_epoch_time
 
       def initialize
         self.store = ::Rails.cache if defined?(::Rails.cache)
@@ -39,10 +40,10 @@ module Rack
       private
 
       def key_and_expiry(unprefixed_key, period)
-        epoch_time = Time.now.to_i
+        @last_epoch_time = Time.now.to_i
         # Add 1 to expires_in to avoid timing error: http://git.io/i1PHXA
-        expires_in = (period - (epoch_time % period) + 1).to_i
-        ["#{prefix}:#{(epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
+        expires_in = (period - (@last_epoch_time % period) + 1).to_i
+        ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
       end
 
       def do_count(key, expires_in)

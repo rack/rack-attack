@@ -26,12 +26,15 @@ module Rack
         current_limit  = limit.respond_to?(:call) ? limit.call(req) : limit
         key            = "#{name}:#{discriminator}"
         count          = cache.count(key, current_period)
+        epoch_time     = cache.last_epoch_time
 
         data = {
           :count => count,
           :period => current_period,
-          :limit => current_limit
+          :limit => current_limit,
+          :epoch_time => epoch_time
         }
+
         (req.env['rack.attack.throttle_data'] ||= {})[name] = data
 
         (count > current_limit).tap do |throttled|
