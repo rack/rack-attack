@@ -1,13 +1,15 @@
 module Rack
   class Attack
     class Throttle
-      MANDATORY_OPTIONS = [:limit, :period].freeze
+      MANDATORY_OPTIONS = %i[limit period].freeze
 
       attr_reader :name, :limit, :period, :block, :type
+
       def initialize(name, options, block)
-        @name, @block = name, block
+        @name = name
+        @block = block
         MANDATORY_OPTIONS.each do |opt|
-          raise ArgumentError.new("Must pass #{opt.inspect} option") unless options[opt]
+          raise ArgumentError, "Must pass #{opt.inspect} option" unless options[opt]
         end
         @limit  = options[:limit]
         @period = options[:period].respond_to?(:call) ? options[:period] : options[:period].to_i
@@ -28,9 +30,9 @@ module Rack
         count          = cache.count(key, current_period)
 
         data = {
-          :count => count,
-          :period => current_period,
-          :limit => current_limit
+          count: count,
+          period: current_period,
+          limit: current_limit
         }
         (req.env['rack.attack.throttle_data'] ||= {})[name] = data
 

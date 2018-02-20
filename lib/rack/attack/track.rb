@@ -8,11 +8,11 @@ module Rack
       def initialize(name, options = {}, block)
         options[:type] = :track
 
-        if options[:limit] && options[:period]
-          @filter = Throttle.new(name, options, block)
-        else
-          @filter = Check.new(name, options, block)
-        end
+        @filter = if options[:limit] && options[:period]
+                    Throttle.new(name, options, block)
+                  else
+                    Check.new(name, options, block)
+                  end
       end
 
       def_delegator :@filter, :[]

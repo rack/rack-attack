@@ -21,11 +21,10 @@ class Rack::Attack
   autoload :Request,         'rack/attack/request'
 
   class << self
-
     attr_accessor :notifier, :blocklisted_response, :throttled_response
 
     def safelist(name, &block)
-      self.safelists[name] = Safelist.new(name, block)
+      safelists[name] = Safelist.new(name, block)
     end
 
     def whitelist(name, &block)
@@ -34,7 +33,7 @@ class Rack::Attack
     end
 
     def blocklist(name, &block)
-      self.blocklists[name] = Blocklist.new(name, block)
+      blocklists[name] = Blocklist.new(name, block)
     end
 
     def blacklist(name, &block)
@@ -43,11 +42,11 @@ class Rack::Attack
     end
 
     def throttle(name, options, &block)
-      self.throttles[name] = Throttle.new(name, options, block)
+      throttles[name] = Throttle.new(name, options, block)
     end
 
     def track(name, options = {}, &block)
-      self.tracks[name] = Track.new(name, options, block)
+      tracks[name] = Track.new(name, options, block)
     end
 
     def safelists;  @safelists  ||= {}; end
@@ -66,7 +65,7 @@ class Rack::Attack
     end
 
     def safelisted?(req)
-      safelists.any? do |name, safelist|
+      safelists.any? do |_name, safelist|
         safelist[req]
       end
     end
@@ -77,7 +76,7 @@ class Rack::Attack
     end
 
     def blocklisted?(req)
-      blocklists.any? do |name, blocklist|
+      blocklists.any? do |_name, blocklist|
         blocklist[req]
       end
     end
@@ -88,7 +87,7 @@ class Rack::Attack
     end
 
     def throttled?(req)
-      throttles.any? do |name, throttle|
+      throttles.any? do |_name, throttle|
         throttle[req]
       end
     end
@@ -108,27 +107,29 @@ class Rack::Attack
     end
 
     def clear!
-      @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @safelists = {}
+      @blocklists = {}
+      @throttles = {}
+      @tracks = {}
     end
 
     def blacklisted_response=(res)
       warn "[DEPRECATION] 'Rack::Attack.blacklisted_response=' is deprecated.  Please use 'blocklisted_response=' instead."
-      self.blocklisted_response=(res)
+      self.blocklisted_response = res
     end
 
     def blacklisted_response
       warn "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead."
       blocklisted_response
     end
-
   end
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  @throttled_response   = lambda {|env|
+  @blocklisted_response = ->(_env) { [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+  @throttled_response   = lambda { |env|
     retry_after = (env['rack.attack.match_data'] || {})[:period]
-    [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+    [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
   }
 
   def initialize(app)
@@ -152,8 +153,9 @@ class Rack::Attack
   end
 
   extend Forwardable
-  def_delegators self, :safelisted?,
-                       :blocklisted?,
-                       :throttled?,
-                       :tracked?
+  def_delegators self,
+                 :safelisted?,
+                 :blocklisted?,
+                 :throttled?,
+                 :tracked?
 end

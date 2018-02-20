@@ -5,7 +5,6 @@ module Rack
         super
         @type = :blocklist
       end
-
     end
   end
 end
