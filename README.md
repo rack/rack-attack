@@ -40,9 +40,9 @@ Or for Rackup files:
 use Rack::Attack
 ```
 
-Add a `rack-attack.rb` file to `config/initializers/`:
+Add a `rack_attack.rb` file to `config/initializers/`:
 ```ruby
-# In config/initializers/rack-attack.rb
+# In config/initializers/rack_attack.rb
 class Rack::Attack
   # your custom configuration...
 end
@@ -237,7 +237,8 @@ Rack::Attack.throttled_response = lambda do |env|
   # NB: you have access to the name and other data about the matched throttle
   #  env['rack.attack.matched'],
   #  env['rack.attack.match_type'],
-  #  env['rack.attack.match_data']
+  #  env['rack.attack.match_data'],
+  #  env['rack.attack.match_discriminator']
 
   # Using 503 because it may make attacker think that they have successfully
   # DOSed the site. Rack::Attack returns 429 for throttling by default

@@ -9,7 +9,7 @@ describe 'Rack::Attack.throttle' do
 
   it('should have a throttle') { Rack::Attack.throttles.key?('ip/sec') }
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   describe 'a single request' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
@@ -54,7 +54,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
     Rack::Attack.throttle('ip/sec', :limit => lambda { |req| 1 }, :period => @period) { |req| req.ip }
   end
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   describe 'a single request' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
@@ -78,7 +78,7 @@ describe 'Rack::Attack.throttle with period as proc' do
     Rack::Attack.throttle('ip/sec', :limit => lambda { |req| 1 }, :period => lambda { |req| @period }) { |req| req.ip }
   end
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   describe 'a single request' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
@@ -102,7 +102,7 @@ describe 'Rack::Attack.throttle with block retuning nil' do
     Rack::Attack.throttle('ip/sec', :limit => 1, :period => @period) { |_| nil }
   end
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   describe 'a single request' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
