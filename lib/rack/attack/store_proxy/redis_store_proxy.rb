@@ -5,7 +5,14 @@ module Rack
     module StoreProxy
       class RedisStoreProxy < SimpleDelegator
         def self.handle?(store)
-          defined?(::Redis::Store) && store.is_a?(::Redis::Store)
+          # Using const_defined? for now.
+          #
+          # Go back to use defined? once this ruby issue is
+          # fixed and released:
+          # https://bugs.ruby-lang.org/issues/14407
+          #
+          # defined?(::Redis::Store) && store.is_a?(::Redis::Store)
+          const_defined?("::Redis::Store") && store.is_a?(::Redis::Store)
         end
 
         def initialize(store)
