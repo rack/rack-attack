@@ -19,7 +19,7 @@ describe 'Rack::Attack.track' do
     Rack::Attack.track("everything"){ |req| true }
   end
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   it "should tag the env" do
     get '/'

@@ -28,7 +28,7 @@ class MiniTest::Spec
     }.to_app
   end
 
-  def self.allow_ok_requests
+  def self.it_allows_ok_requests
     it "must allow ok requests" do
       get '/', {}, 'REMOTE_ADDR' => '127.0.0.1'
       last_response.status.must_equal 200

@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 
 describe 'Rack::Attack' do
-  allow_ok_requests
+  it_allows_ok_requests
 
   describe 'normalizing paths' do
     before do
@@ -44,7 +44,7 @@ describe 'Rack::Attack' do
         last_request.env['rack.attack.match_type'].must_equal :blocklist
       end
 
-      allow_ok_requests
+      it_allows_ok_requests
     end
 
     describe "and safelist" do
