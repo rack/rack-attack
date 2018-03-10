@@ -42,7 +42,8 @@ describe 'Rack::Attack.throttle' do
     end
 
     it 'should set a Retry-After header' do
-      last_response.headers['Retry-After'].must_equal @period.to_s
+      retry_after = 60 - (Time.now.to_i % 60)
+      last_response.headers['Retry-After'].must_equal retry_after.to_s
     end
   end
 end
