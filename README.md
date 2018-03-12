@@ -37,6 +37,7 @@ Or for Rackup files:
 
 ```ruby
 # In config.ru
+require "rack/attack"
 use Rack::Attack
 ```
 
