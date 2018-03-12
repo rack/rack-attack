@@ -7,7 +7,7 @@ rvm:
   - 2.4.3
   - 2.3.6
   - 2.2.9
-  - jruby-9.1.14.0
+  - jruby-9.1.16.0
 
 before_install:
   - gem update --system
