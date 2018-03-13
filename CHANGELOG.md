@@ -1,16 +1,27 @@
-# Changlog
+# Changelog
+All notable changes to this project will be documented in this file.
 
-## [New Releases here](https://github.com/kickstarter/rack-attack/releases)
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
 
-This file is kept for historical documentation.
 
-## v5.0.0.beta1 4 July 2016
+## v5.1.0 - 10 Mar 2018
+
+  - Fixes edge case bug when using ruby 2.5 and redis #253 (#271)
+  - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs (#274)
+  - Removed legacy code that was originally intended for Rails 3 apps (#264)
+
+## v5.0.1 - 11 Aug 2016
+
+  - Fixes arguments passed to deprecated internal methods. (#198)
+
+## v5.0.0 - 4 July 2016
 
   - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. (#181,
     thanks @renee-travisci).  To upgrade and fix deprecations, find and replace instances of `whitelist` and `blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`, note that it will have values like `:safelist`/`:blocklist`.
   - Remove test coverage for unsupported ruby dependencies: ruby 2.0, activesupport 3.2/4.0, and dalli 1.
 
-## v4.4.1 17 Feb 2016
+## v4.4.1 - 17 Feb 2016
 
   - Fix a bug affecting apps using Redis::Store and ActiveSupport that could generate an error
     saying dalli was a required dependency. I learned all about ActiveSupport autoloading. (#165)
