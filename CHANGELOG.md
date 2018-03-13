@@ -1,9 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
-
 
 ## v5.1.0 - 10 Mar 2018
 
@@ -15,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
   - Fixes arguments passed to deprecated internal methods. (#198)
 
-## v5.0.0 - 4 July 2016
+## v5.0.0 - 9 Aug 2016
 
   - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. (#181,
     thanks @renee-travisci).  To upgrade and fix deprecations, find and replace instances of `whitelist` and `blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`, note that it will have values like `:safelist`/`:blocklist`.
