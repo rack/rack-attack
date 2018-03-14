@@ -1,6 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
 
 ## [5.1.0] - 2018-03-10
 
@@ -91,6 +93,7 @@ All notable changes to this project will be documented in this file.
  - Remove unused variable
  - Extract mandatory options to constants
 
+[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...HEAD/
 [5.1.0]: https://github.com/kickstarter/rack-attack/compare/v5.0.1...v5.1.0/
 [5.0.1]: https://github.com/kickstarter/rack-attack/compare/v5.0.0...v5.0.1/
 [5.0.0]: https://github.com/kickstarter/rack-attack/compare/v4.4.1...v5.0.0/
