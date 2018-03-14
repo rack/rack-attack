@@ -85,8 +85,25 @@ All notable changes to this project will be documented in this file.
  - Fail2Ban filtering. See README for details. Thx @madlep!
  - Introduce StoreProxy to more cleanly abstract cache stores. Thx @madlep.
 
-## [2.1.1] - 2013-05-16
+## 2.1.1 - 2013-05-16
  - Start keeping changelog
  - Fix `Redis::CommandError` when using ActiveSupport numeric extensions (e.g. `1.second`)
  - Remove unused variable
  - Extract mandatory options to constants
+
+[5.1.0]: https://github.com/kickstarter/rack-attack/compare/v5.0.1...v5.1.0/
+[5.0.1]: https://github.com/kickstarter/rack-attack/compare/v5.0.0...v5.0.1/
+[5.0.0]: https://github.com/kickstarter/rack-attack/compare/v4.4.1...v5.0.0/
+[4.4.1]: https://github.com/kickstarter/rack-attack/compare/v4.4.0...v4.4.1/
+[4.4.0]: https://github.com/kickstarter/rack-attack/compare/v4.3.1...v4.4.0/
+[4.3.1]: https://github.com/kickstarter/rack-attack/compare/v4.3.0...v4.3.1/
+[4.3.0]: https://github.com/kickstarter/rack-attack/compare/v4.2.0...v4.3.0/
+[4.2.0]: https://github.com/kickstarter/rack-attack/compare/v4.1.1...v4.2.0/
+[4.1.1]: https://github.com/kickstarter/rack-attack/compare/v4.1.0...v4.1.1/
+[4.1.0]: https://github.com/kickstarter/rack-attack/compare/v4.0.1...v4.1.0/
+[4.0.1]: https://github.com/kickstarter/rack-attack/compare/v4.0.0...v4.0.1/
+[4.0.0]: https://github.com/kickstarter/rack-attack/compare/v3.0.0...v4.0.0/
+[3.0.0]: https://github.com/kickstarter/rack-attack/compare/v2.3.0...v3.0.0/
+[2.3.0]: https://github.com/kickstarter/rack-attack/compare/v2.2.1...v2.3.0/
+[2.2.1]: https://github.com/kickstarter/rack-attack/compare/v2.2.0...v2.2.1/
+[2.2.0]: https://github.com/kickstarter/rack-attack/compare/v2.1.1...v2.2.0/
