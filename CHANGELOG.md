@@ -6,28 +6,28 @@ All notable changes to this project will be documented in this file.
 
 ## [5.1.0] - 2018-03-10
 
-  - Fixes edge case bug when using ruby 2.5 and redis #253 (#271)
-  - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs (#274)
-  - Removed legacy code that was originally intended for Rails 3 apps (#264)
+  - Fixes edge case bug when using ruby 2.5 and redis [#253](https://github.com/kickstarter/rack-attack/issues/253)([#271](https://github.com/kickstarter/rack-attack/issues/271))
+  - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs ([#274](https://github.com/kickstarter/rack-attack/issues/274))
+  - Removed legacy code that was originally intended for Rails 3 apps ([#264](https://github.com/kickstarter/rack-attack/issues/264))
 
 ## [5.0.1] - 2016-08-11
 
-  - Fixes arguments passed to deprecated internal methods. (#198)
+  - Fixes arguments passed to deprecated internal methods. ([#198](https://github.com/kickstarter/rack-attack/issues/198))
 
 ## [5.0.0] - 2016-08-09
 
-  - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. (#181,
+  - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. ([#181](https://github.com/kickstarter/rack-attack/issues/181),
     thanks @renee-travisci).  To upgrade and fix deprecations, find and replace instances of `whitelist` and `blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`, note that it will have values like `:safelist`/`:blocklist`.
   - Remove test coverage for unsupported ruby dependencies: ruby 2.0, activesupport 3.2/4.0, and dalli 1.
 
 ## [4.4.1] - 2016-02-17
 
   - Fix a bug affecting apps using Redis::Store and ActiveSupport that could generate an error
-    saying dalli was a required dependency. I learned all about ActiveSupport autoloading. (#165)
+    saying dalli was a required dependency. I learned all about ActiveSupport autoloading. ([#165](https://github.com/kickstarter/rack-attack/issues/165))
 
 ## [4.4.0] - 2016-02-10
 
-  - New: support for MemCacheStore (#153). Thanks @elhu.
+  - New: support for MemCacheStore ([#153](https://github.com/kickstarter/rack-attack/issues/153)). Thanks @elhu.
   - Some documentation and test harness improvements.
 
 ## [4.3.1] - 2015-12-18
