@@ -10,7 +10,14 @@ rvm:
   - jruby-9.1.16.0
 
 before_install:
-  - gem update --system
+  # For jruby we need to stick with rubygems 2.7.4 until
+  # https://github.com/rubygems/rubygems/issues/2188
+  # is fixed and released.
+  #
+  # Without this workaround, for jruby builds, rubygems
+  # activates jruby stdlib minitest (v5.4.1) instead of the
+  # bundled version (v5.11.3).
+  - if [ "$TRAVIS_RUBY_VERSION" = "jruby-9.1.16.0" ]; then gem update --system 2.7.4; else gem update --system; fi
   - gem install bundler
 
 gemfile:
