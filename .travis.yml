@@ -17,7 +17,7 @@ before_install:
   # Without this workaround, for jruby builds, rubygems
   # activates jruby stdlib minitest (v5.4.1) instead of the
   # bundled version (v5.11.3).
-  - if [ "$TRAVIS_RUBY_VERSION" = "jruby-9.1.16.0" ]; then gem update --system 2.7.4; else gem update --system; fi
+  - if [ "${TRAVIS_RUBY_VERSION:0:5}" = "jruby" ]; then gem update --system 2.7.4; else gem update --system; fi
   - gem install bundler
 
 gemfile:
