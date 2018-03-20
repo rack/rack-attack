@@ -23,7 +23,9 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.0.0'
 
   s.add_dependency 'rack'
+
   s.add_development_dependency 'minitest'
+  s.add_development_dependency "minitest-stub-const"
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'appraisal'
