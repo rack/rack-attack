@@ -62,4 +62,54 @@ describe "#throttle" do
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8", "X-APIKey" => "private-secret"
     assert_equal 429, last_response.status
   end
+
+  it "supports period to be dynamic" do
+    # Could be used to have different rate limits for authorized
+    # vs general requests
+    period_proc = lambda do |request|
+      if request.get_header("X-APIKey") == "private-secret"
+        10
+      else
+        30
+      end
+    end
+
+    Rack::Attack.throttle("by ip", limit: 1, period: period_proc) do |request|
+      request.ip
+    end
+
+    # Using Time#at to align to start/end of periods exactly
+    # to achieve consistenty in different test runs
+
+    Timecop.travel(Time.at(0)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 200, last_response.status
+
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 429, last_response.status
+    end
+
+    Timecop.travel(Time.at(10)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 429, last_response.status
+    end
+
+    Timecop.travel(Time.at(30)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 200, last_response.status
+    end
+
+    Timecop.travel(Time.at(0)) do
+      get "/", {}, "REMOTE_ADDR" => "5.6.7.8", "X-APIKey" => "private-secret"
+      assert_equal 200, last_response.status
+
+      get "/", {}, "REMOTE_ADDR" => "5.6.7.8", "X-APIKey" => "private-secret"
+      assert_equal 429, last_response.status
+    end
+
+    Timecop.travel(Time.at(10)) do
+      get "/", {}, "REMOTE_ADDR" => "5.6.7.8", "X-APIKey" => "private-secret"
+      assert_equal 200, last_response.status
+    end
+  end
 end
