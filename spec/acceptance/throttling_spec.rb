@@ -36,7 +36,7 @@ describe "#throttle" do
     # Could be used to have different rate limits for authorized
     # vs general requests
     limit_proc = lambda do |request|
-      if request.get_header("X-APIKey") == "private-secret"
+      if request.env["X-APIKey"] == "private-secret"
         2
       else
         1
@@ -67,7 +67,7 @@ describe "#throttle" do
     # Could be used to have different rate limits for authorized
     # vs general requests
     period_proc = lambda do |request|
-      if request.get_header("X-APIKey") == "private-secret"
+      if request.env["X-APIKey"] == "private-secret"
         10
       else
         30
