@@ -9,18 +9,64 @@ describe "Cache store config when using fail2ban" do
     end
   end
 
-  it "gives error if no store was configured" do
-    assert_raises do
-      get "/"
+  it "gives semantic error if no store was configured" do
+    assert_raises(Rack::Attack::MissingStoreError) do
+      get "/private-place"
     end
   end
 
-  it "gives error if incompatible store was configured" do
-    Rack::Attack.cache.store = Object.new
+  it "gives semantic error if store is missing #read method" do
+    basic_store_class = Class.new do
+      def write(key, value)
+      end
 
-    assert_raises do
-      get "/"
+      def increment(key, count, options = {})
+      end
     end
+
+    Rack::Attack.cache.store = basic_store_class.new
+
+    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+      get "/private-place"
+    end
+
+    assert_equal "Store needs to respond to #read", raised_exception.message
+  end
+
+  it "gives semantic error if store is missing #write method" do
+    basic_store_class = Class.new do
+      def read(key)
+      end
+
+      def increment(key, count, options = {})
+      end
+    end
+
+    Rack::Attack.cache.store = basic_store_class.new
+
+    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+      get "/private-place"
+    end
+
+    assert_equal "Store needs to respond to #write", raised_exception.message
+  end
+
+  it "gives semantic error if store is missing #increment method" do
+    basic_store_class = Class.new do
+      def read(key)
+      end
+
+      def write(key, value)
+      end
+    end
+
+    Rack::Attack.cache.store = basic_store_class.new
+
+    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+      get "/private-place"
+    end
+
+    assert_equal "Store needs to respond to #increment", raised_exception.message
   end
 
   it "works with any object that responds to #read, #write and #increment" do
