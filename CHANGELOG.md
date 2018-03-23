@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Throw helpful error message when using `allow2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
+- Throw helpful error message when using `fail2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
 
 ## [5.1.0] - 2018-03-10
 

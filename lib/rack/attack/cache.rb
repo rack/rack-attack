@@ -20,6 +20,9 @@ module Rack
       end
 
       def read(unprefixed_key)
+        enforce_store_presence!
+        enforce_store_method_presence!(:read)
+
         store.read("#{prefix}:#{unprefixed_key}")
       end
 
@@ -46,18 +49,29 @@ module Rack
       end
 
       def do_count(key, expires_in)
+        enforce_store_presence!
+        enforce_store_method_presence!(:increment)
+
+        result = store.increment(key, 1, :expires_in => expires_in)
+
+        # NB: Some stores return nil when incrementing uninitialized values
+        if result.nil?
+          enforce_store_method_presence!(:write)
+
+          store.write(key, 1, :expires_in => expires_in)
+        end
+        result || 1
+      end
+
+      def enforce_store_presence!
         if store.nil?
           raise Rack::Attack::MissingStoreError
-        elsif !store.respond_to?(:increment)
-          raise Rack::Attack::MisconfiguredStoreError, "Store needs to respond to #increment"
-        else
-          result = store.increment(key, 1, :expires_in => expires_in)
+        end
+      end
 
-          # NB: Some stores return nil when incrementing uninitialized values
-          if result.nil?
-            store.write(key, 1, :expires_in => expires_in)
-          end
-          result || 1
+      def enforce_store_method_presence!(method_name)
+        if !store.respond_to?(method_name)
+          raise Rack::Attack::MisconfiguredStoreError, "Store needs to respond to ##{method_name}"
         end
       end
     end
