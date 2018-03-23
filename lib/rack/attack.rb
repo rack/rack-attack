@@ -1,12 +1,13 @@
 require 'rack'
 require 'forwardable'
+require 'rack/attack/path_normalizer'
+require 'rack/attack/request'
 
 class Rack::Attack
   class MisconfiguredStoreError < StandardError; end
   class MissingStoreError < StandardError; end
 
   autoload :Cache,           'rack/attack/cache'
-  autoload :PathNormalizer,  'rack/attack/path_normalizer'
   autoload :Check,           'rack/attack/check'
   autoload :Throttle,        'rack/attack/throttle'
   autoload :Safelist,        'rack/attack/safelist'
@@ -18,7 +19,6 @@ class Rack::Attack
   autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
   autoload :Fail2Ban,        'rack/attack/fail2ban'
   autoload :Allow2Ban,       'rack/attack/allow2ban'
-  autoload :Request,         'rack/attack/request'
 
   class << self
 
