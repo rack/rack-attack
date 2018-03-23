@@ -6,7 +6,7 @@ describe 'Rack::Attack.Fail2Ban' do
   before do
     # Use a long findtime; failures due to cache key rotation less likely
     @cache = Rack::Attack.cache
-    @findtime = 60
+    @findtime = 60.0
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     @f2b_options = { bantime: @bantime, findtime: @findtime, maxretry: 2 }
@@ -33,7 +33,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
+          key = "rack::attack:#{(Time.now.to_i / @findtime).to_f}:fail2ban:count:1.2.3.4"
           @cache.store.read(key).must_equal 1
         end
 
@@ -55,7 +55,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
+          key = "rack::attack:#{(Time.now.to_i / @findtime).to_f}:fail2ban:count:1.2.3.4"
           @cache.store.read(key).must_equal 2
         end
 

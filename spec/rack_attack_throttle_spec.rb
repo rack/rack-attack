@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 describe 'Rack::Attack.throttle' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60.0 # Use a long period; failures due to cache key rotation less likely
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |req| req.ip }
   end
@@ -17,7 +17,7 @@ describe 'Rack::Attack.throttle' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{(Time.now.to_i / @period).to_f}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 
@@ -51,7 +51,7 @@ end
 
 describe 'Rack::Attack.throttle with limit as proc' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60.0 # Use a long period; failures due to cache key rotation less likely
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: @period) { |req| req.ip }
   end
@@ -62,7 +62,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{(Time.now.to_i / @period).to_f}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 
@@ -75,7 +75,7 @@ end
 
 describe 'Rack::Attack.throttle with period as proc' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60.0 # Use a long period; failures due to cache key rotation less likely
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: lambda { |_req| @period }) { |req| req.ip }
   end
@@ -86,7 +86,7 @@ describe 'Rack::Attack.throttle with period as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{(Time.now.to_i / @period).to_f}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 

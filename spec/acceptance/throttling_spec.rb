@@ -20,7 +20,7 @@ describe "#throttle" do
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 429, last_response.status
-    assert_equal "60", last_response.headers["Retry-After"]
+    assert_equal "60.0", last_response.headers["Retry-After"]
     assert_equal "Retry later\n", last_response.body
 
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8"

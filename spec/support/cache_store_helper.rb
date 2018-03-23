@@ -69,7 +69,7 @@ class Minitest::Spec
       # Freeze time during these statement to be sure that the key used by rack attack is the same
       # we pre-calculate in local variable `key`
       Timecop.freeze do
-        key = "rack::attack:#{Time.now.to_i}:by ip:1.2.3.4"
+        key = "rack::attack:#{Time.now.to_i.to_f}:by ip:1.2.3.4"
 
         get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
       end

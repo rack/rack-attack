@@ -12,7 +12,7 @@ module Rack
           raise ArgumentError, "Must pass #{opt.inspect} option" unless options[opt]
         end
         @limit  = options[:limit]
-        @period = options[:period].respond_to?(:call) ? options[:period] : options[:period].to_i
+        @period = options[:period].respond_to?(:call) ? options[:period] : options[:period].to_f
         @type   = options.fetch(:type, :throttle)
       end
 
