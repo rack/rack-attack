@@ -121,14 +121,25 @@ class Rack::Attack
       blocklisted_response
     end
 
+    def retry_after(period)
+      if period
+        (period - (Time.now.to_i % period)).to_s
+      else
+        ''
+      end
+    end
   end
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  @throttled_response   = lambda {|env|
-    retry_after = (env['rack.attack.match_data'] || {})[:period]
-    [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+  @blocklisted_response = lambda { |env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
+  @throttled_response   = lambda { |env|
+    period = (env['rack.attack.match_data'] || {})[:period]
+    [
+      429,
+      { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after(period) },
+      ["Retry later\n"]
+    ]
   }
 
   def initialize(app)
