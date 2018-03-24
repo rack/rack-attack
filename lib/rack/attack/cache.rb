@@ -1,7 +1,6 @@
 module Rack
   class Attack
     class Cache
-
       attr_accessor :prefix
 
       def initialize
@@ -27,11 +26,11 @@ module Rack
       end
 
       def write(unprefixed_key, value, expires_in)
-        store.write("#{prefix}:#{unprefixed_key}", value, :expires_in => expires_in)
+        store.write("#{prefix}:#{unprefixed_key}", value, expires_in: expires_in)
       end
 
       def reset_count(unprefixed_key, period)
-        key, _ = key_and_expiry(unprefixed_key, period)
+        key, _expires_in = key_and_expiry(unprefixed_key, period)
         store.delete(key)
       end
 

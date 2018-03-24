@@ -5,7 +5,6 @@ module Rack
         super
         @type = :safelist
       end
-
     end
   end
 end

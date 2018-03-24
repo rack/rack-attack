@@ -28,14 +28,14 @@ module Rack
         rescue Dalli::DalliError
         end
 
-        def write(key, value, options={})
+        def write(key, value, options = {})
           with do |client|
             client.set(key, value, options.fetch(:expires_in, 0), raw: true)
           end
         rescue Dalli::DalliError
         end
 
-        def increment(key, amount, options={})
+        def increment(key, amount, options = {})
           with do |client|
             client.incr(key, amount, options.fetch(:expires_in, 0), amount)
           end
@@ -52,13 +52,11 @@ module Rack
         private
 
         def stub_with_if_missing
-          unless __getobj__.respond_to?(:with)
-            class << self
-              def with; yield __getobj__; end
-            end
+          return if __getobj__.respond_to?(:with)
+          class << self
+            def with; yield __getobj__; end
           end
         end
-
       end
     end
   end
