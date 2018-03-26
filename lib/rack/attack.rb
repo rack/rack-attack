@@ -39,7 +39,7 @@ class Rack::Attack
 
     def blocklist_ip(ip)
       @ip_blocklists ||= []
-      ip_blocklist_proc = lambda { |request| request.ip == ip }
+      ip_blocklist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
       @ip_blocklists << Blocklist.new(nil, ip_blocklist_proc)
     end
 
