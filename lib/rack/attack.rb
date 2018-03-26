@@ -37,6 +37,12 @@ class Rack::Attack
       self.blocklists[name] = Blocklist.new(name, block)
     end
 
+    def blocklist_ip(ip)
+      @ip_blocklists ||= []
+      ip_blocklist_proc = lambda { |request| request.ip == ip }
+      @ip_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+    end
+
     def blacklist(name, &block)
       warn "[DEPRECATION] 'Rack::Attack.blacklist' is deprecated.  Please use 'blocklist' instead."
       blocklist(name, &block)
@@ -77,9 +83,8 @@ class Rack::Attack
     end
 
     def blocklisted?(req)
-      blocklists.any? do |name, blocklist|
-        blocklist[req]
-      end
+      ip_blocklists.any? { |blocklist| blocklist.match?(req) } ||
+        blocklists.any? { |_name, blocklist| blocklist.match?(req) }
     end
 
     def blacklisted?(req)
@@ -109,6 +114,7 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @ip_blocklists = []
     end
 
     def blacklisted_response=(res)
@@ -121,6 +127,11 @@ class Rack::Attack
       blocklisted_response
     end
 
+    private
+
+    def ip_blocklists
+      @ip_blocklists ||= []
+    end
   end
 
   # Set defaults
