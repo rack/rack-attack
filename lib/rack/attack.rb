@@ -2,6 +2,7 @@ require 'rack'
 require 'forwardable'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
+require "ipaddr"
 
 class Rack::Attack
   class MisconfiguredStoreError < StandardError; end
