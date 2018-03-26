@@ -45,7 +45,7 @@ class Rack::Attack
 
     def safelist_ip(ip)
       @ip_safelists ||= []
-      ip_safelist_proc = lambda { |request| ip == request.ip }
+      ip_safelist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
       @ip_safelists << Safelist.new(nil, ip_safelist_proc)
     end
 
