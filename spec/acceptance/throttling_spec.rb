@@ -112,4 +112,48 @@ describe "#throttle" do
       assert_equal 200, last_response.status
     end
   end
+
+  it "notifies when the request is throttled" do
+    Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
+      request.ip
+    end
+
+    notification_matched = nil
+    notification_type = nil
+    notification_data = nil
+    notification_discriminator = nil
+
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, request|
+      notification_matched = request.env["rack.attack.matched"]
+      notification_type = request.env["rack.attack.match_type"]
+      notification_data = request.env['rack.attack.match_data']
+      notification_discriminator = request.env['rack.attack.match_discriminator']
+    end
+
+    get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
+
+    assert_equal 200, last_response.status
+    assert_nil notification_matched
+    assert_nil notification_type
+    assert_nil notification_data
+    assert_nil notification_discriminator
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 200, last_response.status
+    assert_nil notification_matched
+    assert_nil notification_type
+    assert_nil notification_data
+    assert_nil notification_discriminator
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 429, last_response.status
+    assert_equal "by ip", notification_matched
+    assert_equal :throttle, notification_type
+    assert_equal 60, notification_data[:period]
+    assert_equal 1, notification_data[:limit]
+    assert_equal 2, notification_data[:count]
+    assert_equal "1.2.3.4", notification_discriminator
+  end
 end
