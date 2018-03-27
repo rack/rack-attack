@@ -17,6 +17,7 @@ module Rack
         }
       end
 
+      alias_method :match?, :[]
     end
   end
 end

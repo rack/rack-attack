@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Shorthand for blocking an IP address `Rack::Attack.blocklist_ip("1.2.3.4")`
+- Shorthand for blocking an IP subnet `Rack::Attack.blocklist_ip("1.2.0.0/16")`
+- Shorthand for safelisting an IP address `Rack::Attack.safelist_ip("5.6.7.8")`
+- Shorthand for safelisting an IP subnet `Rack::Attack.safelist_ip("5.6.0.0/16")`
 - Throw helpful error message when using `allow2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
 - Throw helpful error message when using `fail2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
 

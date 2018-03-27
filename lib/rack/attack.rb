@@ -2,6 +2,7 @@ require 'rack'
 require 'forwardable'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
+require "ipaddr"
 
 class Rack::Attack
   class MisconfiguredStoreError < StandardError; end
@@ -37,6 +38,18 @@ class Rack::Attack
       self.blocklists[name] = Blocklist.new(name, block)
     end
 
+    def blocklist_ip(ip)
+      @ip_blocklists ||= []
+      ip_blocklist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
+      @ip_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+    end
+
+    def safelist_ip(ip)
+      @ip_safelists ||= []
+      ip_safelist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
+      @ip_safelists << Safelist.new(nil, ip_safelist_proc)
+    end
+
     def blacklist(name, &block)
       warn "[DEPRECATION] 'Rack::Attack.blacklist' is deprecated.  Please use 'blocklist' instead."
       blocklist(name, &block)
@@ -66,9 +79,8 @@ class Rack::Attack
     end
 
     def safelisted?(req)
-      safelists.any? do |name, safelist|
-        safelist[req]
-      end
+      ip_safelists.any? { |safelist| safelist.match?(req) } ||
+        safelists.any? { |_name, safelist| safelist.match?(req) }
     end
 
     def whitelisted?(req)
@@ -77,9 +89,8 @@ class Rack::Attack
     end
 
     def blocklisted?(req)
-      blocklists.any? do |name, blocklist|
-        blocklist[req]
-      end
+      ip_blocklists.any? { |blocklist| blocklist.match?(req) } ||
+        blocklists.any? { |_name, blocklist| blocklist.match?(req) }
     end
 
     def blacklisted?(req)
@@ -109,6 +120,8 @@ class Rack::Attack
 
     def clear!
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      @ip_blocklists = []
+      @ip_safelists = []
     end
 
     def blacklisted_response=(res)
@@ -121,6 +134,15 @@ class Rack::Attack
       blocklisted_response
     end
 
+    private
+
+    def ip_blocklists
+      @ip_blocklists ||= []
+    end
+
+    def ip_safelists
+      @ip_safelists ||= []
+    end
   end
 
   # Set defaults
