@@ -65,13 +65,49 @@ __IMPORTANT__: By default, rack-attack won't perform any blocking or throttling,
 *Tip:* The example in the wiki is a great way to get started:
 [Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
 
-Define safelists, blocklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
-these go in an initializer in `config/initializers/`.
-A [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request) object is passed to the block (named 'req' in the examples).
+Define rules by calling `Rack::Attack` public methods, in a place that runs when your application is being initialized. For rails applications this means creating a new file named `config/initializers/rack_attack.rb` and writing your rules in there.
 
-### Safelists
+### Safelisting
+
+Safelists have the most precedence, so any request matching a safelist would be allowed despite matching any number of blocklists or throttles.
+
+#### `safelist_ip(ip_address_string)`
+
+E.g.
 
 ```ruby
+# config/initializers/rack_attack.rb (for rails app)
+
+Rack::Attack.safelist_ip("5.6.7.8")
+```
+
+#### `safelist_ip(ip_subnet_string)`
+
+E.g.
+
+```ruby
+# config/initializers/rack_attack.rb (for rails app)
+
+Rack::Attack.safelist_ip("5.6.7.0/24")
+```
+
+#### `safelist(name, &block)`
+
+Name your custom safelist and make your ruby-block argument return a truthy value if you want the request to be blocked, and falsy otherwise.
+
+The request object is a [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request).
+
+E.g.
+
+```ruby
+# config/initializers/rack_attack.rb (for rails apps)
+
+# Provided that trusted users use an HTTP request header named APIKey
+Rack::Attack.safelist("mark any authenticated access safe") do |request|
+  # Requests are allowed if the return value is truthy
+  request.env["APIKey"] == "secret-string"
+end
+
 # Always allow requests from localhost
 # (blocklist & throttles are skipped)
 Rack::Attack.safelist('allow from localhost') do |req|
@@ -80,16 +116,44 @@ Rack::Attack.safelist('allow from localhost') do |req|
 end
 ```
 
-### Blocklists
+### Blocking
+
+#### `blocklist_ip(ip_address_string)`
+
+E.g.
 
 ```ruby
-# Block requests from 1.2.3.4
-Rack::Attack.blocklist('block 1.2.3.4') do |req|
+# config/initializers/rack_attack.rb (for rails apps)
+
+Rack::Attack.blocklist_ip("1.2.3.4")
+```
+
+#### `blocklist_ip(ip_subnet_string)`
+
+E.g.
+
+```ruby
+# config/initializers/rack_attack.rb (for rails apps)
+
+Rack::Attack.blocklist_ip("1.2.0.0/16")
+```
+
+#### `blocklist(name, &block)`
+
+Name your custom blocklist and make your ruby-block argument returna a truthy value if you want the request to be blocked, and falsy otherwise.
+
+The request object is a [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request).
+
+E.g.
+
+```ruby
+# config/initializers/rack_attack.rb (for rails apps)
+
+Rack::Attack.blocklist("block all access to admin") do |request|
   # Requests are blocked if the return value is truthy
-  '1.2.3.4' == req.ip
+  request.path.start_with?("/admin")
 end
 
-# Block logins from a bad user agent
 Rack::Attack.blocklist('block bad UA logins') do |req|
   req.path == '/login' && req.post? && req.user_agent == 'BadUA'
 end
@@ -138,33 +202,38 @@ Rack::Attack.blocklist('allow2ban login scrapers') do |req|
 end
 ```
 
+### Throttling
 
-### Throttles
+#### `throttle(name, options, &block)`
+
+Name your custom throttle, provide `limit` and `period` as options, and make your ruby-block argument return the __discriminator__. This discriminator is how you tell rack-attack whether you're limiting per IP address, per user email or any other.
+
+The request object is a [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request).
+
+E.g.
 
 ```ruby
-# Throttle requests to 5 requests per second per ip
-Rack::Attack.throttle('req/ip', limit: 5, period: 1.second) do |req|
-  # If the return value is truthy, the cache key for the return value
-  # is incremented and compared with the limit. In this case:
-  #   "rack::attack:#{Time.now.to_i/1.second}:req/ip:#{req.ip}"
-  #
-  # If falsy, the cache key is neither incremented nor checked.
+# config/initializers/rack_attack.rb (for rails apps)
 
-  req.ip
+Rack::Attack.throttle("requests by ip", limit: 5, period: 2) do |request|
+  request.ip
 end
 
 # Throttle login attempts for a given email parameter to 6 reqs/minute
 # Return the email as a discriminator on POST /login requests
-Rack::Attack.throttle('logins/email', limit: 6, period: 60) do |req|
-  req.params['email'] if req.path == '/login' && req.post?
+Rack::Attack.throttle('limit logins per email', limit: 6, period: 60) do |req|
+  if req.path == '/login' && req.post?
+    req.params['email']
+  end
 end
 
 # You can also set a limit and period using a proc. For instance, after
 # Rack::Auth::Basic has authenticated the user:
-limit_proc = proc {|req| req.env["REMOTE_USER"] == "admin" ? 100 : 1}
-period_proc = proc {|req| req.env["REMOTE_USER"] == "admin" ? 1.second : 1.minute}
-Rack::Attack.throttle('req/ip', limit: limit_proc, period: period_proc) do |req|
-  req.ip
+limit_proc = proc { |req| req.env["REMOTE_USER"] == "admin" ? 100 : 1 }
+period_proc = proc { |req| req.env["REMOTE_USER"] == "admin" ? 1 : 60 }
+
+Rack::Attack.throttle('request per ip', limit: limit_proc, period: period_proc) do |request|
+  request.ip
 end
 ```
 
