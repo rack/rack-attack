@@ -71,42 +71,6 @@ Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to R
 
 Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
-## How it works
-
-The Rack::Attack middleware compares each request against *safelists*, *blocklists*, *throttles*, and *tracks* that you define. There are none by default.
-
- * If the request matches any **safelist**, it is allowed.
- * Otherwise, if the request matches any **blocklist**, it is blocked.
- * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If any throttle's limit is exceeded, the request is blocked.
- * Otherwise, all **tracks** are checked, and the request is allowed.
-
-The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
-
-```ruby
-def call(env)
-  req = Rack::Attack::Request.new(env)
-
-  if safelisted?(req)
-    @app.call(env)
-  elsif blocklisted?(req)
-    self.class.blocklisted_response.call(env)
-  elsif throttled?(req)
-    self.class.throttled_response.call(env)
-  else
-    tracked?(req)
-    @app.call(env)
-  end
-end
-```
-
-Note: `Rack::Attack::Request` is just a subclass of `Rack::Request` so that you
-can cleanly monkey patch helper methods onto the
-[request object](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack/request.rb).
-
-## About Tracks
-
-`Rack::Attack.track` doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.
-
 ## Usage
 
 Define safelists, blocklists, throttles, and tracks as blocks that return truthy values if matched, falsy otherwise. In a Rails app
@@ -298,6 +262,43 @@ ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, r
   puts req.inspect
 end
 ```
+
+## How it works
+
+The Rack::Attack middleware compares each request against *safelists*, *blocklists*, *throttles*, and *tracks* that you define. There are none by default.
+
+ * If the request matches any **safelist**, it is allowed.
+ * Otherwise, if the request matches any **blocklist**, it is blocked.
+ * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If any throttle's limit is exceeded, the request is blocked.
+ * Otherwise, all **tracks** are checked, and the request is allowed.
+
+The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
+
+```ruby
+def call(env)
+  req = Rack::Attack::Request.new(env)
+
+  if safelisted?(req)
+    @app.call(env)
+  elsif blocklisted?(req)
+    self.class.blocklisted_response.call(env)
+  elsif throttled?(req)
+    self.class.throttled_response.call(env)
+  else
+    tracked?(req)
+    @app.call(env)
+  end
+end
+```
+
+Note: `Rack::Attack::Request` is just a subclass of `Rack::Request` so that you
+can cleanly monkey patch helper methods onto the
+[request object](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack/request.rb).
+
+### About Tracks
+
+`Rack::Attack.track` doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.
+
 
 ## Testing
 
