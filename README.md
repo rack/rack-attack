@@ -60,14 +60,6 @@ use Rack::Attack
 
 __IMPORTANT__: By default, rack-attack won't perform any blocking or throttling, until you specifically tell it what to protect against by configuring some rules.
 
-Optionally configure the cache store for throttling or fail2ban filtering:
-
-```ruby
-Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
-```
-
-Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
-
 ## Usage
 
 *Tip:* The example in the wiki is a great way to get started:
@@ -197,6 +189,16 @@ ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, r
   end
 end
 ```
+
+### Cache store configuration
+
+Optionally configure the cache store for throttling or fail2ban filtering:
+
+```ruby
+Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
+```
+
+Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
 ## Responses
 
