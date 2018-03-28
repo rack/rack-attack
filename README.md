@@ -19,35 +19,46 @@ I'm looking for new maintainers to help me support Rack::Attack. Check out
 
 ## Getting started
 
-Install the [rack-attack](http://rubygems.org/gems/rack-attack) gem; or add it to your Gemfile with bundler:
+### 1. Installing
+
+Add this line to your application's Gemfile:
 
 ```ruby
 # In your Gemfile
+
 gem 'rack-attack'
 ```
-Tell your app to use the Rack::Attack middleware.
-For Rails apps:
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install rack-attack
+
+### 2. Plugging into the application
+
+Then tell your ruby web application to use rack-attack as a middleware.
+
+a) For __rails__ applications:
 
 ```ruby
 # In config/application.rb
+
 config.middleware.use Rack::Attack
 ```
 
-Or for Rackup files:
+b) For __rack__ applications:
 
 ```ruby
 # In config.ru
+
 require "rack/attack"
 use Rack::Attack
 ```
 
-Add a `rack_attack.rb` file to `config/initializers/`:
-```ruby
-# In config/initializers/rack_attack.rb
-class Rack::Attack
-  # your custom configuration...
-end
-```
+__IMPORTANT__: By default, rack-attack won't perform any blocking or throttling, until you specifically tell it what to protect against by configuring some rules.
 
 *Tip:* The example in the wiki is a great way to get started:
 [Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
