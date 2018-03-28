@@ -12,11 +12,6 @@ See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hac
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
 
-## Looking for maintainers
-
-I'm looking for new maintainers to help me support Rack::Attack. Check out
-[issue #219 for details](https://github.com/kickstarter/rack-attack/issues/219).
-
 ## Getting started
 
 ### 1. Installing
