@@ -4,8 +4,6 @@
 Rack::Attack is a rack middleware to protect your web app from bad clients.
 It allows *safelisting*, *blocklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
 
-Throttle and fail2ban state is stored in a configurable cache (e.g. `Rails.cache`), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
-
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
 [![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](http://badge.fury.io/rb/rack-attack)
@@ -161,6 +159,8 @@ This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Ma
 See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
 how the parameters work.  For multiple filters, be sure to put each filter in a separate blocklist and use a unique discriminator for each fail2ban filter.
 
+Fail2ban state is stored in a [configurable cache](#cache-store-configuration) (which defaults to `Rails.cache` if present).
+
 ```ruby
 # Block suspicious requests for '/etc/password' or wordpress specific paths.
 # After 3 blocked requests in 10 minutes, block all requests from that IP for 5 minutes.
@@ -181,8 +181,12 @@ end
 Note that `Fail2Ban` filters are not automatically scoped to the blocklist, so when using multiple filters in an application the scoping must be added to the discriminator e.g. `"pentest:#{req.ip}"`.
 
 #### Allow2Ban
+
 `Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
 clients until such time as they reach maxretry at which they are cut off as per normal.
+
+Allow2ban state is stored in a [configurable cache](#cache-store-configuration) (which defaults to `Rails.cache` if present).
+
 ```ruby
 # Lockout IP addresses that are hammering your login page.
 # After 20 requests in 1 minute, block all requests from that IP for 1 hour.
@@ -198,6 +202,8 @@ end
 ```
 
 ### Throttling
+
+Throttle state is stored in a [configurable cache](#cache-store-configuration) (which defaults to `Rails.cache` if present).
 
 #### `throttle(name, options, &block)`
 
@@ -256,13 +262,13 @@ end
 
 ### Cache store configuration
 
-Optionally configure the cache store for throttling, allow2ban and/or fail2ban filtering:
+Throttle, allow2ban and fail2ban state is stored in a configurable cache (which defaults to `Rails.cache` if present), presumably backed by memcached or redis ([at least gem v3.0.0](https://rubygems.org/gems/redis)).
 
 ```ruby
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
 ```
 
-Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
+Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2ban filtering; not blocklisting and safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
 ## Customizing responses
 
