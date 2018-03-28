@@ -200,7 +200,7 @@ Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to R
 
 Note that `Rack::Attack.cache` is only used for throttling and fail2ban filtering; not blocklisting & safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html).
 
-## Responses
+## Customizing responses
 
 Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
 
