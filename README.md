@@ -1,8 +1,8 @@
-# Rack::Attack!!!
+# Rack::Attack
+
 *Rack middleware for blocking & throttling abusive requests*
 
-Rack::Attack is a rack middleware to protect your web app from bad clients.
-It allows *safelisting*, *blocklisting*, *throttling*, and *tracking* based on arbitrary properties of the request.
+Protect your Rails and Rack apps from bad clients. Rack::Attack lets you easily decide when to *allow*, *block* and *throttle* based on properties of the request.
 
 See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
