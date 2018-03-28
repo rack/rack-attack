@@ -192,7 +192,7 @@ end
 
 ### Cache store configuration
 
-Optionally configure the cache store for throttling or fail2ban filtering:
+Optionally configure the cache store for throttling, allow2ban and/or fail2ban filtering:
 
 ```ruby
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
