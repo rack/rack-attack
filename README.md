@@ -58,7 +58,7 @@ __IMPORTANT__: By default, rack-attack won't perform any blocking or throttling,
 *Tip:* The example in the wiki is a great way to get started:
 [Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
 
-Define rules by calling `Rack::Attack` public methods, in a place that runs when your application is being initialized. For rails applications this means creating a new file named `config/initializers/rack_attack.rb` and writing your rules in there.
+Define rules by calling `Rack::Attack` public methods, in any file that runs when your application is being initialized. For rails applications this means creating a new file named `config/initializers/rack_attack.rb` and writing your rules there.
 
 ### Safelisting
 
