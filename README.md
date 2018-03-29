@@ -4,9 +4,9 @@
 
 Protect your Rails and Rack apps from bad clients. Rack::Attack lets you easily decide when to *allow*, *block* and *throttle* based on properties of the request.
 
-See the [Backing & Hacking blog post](http://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
+See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
-[![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](http://badge.fury.io/rb/rack-attack)
+[![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](https://badge.fury.io/rb/rack-attack)
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
 
@@ -155,8 +155,8 @@ end
 #### Fail2Ban
 
 `Fail2Ban.filter` can be used within a blocklist to block all requests from misbehaving clients.
-This pattern is inspired by [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page).
-See the [fail2ban documentation](http://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
+This pattern is inspired by [fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page).
+See the [fail2ban documentation](https://www.fail2ban.org/wiki/index.php/MANUAL_0_8#Jail_Options) for more details on
 how the parameters work.  For multiple filters, be sure to put each filter in a separate blocklist and use a unique discriminator for each fail2ban filter.
 
 Fail2ban state is stored in a [configurable cache](#cache-store-configuration) (which defaults to `Rails.cache` if present).
@@ -272,7 +272,7 @@ Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2b
 
 ## Customizing responses
 
-Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://rack.rubyforge.org/doc/SPEC.html).
+Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC).
 
 ```ruby
 Rack::Attack.blocklisted_response = lambda do |env|
@@ -388,7 +388,7 @@ so try to keep the number of throttle checks per request low.
 If a request is blocklisted or throttled, the response is a very simple Rack response.
 A single typical ruby web server thread can block several hundred requests per second.
 
-Rack::Attack complements tools like `iptables` and nginx's [limit_conn_zone module](http://nginx.org/en/docs/http/ngx_http_limit_conn_module.html#limit_conn_zone).
+Rack::Attack complements tools like `iptables` and nginx's [limit_conn_zone module](https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html#limit_conn_zone).
 
 ## Motivation
 
@@ -408,7 +408,7 @@ adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Testing pull requests
 
-To run the minitest test suite, you will need both [Redis](http://redis.io/) and
+To run the minitest test suite, you will need both [Redis](https://redis.io/) and
 [Memcached](https://memcached.org/) running locally and bound to IP `127.0.0.1` on
 default ports (`6379` for Redis, and `11211` for Memcached) and able to be
 accessed without authentication.
@@ -434,4 +434,4 @@ New releases of Rack::Attack are announced on
 
 Copyright Kickstarter, PBC.
 
-Released under an [MIT License](http://opensource.org/licenses/MIT).
+Released under an [MIT License](https://opensource.org/licenses/MIT).

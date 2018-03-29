@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.email = "aaron@ktheory.com"
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md)
-  s.homepage = 'http://github.com/kickstarter/rack-attack'
+  s.homepage = 'https://github.com/kickstarter/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.summary = %q{Block & throttle abusive requests}
