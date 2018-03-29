@@ -52,7 +52,7 @@ end
 *Tip:* The example in the wiki is a great way to get started:
 [Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
 
-Optionally configure the cache store for throttling or fail2ban filtering:
+Configure the cache store if you want to use throttling or fail2ban filtering:
 
 ```ruby
 Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new # defaults to Rails.cache
