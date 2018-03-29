@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ## [5.1.0] - 2018-03-10
 
-  - Fixes edge case bug when using ruby 2.5 and redis [#253](https://github.com/kickstarter/rack-attack/issues/253) ([#271](https://github.com/kickstarter/rack-attack/issues/271))
+  - Fixes edge case bug when using ruby 2.5.0 and redis [#253](https://github.com/kickstarter/rack-attack/issues/253) ([#271](https://github.com/kickstarter/rack-attack/issues/271))
   - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs ([#274](https://github.com/kickstarter/rack-attack/issues/274))
   - Removed legacy code that was originally intended for Rails 3 apps ([#264](https://github.com/kickstarter/rack-attack/issues/264))
 
