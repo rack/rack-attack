@@ -3,12 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.2.0] - 2018-03-29
+
 ### Added
 
-- Shorthand for blocking an IP address `Rack::Attack.blocklist_ip("1.2.3.4")`
-- Shorthand for blocking an IP subnet `Rack::Attack.blocklist_ip("1.2.0.0/16")`
-- Shorthand for safelisting an IP address `Rack::Attack.safelist_ip("5.6.7.8")`
-- Shorthand for safelisting an IP subnet `Rack::Attack.safelist_ip("5.6.0.0/16")`
+- Shorthand for blocking an IP address `Rack::Attack.blocklist_ip("1.2.3.4")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
+- Shorthand for blocking an IP subnet `Rack::Attack.blocklist_ip("1.2.0.0/16")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
+- Shorthand for safelisting an IP address `Rack::Attack.safelist_ip("5.6.7.8")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
+- Shorthand for safelisting an IP subnet `Rack::Attack.safelist_ip("5.6.0.0/16")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
 - Throw helpful error message when using `allow2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
 - Throw helpful error message when using `fail2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
 
@@ -101,7 +103,8 @@ All notable changes to this project will be documented in this file.
  - Remove unused variable
  - Extract mandatory options to constants
 
-[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...HEAD/
+[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...HEAD/
+[5.2.0]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...v5.2.0/
 [5.1.0]: https://github.com/kickstarter/rack-attack/compare/v5.0.1...v5.1.0/
 [5.0.1]: https://github.com/kickstarter/rack-attack/compare/v5.0.0...v5.0.1/
 [5.0.0]: https://github.com/kickstarter/rack-attack/compare/v4.4.1...v5.0.0/
