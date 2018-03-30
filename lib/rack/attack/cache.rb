@@ -1,7 +1,6 @@
 module Rack
   class Attack
     class Cache
-
       attr_accessor :prefix
 
       def initialize

@@ -22,7 +22,6 @@ class Rack::Attack
   autoload :Allow2Ban,       'rack/attack/allow2ban'
 
   class << self
-
     attr_accessor :notifier, :blocklisted_response, :throttled_response
 
     def safelist(name, &block)
@@ -64,8 +63,11 @@ class Rack::Attack
     end
 
     def safelists;  @safelists  ||= {}; end
+
     def blocklists; @blocklists ||= {}; end
+
     def throttles;  @throttles  ||= {}; end
+
     def tracks;     @tracks     ||= {}; end
 
     def whitelists
@@ -126,7 +128,7 @@ class Rack::Attack
 
     def blacklisted_response=(res)
       warn "[DEPRECATION] 'Rack::Attack.blacklisted_response=' is deprecated.  Please use 'blocklisted_response=' instead."
-      self.blocklisted_response=(res)
+      self.blocklisted_response = res
     end
 
     def blacklisted_response
@@ -147,10 +149,10 @@ class Rack::Attack
 
   # Set defaults
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  @throttled_response   = lambda {|env|
+  @blocklisted_response = lambda { |env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+  @throttled_response   = lambda { |env|
     retry_after = (env['rack.attack.match_data'] || {})[:period]
-    [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+    [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
   }
 
   def initialize(app)
@@ -174,8 +176,5 @@ class Rack::Attack
   end
 
   extend Forwardable
-  def_delegators self, :safelisted?,
-                       :blocklisted?,
-                       :throttled?,
-                       :tracked?
+  def_delegators self, :safelisted?, :blocklisted?, :throttled?, :tracked?
 end

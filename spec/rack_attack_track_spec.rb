@@ -16,7 +16,7 @@ describe 'Rack::Attack.track' do
   end
 
   before do
-    Rack::Attack.track("everything"){ |req| true }
+    Rack::Attack.track("everything") { |req| true }
   end
 
   it_allows_ok_requests
@@ -31,7 +31,7 @@ describe 'Rack::Attack.track' do
     before do
       Counter.reset
       # A second track
-      Rack::Attack.track("homepage"){ |req| req.path == "/"}
+      Rack::Attack.track("homepage") { |req| req.path == "/" }
 
       ActiveSupport::Notifications.subscribe("rack.attack") do |*args|
         Counter.incr
@@ -47,14 +47,14 @@ describe 'Rack::Attack.track' do
 
   describe "without limit and period options" do
     it "should assign the track filter to a Check instance" do
-      tracker = Rack::Attack.track("homepage") { |req| req.path == "/"}
+      tracker = Rack::Attack.track("homepage") { |req| req.path == "/" }
       tracker.filter.class.must_equal Rack::Attack::Check
     end
   end
 
   describe "with limit and period options" do
     it "should assign the track filter to a Throttle instance" do
-      tracker = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/"}
+      tracker = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/" }
       tracker.filter.class.must_equal Rack::Attack::Throttle
     end
   end

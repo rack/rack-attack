@@ -12,8 +12,8 @@ module Rack
         klass ? klass.new(client) : client
       end
 
-
       private
+
       def self.unwrap_active_support_stores(store)
         # ActiveSupport::Cache::RedisStore doesn't expose any way to set an expiry,
         # so use the raw Redis::Store instead.

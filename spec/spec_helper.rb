@@ -12,7 +12,7 @@ require "rack/attack"
 begin
   require 'pry'
 rescue LoadError
-  #nothing to do here
+  # nothing to do here
 end
 
 if RUBY_ENGINE == "ruby"
@@ -20,7 +20,6 @@ if RUBY_ENGINE == "ruby"
 end
 
 class MiniTest::Spec
-
   include Rack::Test::Methods
 
   before do
@@ -43,7 +42,7 @@ class MiniTest::Spec
       use Rack::Attack
       use Rack::Lint
 
-      run lambda {|env| [200, {}, ['Hello World']]}
+      run lambda { |env| [200, {}, ['Hello World']] }
     }.to_app
   end
 

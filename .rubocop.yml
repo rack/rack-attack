@@ -1,0 +1,5 @@
+AllCops:
+  DisabledByDefault: true
+
+Layout:
+  Enabled: true

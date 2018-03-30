@@ -27,6 +27,7 @@ module Rack
         end
 
         protected
+
         def key_prefix
           'fail2ban'
         end
@@ -40,8 +41,8 @@ module Rack
           true
         end
 
-
         private
+
         def ban!(discriminator, bantime)
           cache.write("#{key_prefix}:ban:#{discriminator}", 1, bantime)
         end

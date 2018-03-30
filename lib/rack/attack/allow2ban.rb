@@ -3,6 +3,7 @@ module Rack
     class Allow2Ban < Fail2Ban
       class << self
         protected
+
         def key_prefix
           'allow2ban'
         end
