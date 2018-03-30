@@ -402,26 +402,15 @@ less on short-term, one-off hacks to block a particular attack.
 
 ## Contributing
 
-Pull requests and issues are greatly appreciated. This project is intended to be
-a safe, welcoming space for collaboration, and contributors are expected to
-adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
+Check out the [Contributing guide](CONTRIBUTING.md).
 
-### Testing pull requests
+## Code of Conduct
 
-To run the minitest test suite, you will need both [Redis](https://redis.io/) and
-[Memcached](https://memcached.org/) running locally and bound to IP `127.0.0.1` on
-default ports (`6379` for Redis, and `11211` for Memcached) and able to be
-accessed without authentication.
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-Install dependencies by running
-```sh
-bundle install
-```
+## Development setup
 
-Then run the test suite by running
-```sh
-bundle exec rake
-```
+Check out the [Development guide](docs/development.md).
 
 ## Mailing list
 
