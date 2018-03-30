@@ -8,7 +8,7 @@ module Rack
       end
 
       def [](req)
-        block[req].tap {|match|
+        block[req].tap { |match|
           if match
             req.env["rack.attack.matched"] = name
             req.env["rack.attack.match_type"] = type
@@ -21,4 +21,3 @@ module Rack
     end
   end
 end
-

@@ -1,5 +1,4 @@
 class Rack::Attack
-
   # When using Rack::Attack with a Rails app, developers expect the request path
   # to be normalized. In particular, trailing slashes are stripped.
   # (See https://git.io/v0rrR for implementation.)
@@ -15,10 +14,9 @@ class Rack::Attack
   end
 
   PathNormalizer = if defined?(::ActionDispatch::Journey::Router::Utils)
-                 # For Rails apps
-                 ::ActionDispatch::Journey::Router::Utils
-               else
-                 FallbackPathNormalizer
-               end
-
+                     # For Rails apps
+                     ::ActionDispatch::Journey::Router::Utils
+                   else
+                     FallbackPathNormalizer
+                   end
 end

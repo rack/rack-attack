@@ -24,7 +24,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def write(key, value, options={})
+        def write(key, value, options = {})
           if (expires_in = options[:expires_in])
             setex(key, expires_in, value, raw: true)
           else
@@ -33,7 +33,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def increment(key, amount, options={})
+        def increment(key, amount, options = {})
           count = nil
 
           pipelined do
@@ -45,7 +45,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def delete(key, options={})
+        def delete(key, options = {})
           del(key)
         rescue Redis::BaseError
         end
