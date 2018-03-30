@@ -15,7 +15,7 @@ describe 'Rack::Attack.throttle' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 
@@ -37,7 +37,7 @@ describe 'Rack::Attack.throttle' do
     it 'should tag the env' do
       last_request.env['rack.attack.matched'].must_equal 'ip/sec'
       last_request.env['rack.attack.match_type'].must_equal :throttle
-      last_request.env['rack.attack.match_data'].must_equal({:count => 2, :limit => 1, :period => @period})
+      last_request.env['rack.attack.match_data'].must_equal({ :count => 2, :limit => 1, :period => @period })
       last_request.env['rack.attack.match_discriminator'].must_equal('1.2.3.4')
     end
 
@@ -60,7 +60,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 
@@ -84,7 +84,7 @@ describe 'Rack::Attack.throttle with period as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
       Rack::Attack.cache.store.read(key).must_equal 1
     end
 
@@ -108,7 +108,7 @@ describe 'Rack::Attack.throttle with block retuning nil' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should not set the counter' do
-      key = "rack::attack:#{Time.now.to_i/@period}:ip/sec:1.2.3.4"
+      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
       assert_nil Rack::Attack.cache.store.read(key)
     end
 
