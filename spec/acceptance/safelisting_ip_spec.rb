@@ -46,4 +46,3 @@ describe "Safelist an IP" do
     assert_equal :safelist, notification_type
   end
 end
-
