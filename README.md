@@ -133,7 +133,7 @@ Rack::Attack.blocklist_ip("1.2.0.0/16")
 
 #### `blocklist(name, &block)`
 
-Name your custom blocklist and make your ruby-block argument returna a truthy value if you want the request to be blocked, and falsy otherwise.
+Name your custom blocklist and make your ruby-block argument returns a truthy value if you want the request to be blocked, and falsy otherwise.
 
 The request object is a [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request).
 
