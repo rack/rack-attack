@@ -14,3 +14,13 @@ Any of the following is greatly appreciated:
 * Reporting an error you are experiencing
 * Suggesting a new feature you think it would be useful for many users
 * If you want to work on fixing an actual issue and you don't know where to start, those labeled [good first issue](https://github.com/kickstarter/rack-attack/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) may be a good choice
+
+## Style Guide
+
+As an effort to keep the codebase consistent, we encourage the use of [Rubocop](https://github.com/bbatsov/rubocop).
+This tool helps us abstract most of the decisions we have to make when coding.
+
+To check your code, simply type `rubocop` in the shell. The resulting output are all the offenses currently present in the code.
+
+It is highly recommended that you integrate a linter with your editor.
+This way you receive real time feedback about your code. Most editors have some kind of plugin for that.
