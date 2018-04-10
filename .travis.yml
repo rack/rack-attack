@@ -25,7 +25,6 @@ gemfile:
   - gemfiles/rack_1_6.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_5_1.gemfile
-  - gemfiles/rails_5_0.gemfile
   - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
 

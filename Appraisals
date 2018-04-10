@@ -16,11 +16,6 @@ appraise 'rails_5-1' do
   gem 'actionpack', '~> 5.1.0'
 end
 
-appraise 'rails_5-0' do
-  gem 'activesupport', '~> 5.0.0'
-  gem 'actionpack', '~> 5.0.0'
-end
-
 appraise 'rails_4-2' do
   gem 'activesupport', '~> 4.2.0'
   gem 'actionpack', '~> 4.2.0'
