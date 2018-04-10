@@ -7,8 +7,8 @@ appraise "rack_1_6" do
 end
 
 appraise 'rails_5-2' do
-  gem 'activesupport', '~> 5.2.0.a'
-  gem 'actionpack', '~> 5.2.0.a'
+  gem 'activesupport', '~> 5.2.0'
+  gem 'actionpack', '~> 5.2.0'
 end
 
 appraise 'rails_5-1' do

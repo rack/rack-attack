@@ -31,7 +31,6 @@ gemfile:
 
 matrix:
   allow_failures:
-    - gemfile: gemfiles/rails_5_2.gemfile
     - rvm: 2.6.0-preview1
 
   fast_finish: true
