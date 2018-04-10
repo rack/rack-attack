@@ -1,3 +1,11 @@
+appraise "rack_2_0" do
+  gem "rack", "~> 2.0.4"
+end
+
+appraise "rack_1_6" do
+  gem "rack", "~> 1.6.9"
+end
+
 appraise 'rails_5-2' do
   gem 'activesupport', '~> 5.2.0.a'
   gem 'actionpack', '~> 5.2.0.a'
