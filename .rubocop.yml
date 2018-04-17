@@ -1,7 +1,12 @@
 AllCops:
+  TargetRubyVersion: 2.2
   DisabledByDefault: true
 
 Bundler:
   Enabled: true
+
+Gemspec:
+  Enabled: true
+
 Layout:
   Enabled: true
