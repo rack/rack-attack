@@ -1,5 +1,7 @@
 AllCops:
   DisabledByDefault: true
 
+Bundler:
+  Enabled: true
 Layout:
   Enabled: true
