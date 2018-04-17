@@ -16,7 +16,7 @@ describe 'Rack::Attack.track' do
   end
 
   before do
-    Rack::Attack.track("everything") { |req| true }
+    Rack::Attack.track("everything") { |_req| true }
   end
 
   it_allows_ok_requests
@@ -33,7 +33,7 @@ describe 'Rack::Attack.track' do
       # A second track
       Rack::Attack.track("homepage") { |req| req.path == "/" }
 
-      ActiveSupport::Notifications.subscribe("rack.attack") do |*args|
+      ActiveSupport::Notifications.subscribe("rack.attack") do |*_args|
         Counter.incr
       end
 

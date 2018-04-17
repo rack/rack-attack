@@ -29,7 +29,7 @@ describe "Cache store config when throttling without Rails" do
         @counts = {}
       end
 
-      def increment(key, count, options)
+      def increment(key, _count, _options)
         @counts[key] ||= 0
         @counts[key] += 1
       end

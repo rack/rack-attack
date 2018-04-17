@@ -81,11 +81,11 @@ describe "Cache store config when using allow2ban" do
         @backend[key]
       end
 
-      def write(key, value, options = {})
+      def write(key, value, _options = {})
         @backend[key] = value
       end
 
-      def increment(key, count, options = {})
+      def increment(key, _count, _options = {})
         @backend[key] ||= 0
         @backend[key] += 1
       end

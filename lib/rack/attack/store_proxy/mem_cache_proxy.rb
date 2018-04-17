@@ -23,12 +23,12 @@ module Rack
         rescue MemCache::MemCacheError
         end
 
-        def increment(key, amount, options = {})
+        def increment(key, amount, _options = {})
           incr(key, amount)
         rescue MemCache::MemCacheError
         end
 
-        def delete(key, options = {})
+        def delete(key, _options = {})
           with do |client|
             client.delete(key)
           end

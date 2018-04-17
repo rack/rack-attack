@@ -12,7 +12,7 @@ describe "Customizing block responses" do
 
     assert_equal 403, last_response.status
 
-    Rack::Attack.blocklisted_response = lambda do |env|
+    Rack::Attack.blocklisted_response = lambda do |_env|
       [503, {}, ["Blocked"]]
     end
 

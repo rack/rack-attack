@@ -18,7 +18,7 @@ describe "Customizing throttled response" do
 
     assert_equal 429, last_response.status
 
-    Rack::Attack.throttled_response = lambda do |env|
+    Rack::Attack.throttled_response = lambda do |_env|
       [503, {}, ["Throttled"]]
     end
 
