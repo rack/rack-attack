@@ -13,3 +13,6 @@ Layout:
 
 Performance:
   Enabled: true
+
+Security:
+  Enabled: true
