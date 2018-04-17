@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'redis-activesupport'
+  s.add_development_dependency "rubocop", "0.55.0"
   s.add_development_dependency "timecop"
 
   # Need to explicitly depend on guard because guard-minitest doesn't declare
