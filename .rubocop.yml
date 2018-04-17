@@ -10,3 +10,6 @@ Gemspec:
 
 Layout:
   Enabled: true
+
+Performance:
+  Enabled: true
