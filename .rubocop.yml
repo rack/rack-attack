@@ -1,5 +1,28 @@
 AllCops:
+  TargetRubyVersion: 2.2
   DisabledByDefault: true
+  Exclude:
+    - "examples/instrumentation.rb"
+
+Bundler:
+  Enabled: true
+
+Gemspec:
+  Enabled: true
 
 Layout:
   Enabled: true
+
+Performance:
+  Enabled: true
+
+Security:
+  Enabled: true
+
+Lint:
+  Enabled: true
+
+# TODO
+# Remove cop disabling and fix offenses
+Lint/HandleExceptions:
+  Enabled: false

@@ -20,7 +20,7 @@ Any of the following is greatly appreciated:
 As an effort to keep the codebase consistent, we encourage the use of [Rubocop](https://github.com/bbatsov/rubocop).
 This tool helps us abstract most of the decisions we have to make when coding.
 
-To check your code, simply type `rubocop` in the shell. The resulting output are all the offenses currently present in the code.
+To check your code, simply type `bundle exec rubocop` in the shell. The resulting output are all the offenses currently present in the code.
 
 It is highly recommended that you integrate a linter with your editor.
 This way you receive real time feedback about your code. Most editors have some kind of plugin for that.

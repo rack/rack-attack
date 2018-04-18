@@ -51,7 +51,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
   before do
     @period = 60 # Use a long period; failures due to cache key rotation less likely
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    Rack::Attack.throttle('ip/sec', :limit => lambda { |req| 1 }, :period => @period) { |req| req.ip }
+    Rack::Attack.throttle('ip/sec', :limit => lambda { |_req| 1 }, :period => @period) { |req| req.ip }
   end
 
   it_allows_ok_requests
@@ -75,7 +75,7 @@ describe 'Rack::Attack.throttle with period as proc' do
   before do
     @period = 60 # Use a long period; failures due to cache key rotation less likely
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    Rack::Attack.throttle('ip/sec', :limit => lambda { |req| 1 }, :period => lambda { |req| @period }) { |req| req.ip }
+    Rack::Attack.throttle('ip/sec', :limit => lambda { |_req| 1 }, :period => lambda { |_req| @period }) { |req| req.ip }
   end
 
   it_allows_ok_requests

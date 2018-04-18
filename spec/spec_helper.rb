@@ -42,7 +42,7 @@ class MiniTest::Spec
       use Rack::Attack
       use Rack::Lint
 
-      run lambda { |env| [200, {}, ['Hello World']] }
+      run lambda { |_env| [200, {}, ['Hello World']] }
     }.to_app
   end
 

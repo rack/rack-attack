@@ -7,18 +7,18 @@ appraise "rack_1_6" do
 end
 
 appraise 'rails_5-2' do
-  gem 'activesupport', '~> 5.2.0'
   gem 'actionpack', '~> 5.2.0'
+  gem 'activesupport', '~> 5.2.0'
 end
 
 appraise 'rails_5-1' do
-  gem 'activesupport', '~> 5.1.0'
   gem 'actionpack', '~> 5.1.0'
+  gem 'activesupport', '~> 5.1.0'
 end
 
 appraise 'rails_4-2' do
-  gem 'activesupport', '~> 4.2.0'
   gem 'actionpack', '~> 4.2.0'
+  gem 'activesupport', '~> 4.2.0'
 end
 
 appraise 'dalli2' do
