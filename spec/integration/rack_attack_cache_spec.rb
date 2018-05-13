@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe Rack::Attack::Cache do
   # A convenience method for deleting a key from cache.
-  # Slightly differnet than @cache.delete, which adds a prefix.
+  # Slightly different than @cache.delete, which adds a prefix.
   def delete(key)
     if @cache.store.respond_to?(:delete)
       @cache.store.delete(key)
@@ -18,6 +18,7 @@ describe Rack::Attack::Cache do
   require 'active_support/cache/dalli_store'
   require 'active_support/cache/mem_cache_store'
   require 'active_support/cache/redis_store'
+  require 'active_support/cache/redis_cache_store' if ActiveSupport.version.to_s.to_f >= 5.2
   require 'connection_pool'
 
   cache_stores = [
@@ -29,6 +30,8 @@ describe Rack::Attack::Cache do
     ConnectionPool.new { Dalli::Client.new },
     Redis::Store.new
   ]
+
+  cache_stores << ActiveSupport::Cache::RedisCacheStore.new if defined?(ActiveSupport::Cache::RedisCacheStore)
 
   cache_stores.each do |store|
     store = Rack::Attack::StoreProxy.build(store)
