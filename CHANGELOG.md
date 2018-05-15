@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Adds support for ActiveSupport::RedisCacheStore
+
 ## [5.2.0] - 2018-03-29
 
 ### Added
