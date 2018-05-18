@@ -13,7 +13,7 @@ namespace :test do
   end
 
   Rake::TestTask.new(:acceptance) do |t|
-    t.pattern = "spec/acceptance/*_spec.rb"
+    t.pattern = "spec/acceptance/**/*_spec.rb"
   end
 end
 
