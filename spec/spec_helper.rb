@@ -28,7 +28,7 @@ class MiniTest::Spec
   end
 
   after do
-    Rack::Attack.clear!
+    Rack::Attack.clear_configuration
     Rack::Attack.instance_variable_set(:@cache, nil)
 
     Rack::Attack.throttled_response = @_original_throttled_response

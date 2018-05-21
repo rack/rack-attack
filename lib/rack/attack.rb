@@ -120,10 +120,15 @@ class Rack::Attack
       @cache ||= Cache.new
     end
 
-    def clear!
+    def clear_configuration
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
       @ip_blocklists = []
       @ip_safelists = []
+    end
+
+    def clear!
+      warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
+      clear_configuration
     end
 
     def blacklisted_response=(res)
