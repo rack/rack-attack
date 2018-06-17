@@ -7,6 +7,7 @@ Protect your Rails and Rack apps from bad clients. Rack::Attack lets you easily 
 See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-hacking/rack-attack-protection-from-abusive-clients) introducing Rack::Attack.
 
 [![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](https://badge.fury.io/rb/rack-attack)
+[![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rack-attack&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rack-attack&package-manager=bundler&version-scheme=semver)
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
 
