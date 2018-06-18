@@ -1,7 +1,7 @@
 module Rack
   class Attack
     module StoreProxy
-      PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy].freeze
+      PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy, RedisProxy].freeze
 
       ACTIVE_SUPPORT_WRAPPER_CLASSES = Set.new(['ActiveSupport::Cache::MemCacheStore', 'ActiveSupport::Cache::RedisStore']).freeze
       ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Dalli::Client', 'MemCache']).freeze
