@@ -30,6 +30,9 @@ Security:
 Lint:
   Enabled: true
 
+Style/BracesAroundHashParameters:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: true
 
