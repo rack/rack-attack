@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- Adds support for ActiveSupport::RedisCacheStore
+_No significant changes since last release yet. Stay tuned_ :radio:
+
+## [5.3.0] - 2018-06-19
+
+### Added
+
+- Add support for [`ActiveSupport::Cache::RedisCacheStore`](http://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html) as a store backend ([#340](https://github.com/kickstarter/rack-attack/pull/340) and [#350](https://github.com/kickstarter/rack-attack/pull/350))
 
 ## [5.2.0] - 2018-03-29
 
@@ -105,7 +111,8 @@ All notable changes to this project will be documented in this file.
  - Remove unused variable
  - Extract mandatory options to constants
 
-[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...HEAD/
+[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.3.0...HEAD/
+[5.3.0]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...v5.3.0/
 [5.2.0]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...v5.2.0/
 [5.1.0]: https://github.com/kickstarter/rack-attack/compare/v5.0.1...v5.1.0/
 [5.0.1]: https://github.com/kickstarter/rack-attack/compare/v5.0.0...v5.0.1/
