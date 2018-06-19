@@ -2,6 +2,9 @@ require "rubygems"
 require "bundler/setup"
 require 'bundler/gem_tasks'
 require 'rake/testtask'
+require "rubocop/rake_task"
+
+RuboCop::RakeTask.new
 
 namespace :test do
   Rake::TestTask.new(:units) do |t|
@@ -20,4 +23,4 @@ end
 desc 'Run tests'
 task :test => %w[test:units test:integration test:acceptance]
 
-task :default => :test
+task :default => [:rubocop, :test]
