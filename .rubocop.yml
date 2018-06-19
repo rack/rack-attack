@@ -16,6 +16,11 @@ Layout:
 Lint:
   Enabled: true
 
+Naming:
+  Enabled: true
+  Exclude:
+    - "lib/rack/attack/path_normalizer.rb"
+
 Performance:
   Enabled: true
 
