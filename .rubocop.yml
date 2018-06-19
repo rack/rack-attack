@@ -25,6 +25,12 @@ Security:
 Lint:
   Enabled: true
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/RedundantFreeze:
+  Enabled: true
+
 # TODO
 # Remove cop disabling and fix offenses
 Lint/HandleExceptions:
