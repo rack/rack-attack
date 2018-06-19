@@ -31,7 +31,7 @@ if ActiveSupport.version >= Gem::Version.new("5.2.0")
         get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
       end
 
-      assert_equal "1", Rack::Attack.cache.store.fetch(key)
+      assert Rack::Attack.cache.store.fetch(key)
 
       sleep 2.1
 
