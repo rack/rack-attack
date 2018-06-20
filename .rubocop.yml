@@ -1,8 +1,18 @@
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   TargetRubyVersion: 2.2
   DisabledByDefault: true
   Exclude:
     - "examples/instrumentation.rb"
+    # Remove the following line once we are able to make bundler install gems to <PROJECT_ROOT>/vendor/bundle instead
+    # of <PROJECT_ROOT>/gemfiles/vendor/bundle during TravisCI builds. The reason that happens for now is because
+    # bundler 1.x only installs relative to the Gemfile (which during CI builds is always one inside gemfiles/ folder)
+    # instead of the CWD. Bundler 2.x will add support to install relative to CWD
+    # (see https://github.com/bundler/bundler/pull/5803).
+    - "gemfiles/vendor/**/*"
 
 Bundler:
   Enabled: true
@@ -13,6 +23,14 @@ Gemspec:
 Layout:
   Enabled: true
 
+Lint:
+  Enabled: true
+
+Naming:
+  Enabled: true
+  Exclude:
+    - "lib/rack/attack/path_normalizer.rb"
+
 Performance:
   Enabled: true
 
@@ -20,6 +38,15 @@ Security:
   Enabled: true
 
 Lint:
+  Enabled: true
+
+Style/BracesAroundHashParameters:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/RedundantFreeze:
   Enabled: true
 
 # TODO

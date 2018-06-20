@@ -38,15 +38,15 @@ class Rack::Attack
       self.blocklists[name] = Blocklist.new(name, block)
     end
 
-    def blocklist_ip(ip)
+    def blocklist_ip(ip_address)
       @ip_blocklists ||= []
-      ip_blocklist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
+      ip_blocklist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
       @ip_blocklists << Blocklist.new(nil, ip_blocklist_proc)
     end
 
-    def safelist_ip(ip)
+    def safelist_ip(ip_address)
       @ip_safelists ||= []
-      ip_safelist_proc = lambda { |request| IPAddr.new(ip).include?(IPAddr.new(request.ip)) }
+      ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
       @ip_safelists << Safelist.new(nil, ip_safelist_proc)
     end
 
