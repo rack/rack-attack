@@ -8,7 +8,7 @@ module Rack
       end
 
       def matched_by?(req)
-        block[req].tap { |match|
+        block.call(req).tap { |match|
           if match
             req.env["rack.attack.matched"] = name
             req.env["rack.attack.match_type"] = type

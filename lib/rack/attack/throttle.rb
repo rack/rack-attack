@@ -19,7 +19,7 @@ module Rack
       end
 
       def matched_by?(req)
-        discriminator = block[req]
+        discriminator = block.call(req)
         return false unless discriminator
 
         current_period = period.respond_to?(:call) ? period.call(req) : period
