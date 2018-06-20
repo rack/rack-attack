@@ -108,8 +108,8 @@ class Rack::Attack
     end
 
     def tracked?(request)
-      tracks.each_value do |tracker|
-        tracker.matched_by?(request)
+      tracks.each_value do |track|
+        track.matched_by?(request)
       end
     end
 
