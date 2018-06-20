@@ -8,13 +8,18 @@ module Rack
           defined?(::ActiveSupport::Cache::RedisCacheStore) && store.is_a?(::ActiveSupport::Cache::RedisCacheStore)
         end
 
-        def increment(name, amount, options = {})
-          # Redis doesn't check expiration on the INCRBY command. See https://redis.io/commands/expire
-          count = redis.pipelined do
-            redis.incrby(name, amount)
-            redis.expire(name, options[:expires_in]) if options[:expires_in]
+        def increment(name, amount = 1, options = {})
+          # RedisCacheStore#increment ignores options[:expires_in].
+          #
+          # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
+          # the counter. After that we continue using the original RedisCacheStore#increment.
+          if options[:expires_in] && !read(name)
+            write(name, amount, options)
+
+            1
+          else
+            super
           end
-          count.first
         end
 
         def read(name, options = {})
