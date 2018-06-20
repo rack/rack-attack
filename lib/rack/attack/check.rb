@@ -7,12 +7,12 @@ module Rack
         @type = options.fetch(:type, nil)
       end
 
-      def matched_by?(req)
-        block.call(req).tap do |match|
+      def matched_by?(request)
+        block.call(request).tap do |match|
           if match
-            req.env["rack.attack.matched"] = name
-            req.env["rack.attack.match_type"] = type
-            Rack::Attack.instrument(req)
+            request.env["rack.attack.matched"] = name
+            request.env["rack.attack.match_type"] = type
+            Rack::Attack.instrument(request)
           end
         end
       end

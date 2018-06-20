@@ -81,40 +81,40 @@ class Rack::Attack
       blocklists
     end
 
-    def safelisted?(req)
-      ip_safelists.any? { |safelist| safelist.matched_by?(req) } ||
-        safelists.any? { |_name, safelist| safelist.matched_by?(req) }
+    def safelisted?(request)
+      ip_safelists.any? { |safelist| safelist.matched_by?(request) } ||
+        safelists.any? { |_name, safelist| safelist.matched_by?(request) }
     end
 
-    def whitelisted?(req)
+    def whitelisted?(request)
       warn "[DEPRECATION] 'Rack::Attack.whitelisted?' is deprecated.  Please use 'safelisted?' instead."
-      safelisted?(req)
+      safelisted?(request)
     end
 
-    def blocklisted?(req)
-      ip_blocklists.any? { |blocklist| blocklist.matched_by?(req) } ||
-        blocklists.any? { |_name, blocklist| blocklist.matched_by?(req) }
+    def blocklisted?(request)
+      ip_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
+        blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
     end
 
-    def blacklisted?(req)
+    def blacklisted?(request)
       warn "[DEPRECATION] 'Rack::Attack.blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
-      blocklisted?(req)
+      blocklisted?(request)
     end
 
-    def throttled?(req)
+    def throttled?(request)
       throttles.any? do |_name, throttle|
-        throttle.matched_by?(req)
+        throttle.matched_by?(request)
       end
     end
 
-    def tracked?(req)
+    def tracked?(request)
       tracks.each_value do |tracker|
-        tracker.matched_by?(req)
+        tracker.matched_by?(request)
       end
     end
 
-    def instrument(req)
-      notifier.instrument('rack.attack', req) if notifier
+    def instrument(request)
+      notifier.instrument('rack.attack', request) if notifier
     end
 
     def cache
@@ -167,16 +167,16 @@ class Rack::Attack
 
   def call(env)
     env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
-    req = Rack::Attack::Request.new(env)
+    request = Rack::Attack::Request.new(env)
 
-    if safelisted?(req)
+    if safelisted?(request)
       @app.call(env)
-    elsif blocklisted?(req)
+    elsif blocklisted?(request)
       self.class.blocklisted_response.call(env)
-    elsif throttled?(req)
+    elsif throttled?(request)
       self.class.throttled_response.call(env)
     else
-      tracked?(req)
+      tracked?(request)
       @app.call(env)
     end
   end
