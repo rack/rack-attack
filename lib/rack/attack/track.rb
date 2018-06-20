@@ -1,8 +1,6 @@
 module Rack
   class Attack
     class Track
-      extend Forwardable
-
       attr_reader :filter
 
       def initialize(name, options = {}, block)
@@ -15,7 +13,9 @@ module Rack
         end
       end
 
-      def_delegator :@filter, :matched_by?
+      def matched_by?(request)
+        filter.matched_by?(request)
+      end
     end
   end
 end
