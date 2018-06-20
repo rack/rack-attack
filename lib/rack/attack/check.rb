@@ -7,7 +7,7 @@ module Rack
         @type = options.fetch(:type, nil)
       end
 
-      def [](req)
+      def matched_by?(req)
         block[req].tap { |match|
           if match
             req.env["rack.attack.matched"] = name
@@ -16,8 +16,6 @@ module Rack
           end
         }
       end
-
-      alias_method :match?, :[]
     end
   end
 end

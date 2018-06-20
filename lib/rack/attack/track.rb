@@ -15,7 +15,7 @@ module Rack
         end
       end
 
-      def_delegator :@filter, :[]
+      def_delegator :@filter, :matched_by?
     end
   end
 end

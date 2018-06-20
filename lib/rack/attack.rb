@@ -82,8 +82,8 @@ class Rack::Attack
     end
 
     def safelisted?(req)
-      ip_safelists.any? { |safelist| safelist.match?(req) } ||
-        safelists.any? { |_name, safelist| safelist.match?(req) }
+      ip_safelists.any? { |safelist| safelist.matched_by?(req) } ||
+        safelists.any? { |_name, safelist| safelist.matched_by?(req) }
     end
 
     def whitelisted?(req)
@@ -92,8 +92,8 @@ class Rack::Attack
     end
 
     def blocklisted?(req)
-      ip_blocklists.any? { |blocklist| blocklist.match?(req) } ||
-        blocklists.any? { |_name, blocklist| blocklist.match?(req) }
+      ip_blocklists.any? { |blocklist| blocklist.matched_by?(req) } ||
+        blocklists.any? { |_name, blocklist| blocklist.matched_by?(req) }
     end
 
     def blacklisted?(req)
@@ -103,13 +103,13 @@ class Rack::Attack
 
     def throttled?(req)
       throttles.any? do |_name, throttle|
-        throttle[req]
+        throttle.matched_by?(req)
       end
     end
 
     def tracked?(req)
       tracks.each_value do |tracker|
-        tracker[req]
+        tracker.matched_by?(req)
       end
     end
 

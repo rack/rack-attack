@@ -18,7 +18,7 @@ module Rack
         Rack::Attack.cache
       end
 
-      def [](req)
+      def matched_by?(req)
         discriminator = block[req]
         return false unless discriminator
 
