@@ -40,6 +40,9 @@ Security:
 Lint:
   Enabled: true
 
+Style/BlockDelimiters:
+  Enabled: true
+
 Style/BracesAroundHashParameters:
   Enabled: true
 

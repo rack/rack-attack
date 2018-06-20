@@ -37,13 +37,13 @@ describe Rack::Attack::Cache do
     store = Rack::Attack::StoreProxy.build(store)
 
     describe "with #{store.class}" do
-      before {
+      before do
         @cache = Rack::Attack::Cache.new
         @key = "rack::attack:cache-test-key"
         @expires_in = 1
         @cache.store = store
         delete(@key)
-      }
+      end
 
       after { delete(@key) }
 
