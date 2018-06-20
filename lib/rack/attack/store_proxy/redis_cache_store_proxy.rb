@@ -9,13 +9,16 @@ module Rack
         end
 
         def increment(name, amount, options = {})
-          # Redis doesn't check expiration on the INCRBY command. See https://redis.io/commands/expire
-          redis.with do |r|
-            count = r.pipelined do
-              r.incrby(name, amount)
-              r.expire(name, options[:expires_in]) if options[:expires_in]
-            end
-            count.first
+          # RedisCacheStore#increment ignores options[:expires_in].
+          #
+          # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
+          # the counter. After that we continue using the original RedisCacheStore#increment.
+          if options[:expires_in] && !read(name)
+            write(name, 1, options)
+
+            1
+          else
+            super
           end
         end
 
