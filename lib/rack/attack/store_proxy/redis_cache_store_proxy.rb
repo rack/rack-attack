@@ -14,7 +14,7 @@ module Rack
           # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
           # the counter. After that we continue using the original RedisCacheStore#increment.
           if options[:expires_in] && !read(name)
-            write(name, 1, options)
+            write(name, amount, options)
 
             1
           else
