@@ -8,7 +8,7 @@ module Rack
           defined?(::ActiveSupport::Cache::RedisCacheStore) && store.is_a?(::ActiveSupport::Cache::RedisCacheStore)
         end
 
-        def increment(name, amount, options = {})
+        def increment(name, amount = 1, options = {})
           # RedisCacheStore#increment ignores options[:expires_in].
           #
           # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
