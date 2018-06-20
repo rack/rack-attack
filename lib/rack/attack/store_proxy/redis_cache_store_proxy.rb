@@ -10,11 +10,13 @@ module Rack
 
         def increment(name, amount, options = {})
           # Redis doesn't check expiration on the INCRBY command. See https://redis.io/commands/expire
-          count = redis.pipelined do
-            redis.incrby(name, amount)
-            redis.expire(name, options[:expires_in]) if options[:expires_in]
+          redis.with do |r|
+            count = r.pipelined do
+              r.incrby(name, amount)
+              r.expire(name, options[:expires_in]) if options[:expires_in]
+            end
+            count.first
           end
-          count.first
         end
 
         def read(name, options = {})
