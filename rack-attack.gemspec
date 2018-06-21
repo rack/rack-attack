@@ -21,6 +21,12 @@ Gem::Specification.new do |s|
   s.summary = %q{Block & throttle abusive requests}
   s.test_files = Dir.glob("spec/**/*")
 
+  s.metadata = {
+    "bug_tracker_uri" => "https://github.com/kickstarter/rack-attack/issues",
+    "changelog_uri" => "https://github.com/kickstarter/rack-attack/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/kickstarter/rack-attack"
+  }
+
   s.required_ruby_version = '>= 2.2'
 
   s.add_dependency 'rack'
