@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'appraisal'
   s.add_development_dependency 'connection_pool'
   s.add_development_dependency 'dalli'
-  s.add_development_dependency 'guard-minitest'
   s.add_development_dependency 'memcache-client'
   s.add_development_dependency 'minitest'
   s.add_development_dependency "minitest-stub-const"
@@ -40,12 +39,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redis-activesupport'
   s.add_development_dependency "rubocop", "0.57.2"
   s.add_development_dependency "timecop"
-
-  # Need to explicitly depend on guard because guard-minitest doesn't declare
-  # the dependency intentionally
-  #
-  # See https://github.com/guard/guard-minitest/pull/131
-  s.add_development_dependency 'guard'
 
   # byebug only works with MRI
   if RUBY_ENGINE == "ruby"
