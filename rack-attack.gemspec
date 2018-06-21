@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'memcache-client'
   s.add_development_dependency 'minitest'
   s.add_development_dependency "minitest-stub-const"
-  s.add_development_dependency 'pry'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'redis-activesupport'

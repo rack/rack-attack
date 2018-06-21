@@ -9,12 +9,6 @@ require 'action_dispatch'
 
 require "rack/attack"
 
-begin
-  require 'pry'
-rescue LoadError
-  # nothing to do here
-end
-
 if RUBY_ENGINE == "ruby"
   require "byebug"
 end
