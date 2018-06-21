@@ -16,7 +16,7 @@ module Rack
           if options[:expires_in] && !read(name)
             write(name, amount, options)
 
-            1
+            amount
           else
             super
           end
