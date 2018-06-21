@@ -25,17 +25,11 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rack'
 
-  s.add_development_dependency 'actionpack', '>= 3.0.0'
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'connection_pool'
-  s.add_development_dependency 'dalli'
-  s.add_development_dependency 'memcache-client'
   s.add_development_dependency 'minitest'
   s.add_development_dependency "minitest-stub-const"
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'redis-activesupport'
   s.add_development_dependency "rubocop", "0.57.2"
   s.add_development_dependency "timecop"
 
@@ -43,4 +37,13 @@ Gem::Specification.new do |s|
   if RUBY_ENGINE == "ruby"
     s.add_development_dependency 'byebug'
   end
+
+  # The following are potential runtime dependencies users may have,
+  # which rack-attack uses only for testing compatibility in test suite.
+  s.add_development_dependency 'actionpack', '>= 3.0.0'
+  s.add_development_dependency 'activesupport', '>= 3.0.0'
+  s.add_development_dependency 'connection_pool'
+  s.add_development_dependency 'dalli'
+  s.add_development_dependency 'memcache-client'
+  s.add_development_dependency 'redis-activesupport'
 end
