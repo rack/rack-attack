@@ -19,7 +19,6 @@ describe Rack::Attack::Cache do
 
   cache_stores = [
     ActiveSupport::Cache::MemoryStore.new,
-    Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new }
   ]
 
