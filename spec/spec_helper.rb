@@ -13,30 +13,18 @@ if RUBY_ENGINE == "ruby"
   require "byebug"
 end
 
-begin
-  require "dalli"
-rescue LoadError
+def safe_require(name)
+  begin
+    require name
+  rescue LoadError
+  end
 end
 
-begin
-  require "connection_pool"
-rescue LoadError
-end
-
-begin
-  require "redis"
-rescue LoadError
-end
-
-begin
-  require "redis-activesupport"
-rescue LoadError
-end
-
-begin
-  require "redis-store"
-rescue LoadError
-end
+safe_require "connection_pool"
+safe_require "dalli"
+safe_require "redis"
+safe_require "redis-activesupport"
+safe_require "redis-store"
 
 class MiniTest::Spec
   include Rack::Test::Methods
