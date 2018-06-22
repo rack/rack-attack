@@ -32,3 +32,8 @@ end
 appraise 'dalli2' do
   gem 'dalli', '~> 2.0'
 end
+
+appraise "connection_pool_dalli" do
+  gem "connection_pool", "~> 2.2"
+  gem "dalli", "~> 2.7"
+end

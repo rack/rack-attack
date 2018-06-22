@@ -18,6 +18,11 @@ begin
 rescue LoadError
 end
 
+begin
+  require "connection_pool"
+rescue LoadError
+end
+
 class MiniTest::Spec
   include Rack::Test::Methods
 

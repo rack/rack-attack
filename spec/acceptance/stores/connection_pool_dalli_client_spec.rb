@@ -1,6 +1,6 @@
 require_relative "../../spec_helper"
 
-if defined?(::Dalli)
+if defined?(::Dalli) && defined?(::ConnectionPool)
   require_relative "../../support/cache_store_helper"
   require "connection_pool"
   require "dalli"
