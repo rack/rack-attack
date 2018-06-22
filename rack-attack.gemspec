@@ -31,30 +31,25 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rack'
 
-  s.add_development_dependency 'actionpack', '>= 3.0.0'
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
-  s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'connection_pool'
-  s.add_development_dependency 'dalli'
-  s.add_development_dependency 'guard-minitest'
-  s.add_development_dependency 'memcache-client'
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency "minitest-stub-const"
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'redis-activesupport'
+  s.add_development_dependency 'appraisal', '~> 2.2'
+  s.add_development_dependency 'minitest', "~> 5.11"
+  s.add_development_dependency "minitest-stub-const", "~> 0.6"
+  s.add_development_dependency 'rack-test', "~> 1.0"
+  s.add_development_dependency 'rake', "~> 12.3"
   s.add_development_dependency "rubocop", "0.57.2"
-  s.add_development_dependency "timecop"
-
-  # Need to explicitly depend on guard because guard-minitest doesn't declare
-  # the dependency intentionally
-  #
-  # See https://github.com/guard/guard-minitest/pull/131
-  s.add_development_dependency 'guard'
+  s.add_development_dependency "timecop", "~> 0.9.1"
 
   # byebug only works with MRI
   if RUBY_ENGINE == "ruby"
-    s.add_development_dependency 'byebug'
+    s.add_development_dependency 'byebug', '~> 10.0'
   end
+
+  # The following are potential runtime dependencies users may have,
+  # which rack-attack uses only for testing compatibility in test suite.
+  s.add_development_dependency 'actionpack', '>= 3.0.0'
+  s.add_development_dependency 'activesupport', '>= 3.0.0'
+  s.add_development_dependency 'connection_pool'
+  s.add_development_dependency 'dalli'
+  s.add_development_dependency 'memcache-client'
+  s.add_development_dependency 'redis-activesupport'
 end
