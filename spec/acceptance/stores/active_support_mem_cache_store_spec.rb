@@ -3,7 +3,7 @@ require_relative "../../support/cache_store_helper"
 
 require "timecop"
 
-describe "MemCacheStore as a cache backend" do
+describe "ActiveSupport::Cache::MemCacheStore as a cache backend" do
   before do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemCacheStore.new
   end
