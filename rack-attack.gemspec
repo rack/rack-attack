@@ -50,6 +50,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency 'connection_pool'
   s.add_development_dependency 'dalli'
-  s.add_development_dependency 'memcache-client'
   s.add_development_dependency 'redis-activesupport'
 end
