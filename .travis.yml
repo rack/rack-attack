@@ -27,6 +27,11 @@ gemfile:
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
+  - gemfiles/active_support_redis_cache_store
+  - gemfiles/active_support_redis_cache_store_pooled
+  - gemfiles/active_support_redis_store
+  - gemfiles/connection_pool_dalli
+  - gemfiles/redis_store
 
 matrix:
   allow_failures:
