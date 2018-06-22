@@ -17,96 +17,89 @@ describe Rack::Attack::Cache do
 
   require 'connection_pool'
 
-  cache_stores = [
-    ActiveSupport::Cache::MemoryStore.new,
-    ConnectionPool.new { Dalli::Client.new }
-  ]
+  store = Rack::Attack::StoreProxy.build(ConnectionPool.new { Dalli::Client.new })
 
-  cache_stores.each do |store|
-    store = Rack::Attack::StoreProxy.build(store)
+  describe "with #{store.class}" do
+    before do
+      @cache = Rack::Attack::Cache.new
+      @key = "rack::attack:cache-test-key"
+      @expires_in = 1
+      @cache.store = store
+      delete(@key)
+    end
 
-    describe "with #{store.class}" do
-      before do
-        @cache = Rack::Attack::Cache.new
-        @key = "rack::attack:cache-test-key"
-        @expires_in = 1
-        @cache.store = store
-        delete(@key)
+    after { delete(@key) }
+
+    describe "do_count once" do
+      it "should be 1" do
+        @cache.send(:do_count, @key, @expires_in).must_equal 1
       end
+    end
 
-      after { delete(@key) }
-
-      describe "do_count once" do
-        it "should be 1" do
-          @cache.send(:do_count, @key, @expires_in).must_equal 1
-        end
+    describe "do_count twice" do
+      it "must be 2" do
+        @cache.send(:do_count, @key, @expires_in)
+        @cache.send(:do_count, @key, @expires_in).must_equal 2
       end
+    end
 
-      describe "do_count twice" do
-        it "must be 2" do
-          @cache.send(:do_count, @key, @expires_in)
-          @cache.send(:do_count, @key, @expires_in).must_equal 2
-        end
+    describe "do_count after expires_in" do
+      it "must be 1" do
+        @cache.send(:do_count, @key, @expires_in)
+        sleep_until_expired
+        @cache.send(:do_count, @key, @expires_in).must_equal 1
       end
+    end
 
-      describe "do_count after expires_in" do
-        it "must be 1" do
-          @cache.send(:do_count, @key, @expires_in)
-          sleep_until_expired
-          @cache.send(:do_count, @key, @expires_in).must_equal 1
-        end
+    describe "write" do
+      it "should write a value to the store with prefix" do
+        @cache.write("cache-test-key", "foobar", 1)
+        store.read(@key).must_equal "foobar"
       end
+    end
 
-      describe "write" do
-        it "should write a value to the store with prefix" do
-          @cache.write("cache-test-key", "foobar", 1)
-          store.read(@key).must_equal "foobar"
-        end
+    describe "write after expiry" do
+      it "must not have a value" do
+        @cache.write("cache-test-key", "foobar", @expires_in)
+        sleep_until_expired
+        store.read(@key).must_be :nil?
       end
+    end
 
-      describe "write after expiry" do
-        it "must not have a value" do
-          @cache.write("cache-test-key", "foobar", @expires_in)
-          sleep_until_expired
-          store.read(@key).must_be :nil?
-        end
+    describe "read" do
+      it "must read the value with a prefix" do
+        store.write(@key, "foobar", :expires_in => @expires_in)
+        @cache.read("cache-test-key").must_equal "foobar"
       end
+    end
 
-      describe "read" do
-        it "must read the value with a prefix" do
-          store.write(@key, "foobar", :expires_in => @expires_in)
-          @cache.read("cache-test-key").must_equal "foobar"
-        end
+    describe "delete" do
+      it "must delete the value" do
+        store.write(@key, "foobar", :expires_in => @expires_in)
+        @cache.read('cache-test-key').must_equal "foobar"
+        store.delete(@key)
+        assert_nil @cache.read('cache-test-key')
       end
+    end
 
-      describe "delete" do
-        it "must delete the value" do
-          store.write(@key, "foobar", :expires_in => @expires_in)
-          @cache.read('cache-test-key').must_equal "foobar"
-          store.delete(@key)
-          assert_nil @cache.read('cache-test-key')
-        end
+    describe "cache#delete" do
+      it "must delete the value" do
+        @cache.write("cache-test-key", "foobar", 1)
+        store.read(@key).must_equal "foobar"
+        @cache.delete('cache-test-key')
+        store.read(@key).must_be :nil?
       end
+    end
 
-      describe "cache#delete" do
-        it "must delete the value" do
-          @cache.write("cache-test-key", "foobar", 1)
-          store.read(@key).must_equal "foobar"
-          @cache.delete('cache-test-key')
-          store.read(@key).must_be :nil?
-        end
-      end
-
-      describe "reset_count" do
-        it "must delete the value" do
-          period = 1.minute
-          unprefixed_key = 'cache-test-key'
-          @cache.count(unprefixed_key, period)
-          period_key, _ = @cache.send(:key_and_expiry, 'cache-test-key', period)
-          store.read(period_key).to_i.must_equal 1
-          @cache.reset_count(unprefixed_key, period)
-          assert_nil store.read(period_key)
-        end
+    describe "reset_count" do
+      it "must delete the value" do
+        period = 1.minute
+        unprefixed_key = 'cache-test-key'
+        @cache.count(unprefixed_key, period)
+        period_key, _ = @cache.send(:key_and_expiry, 'cache-test-key', period)
+        store.read(period_key).to_i.must_equal 1
+        @cache.reset_count(unprefixed_key, period)
+        assert_nil store.read(period_key)
       end
     end
   end
