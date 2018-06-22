@@ -4,7 +4,7 @@ require_relative "../../support/cache_store_helper"
 require "timecop"
 
 if ActiveSupport.version >= Gem::Version.new("5.2.0")
-  describe "RedisCacheStore as a cache backend" do
+  describe "ActiveSupport::Cache::RedisCacheStore as a cache backend" do
     before do
       Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new
     end

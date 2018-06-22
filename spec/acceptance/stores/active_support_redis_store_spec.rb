@@ -1,15 +1,16 @@
 require_relative "../../spec_helper"
 require_relative "../../support/cache_store_helper"
 
+require "redis-activesupport"
 require "timecop"
 
-describe "MemCacheStore as a cache backend" do
+describe "ActiveSupport::Cache::RedisStore as a cache backend" do
   before do
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemCacheStore.new
+    Rack::Attack.cache.store = ActiveSupport::Cache::RedisStore.new
   end
 
   after do
-    Rack::Attack.cache.store.flush_all
+    Rack::Attack.cache.store.flushdb
   end
 
   it_works_for_cache_backed_features
@@ -29,10 +30,10 @@ describe "MemCacheStore as a cache backend" do
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
     end
 
-    assert Rack::Attack.cache.store.get(key)
+    assert Rack::Attack.cache.store.read(key)
 
     sleep 2.1
 
-    assert_nil Rack::Attack.cache.store.get(key)
+    assert_nil Rack::Attack.cache.store.read(key)
   end
 end
