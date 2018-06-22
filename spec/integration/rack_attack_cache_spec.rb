@@ -16,13 +16,11 @@ describe Rack::Attack::Cache do
   end
 
   require 'active_support/cache/dalli_store'
-  require 'active_support/cache/redis_store'
   require 'connection_pool'
 
   cache_stores = [
     ActiveSupport::Cache::MemoryStore.new,
     ActiveSupport::Cache::DalliStore.new("127.0.0.1"),
-    ActiveSupport::Cache::RedisStore.new("127.0.0.1"),
     Dalli::Client.new,
     ConnectionPool.new { Dalli::Client.new },
     Redis::Store.new
