@@ -48,5 +48,4 @@ Gem::Specification.new do |s|
   # which rack-attack uses only for testing compatibility in test suite.
   s.add_development_dependency 'actionpack', '>= 3.0.0'
   s.add_development_dependency 'activesupport', '>= 3.0.0'
-  s.add_development_dependency 'redis-activesupport'
 end

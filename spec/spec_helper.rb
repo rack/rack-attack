@@ -23,6 +23,21 @@ begin
 rescue LoadError
 end
 
+begin
+  require "redis"
+rescue LoadError
+end
+
+begin
+  require "redis-activesupport"
+rescue LoadError
+end
+
+begin
+  require "redis-store"
+rescue LoadError
+end
+
 class MiniTest::Spec
   include Rack::Test::Methods
 
