@@ -13,6 +13,11 @@ if RUBY_ENGINE == "ruby"
   require "byebug"
 end
 
+begin
+  require "dalli"
+rescue LoadError
+end
+
 class MiniTest::Spec
   include Rack::Test::Methods
 

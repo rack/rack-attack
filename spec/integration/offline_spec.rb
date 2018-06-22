@@ -1,6 +1,5 @@
 require 'active_support/cache'
 require 'redis-activesupport'
-require 'dalli'
 require_relative '../spec_helper'
 
 OfflineExamples = Minitest::SharedExamples.new do
@@ -27,17 +26,19 @@ describe 'when Redis is offline' do
   end
 end
 
-describe 'when Memcached is offline' do
-  include OfflineExamples
+if defined?(::Dalli)
+  describe 'when Memcached is offline' do
+    include OfflineExamples
 
-  before do
-    Dalli.logger.level = Logger::FATAL
+    before do
+      Dalli.logger.level = Logger::FATAL
 
-    @cache = Rack::Attack::Cache.new
-    @cache.store = Dalli::Client.new('127.0.0.1:22122')
-  end
+      @cache = Rack::Attack::Cache.new
+      @cache.store = Dalli::Client.new('127.0.0.1:22122')
+    end
 
-  after do
-    Dalli.logger.level = Logger::INFO
+    after do
+      Dalli.logger.level = Logger::INFO
+    end
   end
 end
