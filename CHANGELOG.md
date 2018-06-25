@@ -1,9 +1,16 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
 _No significant changes since last release yet. Stay tuned_ :radio:
+
+## [5.3.2] - 2018-06-25
+
+### Fixed
+
+- Don't raise exception `The Redis cache store requires the redis gem` when using [`ActiveSupport::Cache::MemoryStore`](http://api.rubyonrails.org/classes/ActiveSupport/Cache/MemoryStore.html) as a cache store backend
 
 ## [5.3.1] - 2018-06-20
 
@@ -117,7 +124,8 @@ _No significant changes since last release yet. Stay tuned_ :radio:
  - Remove unused variable
  - Extract mandatory options to constants
 
-[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...HEAD/
+[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...HEAD/
+[5.3.2]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...v5.3.2/
 [5.3.1]: https://github.com/kickstarter/rack-attack/compare/v5.3.0...v5.3.1/
 [5.3.0]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...v5.3.0/
 [5.2.0]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...v5.2.0/
