@@ -32,3 +32,27 @@ end
 appraise 'dalli2' do
   gem 'dalli', '~> 2.0'
 end
+
+appraise "connection_pool_dalli" do
+  gem "connection_pool", "~> 2.2"
+  gem "dalli", "~> 2.7"
+end
+
+appraise "active_support_redis_cache_store" do
+  gem "activesupport", "~> 5.2.0"
+  gem "redis", "~> 4.0"
+end
+
+appraise "active_support_redis_cache_store_pooled" do
+  gem "activesupport", "~> 5.2.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 4.0"
+end
+
+appraise "redis_store" do
+  gem "redis-store", "~> 1.5"
+end
+
+appraise "active_support_redis_store" do
+  gem "redis-activesupport", "~> 5.0"
+end
