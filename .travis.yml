@@ -2,7 +2,7 @@ language: ruby
 cache: bundler
 
 rvm:
-  - 2.6.0-preview1
+  - 2.6.0-preview2
   - 2.5.1
   - 2.4.4
   - 2.3.7
@@ -30,7 +30,7 @@ gemfile:
 
 matrix:
   allow_failures:
-    - rvm: 2.6.0-preview1
+    - rvm: 2.6.0-preview2
 
   fast_finish: true
 
