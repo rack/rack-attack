@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise "rack_2_0" do
   gem "rack", "~> 2.0.4"
 end

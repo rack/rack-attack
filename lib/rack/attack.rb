@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack'
 require 'forwardable'
 require 'rack/attack/path_normalizer'

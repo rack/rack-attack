@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Rack::Attack::Request is the same as ::Rack::Request by default.
 #
 # This is a safe place to add custom helper methods to the request object

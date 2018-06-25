@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../../spec_helper"
 
 if defined?(::ConnectionPool) && defined?(::Redis) && defined?(::ActiveSupport::Cache::RedisCacheStore)
