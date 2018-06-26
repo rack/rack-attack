@@ -46,6 +46,6 @@ Gem::Specification.new do |s|
 
   # The following are potential runtime dependencies users may have,
   # which rack-attack uses only for testing compatibility in test suite.
-  s.add_development_dependency 'actionpack', '>= 3.0.0'
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
+  s.add_development_dependency 'actionpack', '~> 5.2'
+  s.add_development_dependency 'activesupport', '~> 5.2'
 end

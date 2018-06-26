@@ -3,6 +3,8 @@
 source "https://rubygems.org"
 
 gem "rack", "~> 1.6.9"
+gem "activesupport", ">= 4.2"
+gem "actionpack", ">= 4.2"
 gem "rack-test", ">= 0.6"
 
 gemspec path: "../"
