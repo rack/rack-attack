@@ -6,16 +6,21 @@ module Rack
   class Attack
     module StoreProxy
       class RedisProxy < SimpleDelegator
+        def initialize(*args)
+          if Gem::Version.new(Redis::VERSION) < Gem::Version.new("3")
+            warn 'RackAttack requires Redis gem >= 3.0.0.'
+          end
+
+          super(*args)
+        end
+
         def self.handle?(store)
           defined?(::Redis) && store.is_a?(::Redis)
         end
 
-        def initialize(store)
-          super(store)
-        end
-
         def read(key)
           get(key)
+        rescue Redis::BaseError
         end
 
         def write(key, value, options = {})
@@ -24,6 +29,7 @@ module Rack
           else
             set(key, value)
           end
+        rescue Redis::BaseError
         end
 
         def increment(key, amount, options = {})
@@ -35,10 +41,12 @@ module Rack
           end
 
           count.value if count
+        rescue Redis::BaseError
         end
 
         def delete(key, _options = {})
           del(key)
+        rescue Redis::BaseError
         end
       end
     end
