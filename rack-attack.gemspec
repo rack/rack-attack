@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.2'
 
-  s.add_dependency 'rack'
+  s.add_runtime_dependency 'rack', ">= 1.0"
 
   s.add_development_dependency 'appraisal', '~> 2.2'
   s.add_development_dependency 'minitest', "~> 5.11"
