@@ -3,6 +3,11 @@ appraise "rack_2_0" do
 end
 
 appraise "rack_1_6" do
+  # Override activesupport and actionpack version constraints by making
+  # it more loose so it's compatible with rack 1.6.x
+  gem "actionpack", ">= 4.2"
+  gem "activesupport", ">= 4.2"
+
   gem "rack", "~> 1.6.9"
 
   # Override rack-test version constraint by making it more loose

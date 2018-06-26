@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
+gem "actionpack", ">= 4.2"
+gem "activesupport", ">= 4.2"
 gem "rack", "~> 1.6.9"
 gem "rack-test", ">= 0.6"
 

@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
 
   s.add_development_dependency 'appraisal', '~> 2.2'
+  s.add_development_dependency "bundler", "~> 1.16"
   s.add_development_dependency 'minitest', "~> 5.11"
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
   s.add_development_dependency 'rack-test', "~> 1.0"
@@ -46,6 +47,6 @@ Gem::Specification.new do |s|
 
   # The following are potential runtime dependencies users may have,
   # which rack-attack uses only for testing compatibility in test suite.
-  s.add_development_dependency 'actionpack', '>= 3.0.0'
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
+  s.add_development_dependency 'actionpack', '~> 5.2'
+  s.add_development_dependency 'activesupport', '~> 5.2'
 end
