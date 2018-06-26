@@ -20,7 +20,8 @@ namespace :test do
   end
 end
 
-desc 'Run tests'
-task :test => %w[test:units test:integration test:acceptance]
+Rake::TestTask.new(:test) do |t|
+  t.pattern = "spec/**/*_spec.rb"
+end
 
 task :default => [:rubocop, :test]
