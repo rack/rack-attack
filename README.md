@@ -252,7 +252,8 @@ Rack::Attack.track("special_agent", limit: 6, period: 60) do |req|
 end
 
 # Track it using ActiveSupport::Notification
-ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
+ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, payload|
+  req = payload[:request]
   if req.env['rack.attack.matched'] == "special_agent" && req.env['rack.attack.match_type'] == :track
     Rails.logger.info "special_agent: #{req.path}"
     STATSD.increment("special_agent")
@@ -330,8 +331,8 @@ Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/
 You can subscribe to 'rack.attack' events and log it, graph it, etc:
 
 ```ruby
-ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
-  puts req.inspect
+ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
+  puts payload[:request].inspect
 end
 ```
 

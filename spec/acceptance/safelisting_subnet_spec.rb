@@ -36,8 +36,8 @@ describe "Safelisting an IP subnet" do
   it "notifies when the request is safe" do
     notification_type = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, request|
-      notification_type = request.env["rack.attack.match_type"]
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+      notification_type = payload[:request].env["rack.attack.match_type"]
     end
 
     get "/admin", {}, "REMOTE_ADDR" => "5.6.0.0"

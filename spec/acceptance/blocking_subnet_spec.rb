@@ -27,9 +27,9 @@ describe "Blocking an IP subnet" do
     notified = false
     notification_type = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, request|
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
       notified = true
-      notification_type = request.env["rack.attack.match_type"]
+      notification_type = payload[:request].env["rack.attack.match_type"]
     end
 
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8"

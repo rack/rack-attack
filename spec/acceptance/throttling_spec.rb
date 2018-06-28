@@ -123,11 +123,11 @@ describe "#throttle" do
     notification_data = nil
     notification_discriminator = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, request|
-      notification_matched = request.env["rack.attack.matched"]
-      notification_type = request.env["rack.attack.match_type"]
-      notification_data = request.env['rack.attack.match_data']
-      notification_discriminator = request.env['rack.attack.match_discriminator']
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+      notification_matched = payload[:request].env["rack.attack.matched"]
+      notification_type = payload[:request].env["rack.attack.match_type"]
+      notification_data = payload[:request].env['rack.attack.match_data']
+      notification_discriminator = payload[:request].env['rack.attack.match_discriminator']
     end
 
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8"

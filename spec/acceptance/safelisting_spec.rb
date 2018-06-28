@@ -39,9 +39,9 @@ describe "#safelist" do
     notification_matched = nil
     notification_type = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, request|
-      notification_matched = request.env["rack.attack.matched"]
-      notification_type = request.env["rack.attack.match_type"]
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+      notification_matched = payload[:request].env["rack.attack.matched"]
+      notification_type = payload[:request].env["rack.attack.match_type"]
     end
 
     get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
