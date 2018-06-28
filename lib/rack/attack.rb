@@ -31,11 +31,6 @@ class Rack::Attack
       self.safelists[name] = Safelist.new(name, block)
     end
 
-    def whitelist(name, &block)
-      warn "[DEPRECATION] 'Rack::Attack.whitelist' is deprecated.  Please use 'safelist' instead."
-      safelist(name, &block)
-    end
-
     def blocklist(name, &block)
       self.blocklists[name] = Blocklist.new(name, block)
     end
@@ -50,11 +45,6 @@ class Rack::Attack
       @ip_safelists ||= []
       ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
       @ip_safelists << Safelist.new(nil, ip_safelist_proc)
-    end
-
-    def blacklist(name, &block)
-      warn "[DEPRECATION] 'Rack::Attack.blacklist' is deprecated.  Please use 'blocklist' instead."
-      blocklist(name, &block)
     end
 
     def throttle(name, options, &block)
@@ -73,34 +63,14 @@ class Rack::Attack
 
     def tracks;     @tracks     ||= {}; end
 
-    def whitelists
-      warn "[DEPRECATION] 'Rack::Attack.whitelists' is deprecated.  Please use 'safelists' instead."
-      safelists
-    end
-
-    def blacklists
-      warn "[DEPRECATION] 'Rack::Attack.blacklists' is deprecated.  Please use 'blocklists' instead."
-      blocklists
-    end
-
     def safelisted?(request)
       ip_safelists.any? { |safelist| safelist.matched_by?(request) } ||
         safelists.any? { |_name, safelist| safelist.matched_by?(request) }
     end
 
-    def whitelisted?(request)
-      warn "[DEPRECATION] 'Rack::Attack.whitelisted?' is deprecated.  Please use 'safelisted?' instead."
-      safelisted?(request)
-    end
-
     def blocklisted?(request)
       ip_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
         blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
-    end
-
-    def blacklisted?(request)
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
-      blocklisted?(request)
     end
 
     def throttled?(request)
@@ -132,16 +102,6 @@ class Rack::Attack
     def clear!
       warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
       clear_configuration
-    end
-
-    def blacklisted_response=(res)
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response=' is deprecated.  Please use 'blocklisted_response=' instead."
-      self.blocklisted_response = res
-    end
-
-    def blacklisted_response
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead."
-      blocklisted_response
     end
 
     private
