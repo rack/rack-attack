@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     class Allow2Ban < Fail2Ban

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../spec_helper"
 
 describe "Cache store config when throttling without Rails" do

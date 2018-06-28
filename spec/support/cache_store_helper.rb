@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Minitest::Spec
   def self.it_works_for_cache_backed_features
     it "works for throttle" do

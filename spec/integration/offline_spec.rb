@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/cache'
 require_relative '../spec_helper'
 

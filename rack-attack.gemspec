@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
@@ -27,7 +28,7 @@ Gem::Specification.new do |s|
     "source_code_uri" => "https://github.com/kickstarter/rack-attack"
   }
 
-  s.required_ruby_version = '>= 2.2'
+  s.required_ruby_version = '>= 2.3'
 
   s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
 

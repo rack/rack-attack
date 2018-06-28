@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Rack::Attack
   # When using Rack::Attack with a Rails app, developers expect the request path
   # to be normalized. In particular, trailing slashes are stripped.
