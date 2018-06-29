@@ -27,6 +27,7 @@ gemfile:
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
+  - gemfiles/redis_4.gemfile
   - gemfiles/connection_pool_dalli.gemfile
   - gemfiles/active_support_redis_cache_store.gemfile
   - gemfiles/active_support_redis_cache_store_pooled.gemfile
