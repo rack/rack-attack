@@ -303,13 +303,13 @@ Here's an example response that includes conventional `X-RateLimit-*` headers:
 
 ```ruby
 Rack::Attack.throttled_response = lambda do |env|
-  now = Time.now
   match_data = env['rack.attack.match_data']
+  now = match_data[:epoch_time]
 
   headers = {
     'X-RateLimit-Limit' => match_data[:limit].to_s,
     'X-RateLimit-Remaining' => '0',
-    'X-RateLimit-Reset' => (now + (match_data[:period] - now.to_i % match_data[:period])).to_s
+    'X-RateLimit-Reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
   }
 
   [ 429, headers, ["Throttled\n"]]
@@ -320,7 +320,7 @@ end
 For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
 
 ```ruby
-request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l }
+request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p, :limit => l, :epoch_time => t }
 ```
 
 ## Logging & Instrumentation
