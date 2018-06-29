@@ -4,6 +4,13 @@ module Rack
   class Attack
     module StoreProxy
       class RedisStoreProxy < SimpleDelegator
+        def initialize(*args)
+          major_version = Redis::VERSION.split('.').first.to_i
+          warn 'RackAttack requires Redis gem >= 3.0.0.' if major_version < 3
+
+          super(*args)
+        end
+
         def self.handle?(store)
           defined?(::Redis::Store) && store.is_a?(::Redis::Store)
         end
