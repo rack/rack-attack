@@ -379,6 +379,8 @@ A note on developing and testing apps using Rack::Attack - if you are using thro
 need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
 for more on how to do this.
 
+If using rspec - you can use `require 'rack/attack/rspec'` in order to disable Rack Attack in tests (so that you do not throttle or blocklist during test executions causing 'flakey' tests). You can selectively enable Rack Attack by using `rack_attack: true` in a block.
+
 ## Performance
 
 The overhead of running Rack::Attack is typically negligible (a few milliseconds per request),
