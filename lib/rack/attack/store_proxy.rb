@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     module StoreProxy
-      PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy, RedisProxy].freeze
+      PROXIES = [DalliProxy, MemCacheProxy, RedisProxy, RedisStoreProxy, RedisCacheStoreProxy].freeze
 
-      ACTIVE_SUPPORT_WRAPPER_CLASSES = Set.new(['ActiveSupport::Cache::MemCacheStore', 'ActiveSupport::Cache::RedisStore']).freeze
-      ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Redis', 'Dalli::Client', 'MemCache']).freeze
+      ACTIVE_SUPPORT_WRAPPER_CLASSES = Set.new(['ActiveSupport::Cache::MemCacheStore', 'ActiveSupport::Cache::RedisStore', 'ActiveSupport::Cache::RedisCacheStore']).freeze
+      ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Dalli::Client', 'MemCache']).freeze
 
       def self.build(store)
         client = unwrap_active_support_stores(store)
@@ -12,8 +14,6 @@ module Rack
         klass ? klass.new(client) : client
       end
 
-
-      private
       def self.unwrap_active_support_stores(store)
         # ActiveSupport::Cache::RedisStore doesn't expose any way to set an expiry,
         # so use the raw Redis::Store instead.

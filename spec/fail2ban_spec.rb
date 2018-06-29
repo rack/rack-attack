@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'spec_helper'
 
 describe 'Rack::Attack.Fail2Ban' do
@@ -7,10 +9,10 @@ describe 'Rack::Attack.Fail2Ban' do
     @findtime = 60
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    @f2b_options = {:bantime => @bantime, :findtime => @findtime, :maxretry => 2}
+    @f2b_options = { :bantime => @bantime, :findtime => @findtime, :maxretry => 2 }
 
     Rack::Attack.blocklist('pentest') do |req|
-      Rack::Attack::Fail2Ban.filter(req.ip, @f2b_options){req.query_string =~ /OMGHAX/}
+      Rack::Attack::Fail2Ban.filter(req.ip, @f2b_options) { req.query_string =~ /OMGHAX/ }
     end
   end
 
@@ -31,7 +33,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+          key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
           @cache.store.read(key).must_equal 1
         end
 
@@ -53,7 +55,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+          key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
           @cache.store.read(key).must_equal 2
         end
 
@@ -75,7 +77,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'resets fail count' do
-          key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+          key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
           assert_nil @cache.store.read(key)
         end
 
@@ -110,7 +112,7 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'does not increase fail count' do
-        key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+        key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
         @cache.store.read(key).must_equal 2
       end
 
@@ -130,7 +132,7 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'does not increase fail count' do
-        key = "rack::attack:#{Time.now.to_i/@findtime}:fail2ban:count:1.2.3.4"
+        key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
         @cache.store.read(key).must_equal 2
       end
 

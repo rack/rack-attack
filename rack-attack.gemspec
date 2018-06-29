@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
+
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
@@ -14,23 +16,38 @@ Gem::Specification.new do |s|
   s.email = "aaron@ktheory.com"
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md)
-  s.homepage = 'http://github.com/kickstarter/rack-attack'
+  s.homepage = 'https://github.com/kickstarter/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.summary = %q{Block & throttle abusive requests}
   s.test_files = Dir.glob("spec/**/*")
 
-  s.required_ruby_version = '>= 2.0.0'
+  s.metadata = {
+    "bug_tracker_uri" => "https://github.com/kickstarter/rack-attack/issues",
+    "changelog_uri" => "https://github.com/kickstarter/rack-attack/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/kickstarter/rack-attack"
+  }
 
-  s.add_dependency 'rack'
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
-  s.add_development_dependency 'actionpack', '>= 3.0.0'
-  s.add_development_dependency 'redis-activesupport'
-  s.add_development_dependency 'dalli'
-  s.add_development_dependency 'connection_pool'
-  s.add_development_dependency 'memcache-client'
+  s.required_ruby_version = '>= 2.3'
+
+  s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
+
+  s.add_development_dependency 'appraisal', '~> 2.2'
+  s.add_development_dependency "bundler", "~> 1.16"
+  s.add_development_dependency 'minitest', "~> 5.11"
+  s.add_development_dependency "minitest-stub-const", "~> 0.6"
+  s.add_development_dependency 'rack-test', "~> 1.0"
+  s.add_development_dependency 'rake', "~> 12.3"
+  s.add_development_dependency "rubocop", "0.57.2"
+  s.add_development_dependency "timecop", "~> 0.9.1"
+
+  # byebug only works with MRI
+  if RUBY_ENGINE == "ruby"
+    s.add_development_dependency 'byebug', '~> 10.0'
+  end
+
+  # The following are potential runtime dependencies users may have,
+  # which rack-attack uses only for testing compatibility in test suite.
+  s.add_development_dependency 'actionpack', '~> 5.2'
+  s.add_development_dependency 'activesupport', '~> 5.2'
 end

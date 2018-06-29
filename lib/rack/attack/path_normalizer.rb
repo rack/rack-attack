@@ -1,8 +1,9 @@
-class Rack::Attack
+# frozen_string_literal: true
 
+class Rack::Attack
   # When using Rack::Attack with a Rails app, developers expect the request path
   # to be normalized. In particular, trailing slashes are stripped.
-  # (See http://git.io/v0rrR for implementation.)
+  # (See https://git.io/v0rrR for implementation.)
   #
   # Look for an ActionDispatch utility class that Rails folks would expect
   # to normalize request paths. If unavailable, use a fallback class that
@@ -15,10 +16,9 @@ class Rack::Attack
   end
 
   PathNormalizer = if defined?(::ActionDispatch::Journey::Router::Utils)
-                 # For Rails apps
-                 ::ActionDispatch::Journey::Router::Utils
-               else
-                 FallbackPathNormalizer
-               end
-
+                     # For Rails apps
+                     ::ActionDispatch::Journey::Router::Utils
+                   else
+                     FallbackPathNormalizer
+                   end
 end

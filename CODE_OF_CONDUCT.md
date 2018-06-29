@@ -18,4 +18,4 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 
 :hand: :page_with_curl:
 
-This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org) (v1.0.0), available at [http://contributor-covenant.org/version/1/0/0/](http://contributor-covenant.org/version/1/0/0/)
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org) (v1.0.0), available at [https://www.contributor-covenant.org/version/1/0/0/](https://www.contributor-covenant.org/version/1/0/0/)

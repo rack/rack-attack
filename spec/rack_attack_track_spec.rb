@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'spec_helper'
 
 describe 'Rack::Attack.track' do
@@ -16,10 +18,10 @@ describe 'Rack::Attack.track' do
   end
 
   before do
-    Rack::Attack.track("everything"){ |req| true }
+    Rack::Attack.track("everything") { |_req| true }
   end
 
-  allow_ok_requests
+  it_allows_ok_requests
 
   it "should tag the env" do
     get '/'
@@ -31,9 +33,9 @@ describe 'Rack::Attack.track' do
     before do
       Counter.reset
       # A second track
-      Rack::Attack.track("homepage"){ |req| req.path == "/"}
+      Rack::Attack.track("homepage") { |req| req.path == "/" }
 
-      ActiveSupport::Notifications.subscribe("rack.attack") do |*args|
+      ActiveSupport::Notifications.subscribe("rack.attack") do |*_args|
         Counter.incr
       end
 
@@ -47,15 +49,15 @@ describe 'Rack::Attack.track' do
 
   describe "without limit and period options" do
     it "should assign the track filter to a Check instance" do
-      tracker = Rack::Attack.track("homepage") { |req| req.path == "/"}
-      tracker.filter.class.must_equal Rack::Attack::Check
+      track = Rack::Attack.track("homepage") { |req| req.path == "/" }
+      track.filter.class.must_equal Rack::Attack::Check
     end
   end
 
   describe "with limit and period options" do
     it "should assign the track filter to a Throttle instance" do
-      tracker = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/"}
-      tracker.filter.class.must_equal Rack::Attack::Throttle
+      track = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/" }
+      track.filter.class.must_equal Rack::Attack::Throttle
     end
   end
 end

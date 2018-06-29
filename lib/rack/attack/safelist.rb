@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     class Safelist < Check
@@ -5,7 +7,6 @@ module Rack
         super
         @type = :safelist
       end
-
     end
   end
 end

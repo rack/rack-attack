@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     class Cache
-
       attr_accessor :prefix
+      attr_reader :last_epoch_time
 
       def initialize
         self.store = ::Rails.cache if defined?(::Rails.cache)
@@ -20,6 +22,9 @@ module Rack
       end
 
       def read(unprefixed_key)
+        enforce_store_presence!
+        enforce_store_method_presence!(:read)
+
         store.read("#{prefix}:#{unprefixed_key}")
       end
 
@@ -39,22 +44,38 @@ module Rack
       private
 
       def key_and_expiry(unprefixed_key, period)
-        epoch_time = Time.now.to_i
-        # Add 1 to expires_in to avoid timing error: http://git.io/i1PHXA
-        expires_in = (period - (epoch_time % period) + 1).to_i
-        ["#{prefix}:#{(epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
+        @last_epoch_time = Time.now.to_i
+        # Add 1 to expires_in to avoid timing error: https://git.io/i1PHXA
+        expires_in = (period - (@last_epoch_time % period) + 1).to_i
+        ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
       end
 
       def do_count(key, expires_in)
+        enforce_store_presence!
+        enforce_store_method_presence!(:increment)
+
         result = store.increment(key, 1, :expires_in => expires_in)
 
         # NB: Some stores return nil when incrementing uninitialized values
         if result.nil?
+          enforce_store_method_presence!(:write)
+
           store.write(key, 1, :expires_in => expires_in)
         end
         result || 1
       end
 
+      def enforce_store_presence!
+        if store.nil?
+          raise Rack::Attack::MissingStoreError
+        end
+      end
+
+      def enforce_store_method_presence!(method_name)
+        if !store.respond_to?(method_name)
+          raise Rack::Attack::MisconfiguredStoreError, "Store needs to respond to ##{method_name}"
+        end
+      end
     end
   end
 end

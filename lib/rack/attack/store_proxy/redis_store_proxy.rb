@@ -1,15 +1,21 @@
+# frozen_string_literal: true
+
 require 'delegate'
 
 module Rack
   class Attack
     module StoreProxy
       class RedisStoreProxy < SimpleDelegator
-        def self.handle?(store)
-          defined?(::Redis::Store) && store.is_a?(::Redis::Store)
+        def initialize(*args)
+          if Gem::Version.new(Redis::VERSION) < Gem::Version.new("3")
+            warn 'RackAttack requires Redis gem >= 3.0.0.'
+          end
+
+          super(*args)
         end
 
-        def initialize(store)
-          super(store)
+        def self.handle?(store)
+          defined?(::Redis::Store) && store.is_a?(::Redis::Store)
         end
 
         def read(key)
@@ -17,7 +23,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def write(key, value, options={})
+        def write(key, value, options = {})
           if (expires_in = options[:expires_in])
             setex(key, expires_in, value, raw: true)
           else
@@ -26,7 +32,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def increment(key, amount, options={})
+        def increment(key, amount, options = {})
           count = nil
 
           pipelined do
@@ -38,7 +44,7 @@ module Rack
         rescue Redis::BaseError
         end
 
-        def delete(key, options={})
+        def delete(key, _options = {})
           del(key)
         rescue Redis::BaseError
         end
