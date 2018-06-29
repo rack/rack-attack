@@ -15,10 +15,6 @@ module Rack
           defined?(::Redis::Store) && store.is_a?(::Redis::Store)
         end
 
-        def initialize(store)
-          super(store)
-        end
-
         def read(key)
           get(key, raw: true)
         rescue Redis::BaseError
