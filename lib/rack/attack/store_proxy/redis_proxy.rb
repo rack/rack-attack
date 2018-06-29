@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'delegate'
 
 module Rack
@@ -16,7 +18,7 @@ module Rack
           get(key)
         end
 
-        def write(key, value, options={})
+        def write(key, value, options = {})
           if (expires_in = options[:expires_in])
             setex(key, expires_in, value)
           else
@@ -24,7 +26,7 @@ module Rack
           end
         end
 
-        def increment(key, amount, options={})
+        def increment(key, amount, options = {})
           count = nil
 
           pipelined do
@@ -35,7 +37,7 @@ module Rack
           count.value if count
         end
 
-        def delete(key, options={})
+        def delete(key, _options = {})
           del(key)
         end
       end
