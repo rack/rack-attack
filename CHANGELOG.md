@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [5.4.0] - 2018-07-02
 
-_No significant changes since last release yet. Stay tuned_ :radio:
+### Added
+
+- Support "plain" `Redis` as a cache store backend ([#280](https://github.com/kickstarter/rack-attack/pull/280)). Thanks @bfad and @ryandv.
+- When overwriting `Rack::Attack.throttled_response` you can now access the exact epoch integer that was used for caching
+so your custom code is less prone to race conditions ([#282](https://github.com/kickstarter/rack-attack/pull/282)). Thanks @doliveirakn.
+
+### Dependency changes
+
+- Explictly declare ancient `rack 0.x` series as incompatible in gemspec
 
 ## [5.3.2] - 2018-06-25
 
@@ -124,7 +132,7 @@ _No significant changes since last release yet. Stay tuned_ :radio:
  - Remove unused variable
  - Extract mandatory options to constants
 
-[Unreleased]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...HEAD/
+[5.4.0]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...v5.4.0/
 [5.3.2]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...v5.3.2/
 [5.3.1]: https://github.com/kickstarter/rack-attack/compare/v5.3.0...v5.3.1/
 [5.3.0]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...v5.3.0/
