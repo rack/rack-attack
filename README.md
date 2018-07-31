@@ -86,7 +86,7 @@ Rack::Attack.safelist_ip("5.6.7.0/24")
 
 #### `safelist(name, &block)`
 
-Name your custom safelist and make your ruby-block argument return a truthy value if you want the request to be blocked, and falsy otherwise.
+Name your custom safelist and make your ruby-block argument return a truthy value if you want the request to be allowed, and falsy otherwise.
 
 The request object is a [Rack::Request](http://www.rubydoc.info/gems/rack/Rack/Request).
 
