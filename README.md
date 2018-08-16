@@ -295,12 +295,12 @@ Rack::Attack.throttled_response = lambda do |env|
 end
 ```
 
-### X-RateLimit headers for well-behaved clients
+### RateLimit headers for well-behaved clients
 
 While Rack::Attack's primary focus is minimizing harm from abusive clients, it
 can also be used to return rate limit data that's helpful for well-behaved clients.
 
-Here's an example response that includes conventional `X-RateLimit-*` headers:
+Here's an example response that includes conventional `RateLimit-*` headers:
 
 ```ruby
 Rack::Attack.throttled_response = lambda do |env|
@@ -308,9 +308,9 @@ Rack::Attack.throttled_response = lambda do |env|
   now = match_data[:epoch_time]
 
   headers = {
-    'X-RateLimit-Limit' => match_data[:limit].to_s,
-    'X-RateLimit-Remaining' => '0',
-    'X-RateLimit-Reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
+    'RateLimit-Limit' => match_data[:limit].to_s,
+    'RateLimit-Remaining' => '0',
+    'RateLimit-Reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
   }
 
   [ 429, headers, ["Throttled\n"]]
