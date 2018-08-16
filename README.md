@@ -295,7 +295,7 @@ Rack::Attack.throttled_response = lambda do |env|
 end
 ```
 
-### X-RateLimit headers for well-behaved clients
+### RateLimit headers for well-behaved clients
 
 While Rack::Attack's primary focus is minimizing harm from abusive clients, it
 can also be used to return rate limit data that's helpful for well-behaved clients.
