@@ -413,13 +413,6 @@ This project is intended to be a safe, welcoming space for collaboration, and co
 
 Check out the [Development guide](docs/development.md).
 
-## Mailing list
-
-New releases of Rack::Attack are announced on
-<rack.attack.announce@librelist.com>. To subscribe, just send an email to
-<rack.attack.announce@librelist.com>. See the
-[archives](http://librelist.com/browser/rack.attack.announce/).
-
 ## License
 
 Copyright Kickstarter, PBC.
