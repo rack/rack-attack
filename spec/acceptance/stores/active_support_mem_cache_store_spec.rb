@@ -12,9 +12,9 @@ if defined?(::Dalli)
     end
 
     after do
-      Rack::Attack.cache.store.flush_all
+      Rack::Attack.cache.store.clear
     end
 
-    it_works_for_cache_backed_features(fetch_from_store: ->(key) { Rack::Attack.cache.store.get(key) })
+    it_works_for_cache_backed_features(fetch_from_store: ->(key) { Rack::Attack.cache.store.read(key) })
   end
 end

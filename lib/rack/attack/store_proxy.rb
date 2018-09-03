@@ -3,10 +3,7 @@
 module Rack
   class Attack
     module StoreProxy
-      PROXIES = [DalliProxy, MemCacheProxy, RedisStoreProxy, RedisProxy, RedisCacheStoreProxy].freeze
-
-      ACTIVE_SUPPORT_WRAPPER_CLASSES = Set.new(['ActiveSupport::Cache::MemCacheStore', 'ActiveSupport::Cache::RedisStore', 'ActiveSupport::Cache::RedisCacheStore']).freeze
-      ACTIVE_SUPPORT_CLIENTS = Set.new(['Redis::Store', 'Dalli::Client', 'MemCache']).freeze
+      PROXIES = [DalliProxy, MemCacheStoreProxy, MemCacheProxy, RedisStoreProxy, RedisProxy, RedisCacheStoreProxy].freeze
 
       def self.build(store)
         client = unwrap_active_support_stores(store)
@@ -17,15 +14,8 @@ module Rack
       def self.unwrap_active_support_stores(store)
         # ActiveSupport::Cache::RedisStore doesn't expose any way to set an expiry,
         # so use the raw Redis::Store instead.
-        # We also want to use the underlying Dalli client instead of ::ActiveSupport::Cache::MemCacheStore,
-        # and the MemCache client if using Rails 3.x
-
-        if store.instance_variable_defined?(:@data)
-          client = store.instance_variable_get(:@data)
-        end
-
-        if ACTIVE_SUPPORT_WRAPPER_CLASSES.include?(store.class.to_s) && ACTIVE_SUPPORT_CLIENTS.include?(client.class.to_s)
-          client
+        if store.class.name == 'ActiveSupport::Cache::RedisStore'
+          store.instance_variable_get(:@data)
         else
           store
         end
