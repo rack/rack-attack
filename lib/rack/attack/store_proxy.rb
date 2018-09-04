@@ -3,7 +3,7 @@
 module Rack
   class Attack
     module StoreProxy
-      PROXIES = [DalliProxy, MemCacheStoreProxy, MemCacheProxy, RedisStoreProxy, RedisProxy, RedisCacheStoreProxy].freeze
+      PROXIES = [DalliProxy, MemCacheStoreProxy, RedisStoreProxy, RedisProxy, RedisCacheStoreProxy].freeze
 
       def self.build(store)
         client = unwrap_active_support_stores(store)

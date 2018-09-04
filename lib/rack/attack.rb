@@ -18,7 +18,6 @@ class Rack::Attack
   autoload :Track,                'rack/attack/track'
   autoload :StoreProxy,           'rack/attack/store_proxy'
   autoload :DalliProxy,           'rack/attack/store_proxy/dalli_proxy'
-  autoload :MemCacheProxy,        'rack/attack/store_proxy/mem_cache_proxy'
   autoload :MemCacheStoreProxy,   'rack/attack/store_proxy/mem_cache_store_proxy'
   autoload :RedisProxy,           'rack/attack/store_proxy/redis_proxy'
   autoload :RedisStoreProxy,      'rack/attack/store_proxy/redis_store_proxy'
