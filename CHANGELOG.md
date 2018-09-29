@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.4.1] - 2018-09-29
+
+### Fixed
+
+- Make [`ActiveSupport::Cache::MemCacheStore`](http://api.rubyonrails.org/classes/ActiveSupport/Cache/MemCacheStore.html) also work as excepted when initialized with pool options (e.g. `pool_size`). Thank you @jdelStrother.
+
 ## [5.4.0] - 2018-07-02
 
 ### Added
@@ -132,6 +138,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[5.4.1]: https://github.com/kickstarter/rack-attack/compare/v5.4.0...v5.4.1/
 [5.4.0]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...v5.4.0/
 [5.3.2]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...v5.3.2/
 [5.3.1]: https://github.com/kickstarter/rack-attack/compare/v5.3.0...v5.3.1/
