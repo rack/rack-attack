@@ -22,6 +22,7 @@ class Rack::Attack
   autoload :RedisProxy,           'rack/attack/store_proxy/redis_proxy'
   autoload :RedisStoreProxy,      'rack/attack/store_proxy/redis_store_proxy'
   autoload :RedisCacheStoreProxy, 'rack/attack/store_proxy/redis_cache_store_proxy'
+  autoload :ActiveSupportRedisStoreProxy, 'rack/attack/store_proxy/active_support_redis_store_proxy'
   autoload :Fail2Ban,             'rack/attack/fail2ban'
   autoload :Allow2Ban,            'rack/attack/allow2ban'
 
