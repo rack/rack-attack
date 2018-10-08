@@ -10,9 +10,42 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
 
+## Table of contents
+
+- [Getting started](#getting-started)
+  - [Installing](#installing)
+  - [Plugging into the application](#plugging-into-the-application)
+- [Usage](#usage)
+  - [Safelisting](#safelisting)
+    - [`safelist_ip(ip_address_string)`](#safelist_ipip_address_string)
+    - [`safelist_ip(ip_subnet_string)`](#safelist_ipip_subnet_string)
+    - [`safelist(name, &block)`](#safelistname-block)
+  - [Blocking](#blocking)
+    - [`blocklist_ip(ip_address_string)`](#blocklist_ipip_address_string)
+    - [`blocklist_ip(ip_subnet_string)`](#blocklist_ipip_subnet_string)
+    - [`blocklist(name, &block)`](#blocklistname-block)
+    - [Fail2Ban](#fail2ban)
+    - [Allow2Ban](#allow2ban)
+  - [Throttling](#throttling)
+    - [`throttle(name, options, &block)`](#throttlename-options-block)
+  - [Tracks](#tracks)
+  - [Cache store configuration](#cache-store-configuration)
+- [Customizing responses](#customizing-responses)
+  - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
+- [Logging & Instrumentation](#logging--instrumentation)
+- [How it works](#how-it-works)
+  - [About Tracks](#about-tracks)
+- [Testing](#testing)
+- [Performance](#performance)
+- [Motivation](#motivation)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+- [Development setup](#development-setup)
+- [License](#license)
+
 ## Getting started
 
-### 1. Installing
+### Installing
 
 Add this line to your application's Gemfile:
 
@@ -30,7 +63,7 @@ Or install it yourself as:
 
     $ gem install rack-attack
 
-### 2. Plugging into the application
+### Plugging into the application
 
 Then tell your ruby web application to use rack-attack as a middleware.
 
