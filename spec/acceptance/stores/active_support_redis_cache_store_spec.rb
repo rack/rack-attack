@@ -1,6 +1,6 @@
 require_relative "../../spec_helper"
 
-if defined?(::Redis) && defined?(::ActiveSupport::Cache::RedisCacheStore)
+if defined?(::Redis) && Gem::Version.new(::Redis::VERSION) >= Gem::Version.new("4") && defined?(::ActiveSupport::Cache::RedisCacheStore)
   require_relative "../../support/cache_store_helper"
   require "timecop"
 

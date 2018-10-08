@@ -5,7 +5,7 @@ module Rack
     module StoreProxy
       class RedisCacheStoreProxy < SimpleDelegator
         def self.handle?(store)
-          defined?(::Redis) && defined?(::ActiveSupport::Cache::RedisCacheStore) && store.is_a?(::ActiveSupport::Cache::RedisCacheStore)
+          store.class.name == "ActiveSupport::Cache::RedisCacheStore"
         end
 
         def increment(name, amount = 1, options = {})
