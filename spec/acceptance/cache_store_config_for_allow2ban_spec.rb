@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../spec_helper"
+require "minitest/stub_const"
 
 describe "Cache store config when using allow2ban" do
   before do
@@ -18,7 +19,9 @@ describe "Cache store config when using allow2ban" do
   end
 
   it "gives semantic error if store is missing #read method" do
-    basic_store_class = Class.new do
+    raised_exception = nil
+
+    fake_store_class = Class.new do
       def write(key, value)
       end
 
@@ -26,17 +29,21 @@ describe "Cache store config when using allow2ban" do
       end
     end
 
-    Rack::Attack.cache.store = basic_store_class.new
+    Object.stub_const(:FakeStore, fake_store_class) do
+      Rack::Attack.cache.store = FakeStore.new
 
-    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-      get "/scarce-resource"
+      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+        get "/scarce-resource"
+      end
     end
 
-    assert_equal "Store needs to respond to #read", raised_exception.message
+    assert_equal "Configured store FakeStore doesn't respond to #read method", raised_exception.message
   end
 
   it "gives semantic error if store is missing #write method" do
-    basic_store_class = Class.new do
+    raised_exception = nil
+
+    fake_store_class = Class.new do
       def read(key)
       end
 
@@ -44,17 +51,21 @@ describe "Cache store config when using allow2ban" do
       end
     end
 
-    Rack::Attack.cache.store = basic_store_class.new
+    Object.stub_const(:FakeStore, fake_store_class) do
+      Rack::Attack.cache.store = FakeStore.new
 
-    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-      get "/scarce-resource"
+      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+        get "/scarce-resource"
+      end
     end
 
-    assert_equal "Store needs to respond to #write", raised_exception.message
+    assert_equal "Configured store FakeStore doesn't respond to #write method", raised_exception.message
   end
 
   it "gives semantic error if store is missing #increment method" do
-    basic_store_class = Class.new do
+    raised_exception = nil
+
+    fake_store_class = Class.new do
       def read(key)
       end
 
@@ -62,17 +73,19 @@ describe "Cache store config when using allow2ban" do
       end
     end
 
-    Rack::Attack.cache.store = basic_store_class.new
+    Object.stub_const(:FakeStore, fake_store_class) do
+      Rack::Attack.cache.store = FakeStore.new
 
-    raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-      get "/scarce-resource"
+      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
+        get "/scarce-resource"
+      end
     end
 
-    assert_equal "Store needs to respond to #increment", raised_exception.message
+    assert_equal "Configured store FakeStore doesn't respond to #increment method", raised_exception.message
   end
 
   it "works with any object that responds to #read, #write and #increment" do
-    basic_store_class = Class.new do
+    fake_store_class = Class.new do
       attr_accessor :backend
 
       def initialize
@@ -93,21 +106,23 @@ describe "Cache store config when using allow2ban" do
       end
     end
 
-    Rack::Attack.cache.store = basic_store_class.new
+    Object.stub_const(:FakeStore, fake_store_class) do
+      Rack::Attack.cache.store = FakeStore.new
 
-    get "/"
-    assert_equal 200, last_response.status
+      get "/"
+      assert_equal 200, last_response.status
 
-    get "/scarce-resource"
-    assert_equal 200, last_response.status
+      get "/scarce-resource"
+      assert_equal 200, last_response.status
 
-    get "/scarce-resource"
-    assert_equal 200, last_response.status
+      get "/scarce-resource"
+      assert_equal 200, last_response.status
 
-    get "/scarce-resource"
-    assert_equal 403, last_response.status
+      get "/scarce-resource"
+      assert_equal 403, last_response.status
 
-    get "/"
-    assert_equal 403, last_response.status
+      get "/"
+      assert_equal 403, last_response.status
+    end
   end
 end

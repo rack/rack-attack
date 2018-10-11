@@ -73,7 +73,7 @@ module Rack
 
       def enforce_store_method_presence!(method_name)
         if !store.respond_to?(method_name)
-          raise Rack::Attack::MisconfiguredStoreError, "Store needs to respond to ##{method_name}"
+          raise Rack::Attack::MisconfiguredStoreError, "Configured store #{store.class.name} doesn't respond to ##{method_name} method"
         end
       end
     end
