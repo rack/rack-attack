@@ -88,8 +88,8 @@ __IMPORTANT__: By default, rack-attack won't perform any blocking or throttling,
 
 ## Usage
 
-*Tip:* The example in the wiki is a great way to get started:
-[Example Configuration](https://github.com/kickstarter/rack-attack/wiki/Example-Configuration)
+*Tip:*If you just want to get going asap, then you can take our [example configuration](docs/example_configuration.md)
+and tailor it to your needs, or check out the [advanced configuration](docs/advanced_configuration.md) examples.
 
 Define rules by calling `Rack::Attack` public methods, in any file that runs when your application is being initialized. For rails applications this means creating a new file named `config/initializers/rack_attack.rb` and writing your rules there.
 
@@ -378,7 +378,7 @@ The Rack::Attack middleware compares each request against *safelists*, *blocklis
  * Otherwise, if the request matches any **throttle**, a counter is incremented in the Rack::Attack.cache. If any throttle's limit is exceeded, the request is blocked.
  * Otherwise, all **tracks** are checked, and the request is allowed.
 
-The algorithm is actually more concise in code: See [Rack::Attack.call](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack.rb):
+The algorithm is actually more concise in code: See [Rack::Attack.call](lib/rack/attack.rb):
 
 ```ruby
 def call(env)
@@ -399,7 +399,7 @@ end
 
 Note: `Rack::Attack::Request` is just a subclass of `Rack::Request` so that you
 can cleanly monkey patch helper methods onto the
-[request object](https://github.com/kickstarter/rack-attack/blob/master/lib/rack/attack/request.rb).
+[request object](lib/rack/attack/request.rb).
 
 ### About Tracks
 
