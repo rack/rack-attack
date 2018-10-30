@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.4.2] - 2018-10-30
+
+### Fixed
+
+- Fix unexpected error when using `redis` 3 and any store which is not proxied
+
+### Changed
+
+- Provide better information in `MisconfiguredStoreError` exception message to aid end-user debugging
+
 ## [5.4.1] - 2018-09-29
 
 ### Fixed
@@ -138,6 +148,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[5.4.2]: https://github.com/kickstarter/rack-attack/compare/v5.4.1...v5.4.2/
 [5.4.1]: https://github.com/kickstarter/rack-attack/compare/v5.4.0...v5.4.1/
 [5.4.0]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...v5.4.0/
 [5.3.2]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...v5.3.2/
