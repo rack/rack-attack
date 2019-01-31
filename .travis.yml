@@ -4,14 +4,14 @@ cache: bundler
 
 rvm:
   - ruby-head
-  - 2.6.0
-  - 2.5.1
-  - 2.4.4
-  - 2.3.7
+  - 2.6.1
+  - 2.5.3
+  - 2.4.5
+  - 2.3.8
 
 before_install:
   - gem update --system
-  - gem install bundler
+  - gem install bundler -v "~> 2.0"
 
 gemfile:
   - gemfiles/rack_2_0.gemfile
