@@ -91,3 +91,19 @@ Rack::Attack.blocklist('basic auth crackers') do |req|
   end
 end
 ```
+
+### Match Actions in Rails
+
+Instead of matching the URL with complex regex, it can be much easier to mach specific controller actions:
+
+```ruby
+Rack::Attack.safelist('unlimited requests') do |request|
+  safelist = [
+    'controller#action',
+    'another_controller#another_action'
+  ]
+  route = (Rails.application.routes.recognize_path request.url rescue {}) || {}
+  action = "#{route[:controller]}##{route[:action]}"
+  safelist.any? { |safe| action == safe }
+end
+```
