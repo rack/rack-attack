@@ -361,11 +361,26 @@ request.env['rack.attack.throttle_data'][name] # => { :count => n, :period => p,
 
 Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/classes/ActiveSupport/Notifications.html) API if available.
 
-You can subscribe to 'rack.attack' events and log it, graph it, etc:
+You can subscribe to `rack_attack` events and log it, graph it, etc.
+
+To get notified about specific type of events, subscribe to the event name followed by the `rack_attack` namesapce.
+E.g. for throttles use:
 
 ```ruby
-ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
-  puts payload[:request].inspect
+ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |name, start, finish, request_id, payload|
+  # request object available in payload[:request]
+
+  # Your code here
+end
+```
+
+If you want to subscribe to every `rack_attack` event, use:
+
+```ruby
+ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, request_id, payload|
+  # request object available in payload[:request]
+
+  # Your code here
 end
 ```
 

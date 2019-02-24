@@ -35,7 +35,7 @@ describe 'Rack::Attack.track' do
       # A second track
       Rack::Attack.track("homepage") { |req| req.path == "/" }
 
-      ActiveSupport::Notifications.subscribe("rack.attack") do |*_args|
+      ActiveSupport::Notifications.subscribe("track.rack_attack") do |*_args|
         Counter.incr
       end
 

@@ -23,7 +23,7 @@ describe "Blocking an IP" do
     notified = false
     notification_type = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+    ActiveSupport::Notifications.subscribe("blocklist.rack_attack") do |_name, _start, _finish, _id, payload|
       notified = true
       notification_type = payload[:request].env["rack.attack.match_type"]
     end
