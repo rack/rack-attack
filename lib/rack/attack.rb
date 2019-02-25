@@ -27,7 +27,7 @@ class Rack::Attack
   autoload :Allow2Ban,            'rack/attack/allow2ban'
 
   class << self
-    attr_accessor :notifier, :blocklisted_response, :throttled_response
+    attr_accessor :notifier, :blocklisted_response, :throttled_response, :anonymous_blocklists, :anonymous_safelists
 
     def safelist(name = nil, &block)
       safelist = Safelist.new(name, block)
@@ -35,8 +35,7 @@ class Rack::Attack
       if name
         self.safelists[name] = safelist
       else
-        @anonymous_safelists ||= []
-        @anonymous_safelists << safelist
+        anonymous_safelists << safelist
       end
     end
 
@@ -46,21 +45,18 @@ class Rack::Attack
       if name
         self.blocklists[name] = blocklist
       else
-        @anonymous_blocklists ||= []
-        @anonymous_blocklists << blocklist
+        anonymous_blocklists << blocklist
       end
     end
 
     def blocklist_ip(ip_address)
-      @anonymous_blocklists ||= []
       ip_blocklist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      @anonymous_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+      anonymous_blocklists << Blocklist.new(nil, ip_blocklist_proc)
     end
 
     def safelist_ip(ip_address)
-      @anonymous_safelists ||= []
       ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      @anonymous_safelists << Safelist.new(nil, ip_safelist_proc)
+      anonymous_safelists << Safelist.new(nil, ip_safelist_proc)
     end
 
     def throttle(name, options, &block)
@@ -111,27 +107,19 @@ class Rack::Attack
 
     def clear_configuration
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
-      @anonymous_blocklists = []
-      @anonymous_safelists = []
+      self.anonymous_blocklists = []
+      self.anonymous_safelists = []
     end
 
     def clear!
       warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
       clear_configuration
     end
-
-    private
-
-    def anonymous_blocklists
-      @anonymous_blocklists ||= []
-    end
-
-    def anonymous_safelists
-      @anonymous_safelists ||= []
-    end
   end
 
   # Set defaults
+  @anonymous_blocklists = []
+  @anonymous_safelists = []
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
   @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
   @throttled_response   = lambda { |env|
