@@ -29,24 +29,38 @@ class Rack::Attack
   class << self
     attr_accessor :notifier, :blocklisted_response, :throttled_response
 
-    def safelist(name, &block)
-      self.safelists[name] = Safelist.new(name, block)
+    def safelist(name = nil, &block)
+      safelist = Safelist.new(name, block)
+
+      if name
+        self.safelists[name] = safelist
+      else
+        @anonymous_safelists ||= []
+        @anonymous_safelists << safelist
+      end
     end
 
-    def blocklist(name, &block)
-      self.blocklists[name] = Blocklist.new(name, block)
+    def blocklist(name = nil, &block)
+      blocklist = Blocklist.new(name, block)
+
+      if name
+        self.blocklists[name] = blocklist
+      else
+        @anonymous_blocklists ||= []
+        @anonymous_blocklists << blocklist
+      end
     end
 
     def blocklist_ip(ip_address)
-      @ip_blocklists ||= []
+      @anonymous_blocklists ||= []
       ip_blocklist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      @ip_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+      @anonymous_blocklists << Blocklist.new(nil, ip_blocklist_proc)
     end
 
     def safelist_ip(ip_address)
-      @ip_safelists ||= []
+      @anonymous_safelists ||= []
       ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      @ip_safelists << Safelist.new(nil, ip_safelist_proc)
+      @anonymous_safelists << Safelist.new(nil, ip_safelist_proc)
     end
 
     def throttle(name, options, &block)
@@ -66,12 +80,12 @@ class Rack::Attack
     def tracks;     @tracks     ||= {}; end
 
     def safelisted?(request)
-      ip_safelists.any? { |safelist| safelist.matched_by?(request) } ||
+      anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||
         safelists.any? { |_name, safelist| safelist.matched_by?(request) }
     end
 
     def blocklisted?(request)
-      ip_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
+      anonymous_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
         blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
     end
 
@@ -97,8 +111,8 @@ class Rack::Attack
 
     def clear_configuration
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
-      @ip_blocklists = []
-      @ip_safelists = []
+      @anonymous_blocklists = []
+      @anonymous_safelists = []
     end
 
     def clear!
@@ -108,12 +122,12 @@ class Rack::Attack
 
     private
 
-    def ip_blocklists
-      @ip_blocklists ||= []
+    def anonymous_blocklists
+      @anonymous_blocklists ||= []
     end
 
-    def ip_safelists
-      @ip_safelists ||= []
+    def anonymous_safelists
+      @anonymous_safelists ||= []
     end
   end
 
