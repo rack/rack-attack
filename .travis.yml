@@ -33,7 +33,11 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - gemfile: gemfiles/rails_6_0.gemfile
-
+  exclude:
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.4.5
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.3.8
   fast_finish: true
 
 services:
