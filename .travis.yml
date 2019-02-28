@@ -16,6 +16,7 @@ before_install:
 gemfile:
   - gemfiles/rack_2_0.gemfile
   - gemfiles/rack_1_6.gemfile
+  - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_4_2.gemfile
@@ -31,7 +32,12 @@ gemfile:
 matrix:
   allow_failures:
     - rvm: ruby-head
-
+    - gemfile: gemfiles/rails_6_0.gemfile
+  exclude:
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.4.5
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.3.8
   fast_finish: true
 
 services:

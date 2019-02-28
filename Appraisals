@@ -17,6 +17,11 @@ appraise "rack_1_6" do
   gem "rack-test", ">= 0.6"
 end
 
+appraise 'rails_6_0' do
+  gem 'actionpack', '~> 6.0.0.a'
+  gem 'activesupport', '~> 6.0.0.a'
+end
+
 appraise 'rails_5-2' do
   gem 'actionpack', '~> 5.2.0'
   gem 'activesupport', '~> 5.2.0'
