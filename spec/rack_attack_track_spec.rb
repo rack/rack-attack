@@ -56,7 +56,7 @@ describe 'Rack::Attack.track' do
 
   describe "with limit and period options" do
     it "should assign the track filter to a Throttle instance" do
-      track = Rack::Attack.track("homepage", :limit => 10, :period => 10) { |req| req.path == "/" }
+      track = Rack::Attack.track("homepage", limit: 10, period: 10) { |req| req.path == "/" }
       track.filter.class.must_equal Rack::Attack::Throttle
     end
   end

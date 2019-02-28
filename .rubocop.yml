@@ -44,6 +44,9 @@ Style/BracesAroundHashParameters:
 Style/FrozenStringLiteralComment:
   Enabled: true
 
+Style/HashSyntax:
+  Enabled: true
+
 Style/RedundantFreeze:
   Enabled: true
 
