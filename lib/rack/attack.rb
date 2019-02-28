@@ -88,7 +88,13 @@ class Rack::Attack
     end
 
     def instrument(request)
-      notifier.instrument('rack.attack', request: request) if notifier
+      if notifier
+        event_type = request.env["rack.attack.match_type"]
+        notifier.instrument("#{event_type}.rack_attack", request: request)
+
+        # Deprecated: Keeping just for backwards compatibility
+        notifier.instrument("rack.attack", request: request)
+      end
     end
 
     def cache

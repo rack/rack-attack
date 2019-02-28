@@ -38,7 +38,7 @@ describe "Safelist an IP" do
   it "notifies when the request is safe" do
     notification_type = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+    ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
       notification_type = payload[:request].env["rack.attack.match_type"]
     end
 

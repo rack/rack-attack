@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
+require_relative "spec_helper"
+
 # ActiveSupport::Subscribers added in ~> 4.0.2.0
 if ActiveSupport::VERSION::MAJOR > 3
   require_relative 'spec_helper'
   require 'active_support/subscriber'
   class CustomSubscriber < ActiveSupport::Subscriber
-    def rack(event)
-      # Do virtually (but not) nothing.
-      event.inspect
+    @notification_count = 0
+
+    class << self
+      attr_accessor :notification_count
+    end
+
+    def throttle(_event)
+      self.class.notification_count += 1
     end
   end
 
@@ -21,12 +28,14 @@ if ActiveSupport::VERSION::MAJOR > 3
     describe "with throttling" do
       before do
         ActiveSupport::Notifications.stub(:notifier, ActiveSupport::Notifications::Fanout.new) do
-          CustomSubscriber.attach_to("attack")
+          CustomSubscriber.attach_to("rack_attack")
           2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
         end
       end
+
       it 'should instrument without error' do
         last_response.status.must_equal 429
+        assert_equal 1, CustomSubscriber.notification_count
       end
     end
   end

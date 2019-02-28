@@ -125,7 +125,7 @@ describe "#throttle" do
     notification_data = nil
     notification_discriminator = nil
 
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+    ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |_name, _start, _finish, _id, payload|
       notification_matched = payload[:request].env["rack.attack.matched"]
       notification_type = payload[:request].env["rack.attack.match_type"]
       notification_data = payload[:request].env['rack.attack.match_data']
