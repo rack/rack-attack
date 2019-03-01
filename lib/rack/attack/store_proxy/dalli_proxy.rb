@@ -24,35 +24,35 @@ module Rack
         end
 
         def read(key)
-          with do |client|
-            client.get(key)
+          rescuing do
+            with do |client|
+              client.get(key)
+            end
           end
-        rescue Dalli::DalliError
-          nil
         end
 
         def write(key, value, options = {})
-          with do |client|
-            client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+          rescuing do
+            with do |client|
+              client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+            end
           end
-        rescue Dalli::DalliError
-          nil
         end
 
         def increment(key, amount, options = {})
-          with do |client|
-            client.incr(key, amount, options.fetch(:expires_in, 0), amount)
+          rescuing do
+            with do |client|
+              client.incr(key, amount, options.fetch(:expires_in, 0), amount)
+            end
           end
-        rescue Dalli::DalliError
-          nil
         end
 
         def delete(key)
-          with do |client|
-            client.delete(key)
+          rescuing do
+            with do |client|
+              client.delete(key)
+            end
           end
-        rescue Dalli::DalliError
-          nil
         end
 
         private
@@ -63,6 +63,12 @@ module Rack
               def with; yield __getobj__; end
             end
           end
+        end
+
+        def rescuing
+          yield
+        rescue Dalli::DalliError
+          nil
         end
       end
     end

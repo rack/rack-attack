@@ -19,36 +19,38 @@ module Rack
         end
 
         def read(key)
-          get(key)
-        rescue Redis::BaseError
-          nil
+          rescuing { get(key) }
         end
 
         def write(key, value, options = {})
           if (expires_in = options[:expires_in])
-            setex(key, expires_in, value)
+            rescuing { setex(key, expires_in, value) }
           else
-            set(key, value)
+            rescuing { set(key, value) }
           end
-        rescue Redis::BaseError
-          nil
         end
 
         def increment(key, amount, options = {})
           count = nil
 
-          pipelined do
-            count = incrby(key, amount)
-            expire(key, options[:expires_in]) if options[:expires_in]
+          rescuing do
+            pipelined do
+              count = incrby(key, amount)
+              expire(key, options[:expires_in]) if options[:expires_in]
+            end
           end
 
           count.value if count
-        rescue Redis::BaseError
-          nil
         end
 
         def delete(key, _options = {})
-          del(key)
+          rescuing { del(key) }
+        end
+
+        private
+
+        def rescuing
+          yield
         rescue Redis::BaseError
           nil
         end

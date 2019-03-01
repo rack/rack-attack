@@ -11,19 +11,15 @@ module Rack
         end
 
         def read(key)
-          get(key, raw: true)
-        rescue Redis::BaseError
-          nil
+          rescuing { get(key, raw: true) }
         end
 
         def write(key, value, options = {})
           if (expires_in = options[:expires_in])
-            setex(key, expires_in, value, raw: true)
+            rescuing { setex(key, expires_in, value, raw: true) }
           else
-            set(key, value, raw: true)
+            rescuing { set(key, value, raw: true) }
           end
-        rescue Redis::BaseError
-          nil
         end
       end
     end
