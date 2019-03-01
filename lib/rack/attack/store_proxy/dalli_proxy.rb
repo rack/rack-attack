@@ -28,6 +28,7 @@ module Rack
             client.get(key)
           end
         rescue Dalli::DalliError
+          nil
         end
 
         def write(key, value, options = {})
@@ -35,6 +36,7 @@ module Rack
             client.set(key, value, options.fetch(:expires_in, 0), raw: true)
           end
         rescue Dalli::DalliError
+          nil
         end
 
         def increment(key, amount, options = {})
@@ -42,6 +44,7 @@ module Rack
             client.incr(key, amount, options.fetch(:expires_in, 0), amount)
           end
         rescue Dalli::DalliError
+          nil
         end
 
         def delete(key)
@@ -49,6 +52,7 @@ module Rack
             client.delete(key)
           end
         rescue Dalli::DalliError
+          nil
         end
 
         private

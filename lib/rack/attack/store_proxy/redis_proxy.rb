@@ -21,6 +21,7 @@ module Rack
         def read(key)
           get(key)
         rescue Redis::BaseError
+          nil
         end
 
         def write(key, value, options = {})
@@ -30,6 +31,7 @@ module Rack
             set(key, value)
           end
         rescue Redis::BaseError
+          nil
         end
 
         def increment(key, amount, options = {})
@@ -42,11 +44,13 @@ module Rack
 
           count.value if count
         rescue Redis::BaseError
+          nil
         end
 
         def delete(key, _options = {})
           del(key)
         rescue Redis::BaseError
+          nil
         end
       end
     end

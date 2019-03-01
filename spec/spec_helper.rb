@@ -18,6 +18,7 @@ def safe_require(name)
   begin
     require name
   rescue LoadError
+    nil
   end
 end
 

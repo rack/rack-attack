@@ -49,8 +49,3 @@ Style/HashSyntax:
 
 Style/RedundantFreeze:
   Enabled: true
-
-# TODO
-# Remove cop disabling and fix offenses
-Lint/HandleExceptions:
-  Enabled: false
