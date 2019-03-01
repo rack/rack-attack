@@ -24,7 +24,7 @@ if defined?(::ActiveSupport::Cache::RedisStore)
     before do
       @cache = Rack::Attack::Cache.new
       # Use presumably unused port for Redis client
-      @cache.store = ActiveSupport::Cache::RedisStore.new(:host => '127.0.0.1', :port => 3333)
+      @cache.store = ActiveSupport::Cache::RedisStore.new(host: '127.0.0.1', port: 3333)
     end
   end
 end

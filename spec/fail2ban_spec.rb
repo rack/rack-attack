@@ -9,7 +9,7 @@ describe 'Rack::Attack.Fail2Ban' do
     @findtime = 60
     @bantime  = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    @f2b_options = { :bantime => @bantime, :findtime => @findtime, :maxretry => 2 }
+    @f2b_options = { bantime: @bantime, findtime: @findtime, maxretry: 2 }
 
     Rack::Attack.blocklist('pentest') do |req|
       Rack::Attack::Fail2Ban.filter(req.ip, @f2b_options) { req.query_string =~ /OMGHAX/ }

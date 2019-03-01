@@ -31,10 +31,10 @@ module Rack
         epoch_time     = cache.last_epoch_time
 
         data = {
-          :count => count,
-          :period => current_period,
-          :limit => current_limit,
-          :epoch_time => epoch_time
+          count: count,
+          period: current_period,
+          limit: current_limit,
+          epoch_time: epoch_time
         }
 
         (request.env['rack.attack.throttle_data'] ||= {})[name] = data

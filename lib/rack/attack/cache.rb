@@ -29,7 +29,7 @@ module Rack
       end
 
       def write(unprefixed_key, value, expires_in)
-        store.write("#{prefix}:#{unprefixed_key}", value, :expires_in => expires_in)
+        store.write("#{prefix}:#{unprefixed_key}", value, expires_in: expires_in)
       end
 
       def reset_count(unprefixed_key, period)
@@ -54,13 +54,13 @@ module Rack
         enforce_store_presence!
         enforce_store_method_presence!(:increment)
 
-        result = store.increment(key, 1, :expires_in => expires_in)
+        result = store.increment(key, 1, expires_in: expires_in)
 
         # NB: Some stores return nil when incrementing uninitialized values
         if result.nil?
           enforce_store_method_presence!(:write)
 
-          store.write(key, 1, :expires_in => expires_in)
+          store.write(key, 1, expires_in: expires_in)
         end
         result || 1
       end
