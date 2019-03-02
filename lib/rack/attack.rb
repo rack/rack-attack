@@ -30,7 +30,7 @@ class Rack::Attack
     attr_accessor :notifier, :blocklisted_response, :throttled_response, :anonymous_blocklists, :anonymous_safelists
 
     def safelist(name = nil, &block)
-      safelist = Safelist.new(name, block)
+      safelist = Safelist.new(name, &block)
 
       if name
         safelists[name] = safelist
@@ -40,7 +40,7 @@ class Rack::Attack
     end
 
     def blocklist(name = nil, &block)
-      blocklist = Blocklist.new(name, block)
+      blocklist = Blocklist.new(name, &block)
 
       if name
         blocklists[name] = blocklist
@@ -51,12 +51,12 @@ class Rack::Attack
 
     def blocklist_ip(ip_address)
       ip_blocklist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      anonymous_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+      anonymous_blocklists << Blocklist.new(nil, &ip_blocklist_proc)
     end
 
     def safelist_ip(ip_address)
       ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      anonymous_safelists << Safelist.new(nil, ip_safelist_proc)
+      anonymous_safelists << Safelist.new(nil, &ip_safelist_proc)
     end
 
     def throttle(name, options, &block)
@@ -64,7 +64,7 @@ class Rack::Attack
     end
 
     def track(name, options = {}, &block)
-      tracks[name] = Track.new(name, options, block)
+      tracks[name] = Track.new(name, options, &block)
     end
 
     def safelists;

@@ -53,6 +53,9 @@ Style/FrozenStringLiteralComment:
 Style/HashSyntax:
   Enabled: true
 
+Style/OptionalArguments:
+  Enabled: true
+
 Style/RaiseArgs:
   Enabled: true
 
