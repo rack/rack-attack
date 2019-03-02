@@ -68,5 +68,8 @@ Style/RedundantFreeze:
 Style/RedundantSelf:
   Enabled: true
 
+Style/Semicolon:
+  Enabled: true
+
 Style/SingleLineMethods:
   Enabled: true

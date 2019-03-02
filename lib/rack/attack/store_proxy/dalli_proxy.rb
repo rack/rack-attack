@@ -60,8 +60,8 @@ module Rack
         def stub_with_if_missing
           unless __getobj__.respond_to?(:with)
             class << self
-              def with;
-                yield __getobj__;
+              def with
+                yield __getobj__
               end
             end
           end
