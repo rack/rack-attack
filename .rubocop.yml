@@ -41,6 +41,9 @@ Style/BlockDelimiters:
 Style/BracesAroundHashParameters:
   Enabled: true
 
+Style/EmptyMethod:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: true
 
