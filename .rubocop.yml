@@ -50,5 +50,8 @@ Style/FrozenStringLiteralComment:
 Style/HashSyntax:
   Enabled: true
 
+Style/RedundantBegin:
+  Enabled: true
+
 Style/RedundantFreeze:
   Enabled: true

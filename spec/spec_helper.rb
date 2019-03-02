@@ -15,11 +15,9 @@ if RUBY_ENGINE == "ruby"
 end
 
 def safe_require(name)
-  begin
-    require name
-  rescue LoadError
-    nil
-  end
+  require name
+rescue LoadError
+  nil
 end
 
 safe_require "connection_pool"
