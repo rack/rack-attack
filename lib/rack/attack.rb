@@ -67,13 +67,21 @@ class Rack::Attack
       self.tracks[name] = Track.new(name, options, block)
     end
 
-    def safelists;  @safelists  ||= {}; end
+    def safelists;
+      @safelists  ||= {};
+    end
 
-    def blocklists; @blocklists ||= {}; end
+    def blocklists;
+      @blocklists ||= {};
+    end
 
-    def throttles;  @throttles  ||= {}; end
+    def throttles;
+      @throttles  ||= {};
+    end
 
-    def tracks;     @tracks     ||= {}; end
+    def tracks;
+      @tracks     ||= {};
+    end
 
     def safelisted?(request)
       anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||
