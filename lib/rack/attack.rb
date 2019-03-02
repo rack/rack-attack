@@ -50,11 +50,11 @@ class Rack::Attack
     end
 
     def blocklist_ip(ip_address)
-      anonymous_blocklists << Blocklist.new(nil) { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
+      anonymous_blocklists << Blocklist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
     def safelist_ip(ip_address)
-      anonymous_safelists << Safelist.new(nil) { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
+      anonymous_safelists << Safelist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
     def throttle(name, options, &block)
