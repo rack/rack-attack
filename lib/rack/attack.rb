@@ -33,7 +33,7 @@ class Rack::Attack
       safelist = Safelist.new(name, block)
 
       if name
-        self.safelists[name] = safelist
+        safelists[name] = safelist
       else
         anonymous_safelists << safelist
       end
@@ -43,7 +43,7 @@ class Rack::Attack
       blocklist = Blocklist.new(name, block)
 
       if name
-        self.blocklists[name] = blocklist
+        blocklists[name] = blocklist
       else
         anonymous_blocklists << blocklist
       end
@@ -60,11 +60,11 @@ class Rack::Attack
     end
 
     def throttle(name, options, &block)
-      self.throttles[name] = Throttle.new(name, options, block)
+      throttles[name] = Throttle.new(name, options, block)
     end
 
     def track(name, options = {}, &block)
-      self.tracks[name] = Track.new(name, options, block)
+      tracks[name] = Track.new(name, options, block)
     end
 
     def safelists;

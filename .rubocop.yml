@@ -56,5 +56,8 @@ Style/RedundantBegin:
 Style/RedundantFreeze:
   Enabled: true
 
+Style/RedundantSelf:
+  Enabled: true
+
 Style/SingleLineMethods:
   Enabled: true
