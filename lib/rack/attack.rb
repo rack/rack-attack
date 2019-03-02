@@ -58,7 +58,7 @@ class Rack::Attack
     end
 
     def throttle(name, options, &block)
-      throttles[name] = Throttle.new(name, options, block)
+      throttles[name] = Throttle.new(name, options, &block)
     end
 
     def track(name, options = {}, &block)
