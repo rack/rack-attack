@@ -22,11 +22,9 @@ describe "Cache store config when using fail2ban" do
     raised_exception = nil
 
     fake_store_class = Class.new do
-      def write(key, value)
-      end
+      def write(key, value); end
 
-      def increment(key, count, options = {})
-      end
+      def increment(key, count, options = {}); end
     end
 
     Object.stub_const(:FakeStore, fake_store_class) do
@@ -44,11 +42,9 @@ describe "Cache store config when using fail2ban" do
     raised_exception = nil
 
     fake_store_class = Class.new do
-      def read(key)
-      end
+      def read(key); end
 
-      def increment(key, count, options = {})
-      end
+      def increment(key, count, options = {}); end
     end
 
     Object.stub_const(:FakeStore, fake_store_class) do
@@ -66,11 +62,9 @@ describe "Cache store config when using fail2ban" do
     raised_exception = nil
 
     fake_store_class = Class.new do
-      def read(key)
-      end
+      def read(key); end
 
-      def write(key, value)
-      end
+      def write(key, value); end
     end
 
     Object.stub_const(:FakeStore, fake_store_class) do

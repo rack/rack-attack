@@ -24,31 +24,35 @@ module Rack
         end
 
         def read(key)
-          with do |client|
-            client.get(key)
+          rescuing do
+            with do |client|
+              client.get(key)
+            end
           end
-        rescue Dalli::DalliError
         end
 
         def write(key, value, options = {})
-          with do |client|
-            client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+          rescuing do
+            with do |client|
+              client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+            end
           end
-        rescue Dalli::DalliError
         end
 
         def increment(key, amount, options = {})
-          with do |client|
-            client.incr(key, amount, options.fetch(:expires_in, 0), amount)
+          rescuing do
+            with do |client|
+              client.incr(key, amount, options.fetch(:expires_in, 0), amount)
+            end
           end
-        rescue Dalli::DalliError
         end
 
         def delete(key)
-          with do |client|
-            client.delete(key)
+          rescuing do
+            with do |client|
+              client.delete(key)
+            end
           end
-        rescue Dalli::DalliError
         end
 
         private
@@ -56,9 +60,17 @@ module Rack
         def stub_with_if_missing
           unless __getobj__.respond_to?(:with)
             class << self
-              def with; yield __getobj__; end
+              def with
+                yield __getobj__
+              end
             end
           end
+        end
+
+        def rescuing
+          yield
+        rescue Dalli::DalliError
+          nil
         end
       end
     end

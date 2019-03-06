@@ -30,50 +30,56 @@ class Rack::Attack
     attr_accessor :notifier, :blocklisted_response, :throttled_response, :anonymous_blocklists, :anonymous_safelists
 
     def safelist(name = nil, &block)
-      safelist = Safelist.new(name, block)
+      safelist = Safelist.new(name, &block)
 
       if name
-        self.safelists[name] = safelist
+        safelists[name] = safelist
       else
         anonymous_safelists << safelist
       end
     end
 
     def blocklist(name = nil, &block)
-      blocklist = Blocklist.new(name, block)
+      blocklist = Blocklist.new(name, &block)
 
       if name
-        self.blocklists[name] = blocklist
+        blocklists[name] = blocklist
       else
         anonymous_blocklists << blocklist
       end
     end
 
     def blocklist_ip(ip_address)
-      ip_blocklist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      anonymous_blocklists << Blocklist.new(nil, ip_blocklist_proc)
+      anonymous_blocklists << Blocklist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
     def safelist_ip(ip_address)
-      ip_safelist_proc = lambda { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      anonymous_safelists << Safelist.new(nil, ip_safelist_proc)
+      anonymous_safelists << Safelist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
     def throttle(name, options, &block)
-      self.throttles[name] = Throttle.new(name, options, block)
+      throttles[name] = Throttle.new(name, options, &block)
     end
 
     def track(name, options = {}, &block)
-      self.tracks[name] = Track.new(name, options, block)
+      tracks[name] = Track.new(name, options, &block)
     end
 
-    def safelists;  @safelists  ||= {}; end
+    def safelists
+      @safelists  ||= {}
+    end
 
-    def blocklists; @blocklists ||= {}; end
+    def blocklists
+      @blocklists ||= {}
+    end
 
-    def throttles;  @throttles  ||= {}; end
+    def throttles
+      @throttles  ||= {}
+    end
 
-    def tracks;     @tracks     ||= {}; end
+    def tracks
+      @tracks     ||= {}
+    end
 
     def safelisted?(request)
       anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||

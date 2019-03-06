@@ -41,16 +41,35 @@ Style/BlockDelimiters:
 Style/BracesAroundHashParameters:
   Enabled: true
 
+Style/Encoding:
+  Enabled: true
+
+Style/EmptyMethod:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: true
 
 Style/HashSyntax:
   Enabled: true
 
+Style/OptionalArguments:
+  Enabled: true
+
+Style/RaiseArgs:
+  Enabled: true
+
+Style/RedundantBegin:
+  Enabled: true
+
 Style/RedundantFreeze:
   Enabled: true
 
-# TODO
-# Remove cop disabling and fix offenses
-Lint/HandleExceptions:
-  Enabled: false
+Style/RedundantSelf:
+  Enabled: true
+
+Style/Semicolon:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: true

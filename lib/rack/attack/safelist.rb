@@ -3,7 +3,7 @@
 module Rack
   class Attack
     class Safelist < Check
-      def initialize(name, block)
+      def initialize(name = nil, &block)
         super
         @type = :safelist
       end
