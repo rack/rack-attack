@@ -85,7 +85,7 @@ An example implementation for blocking hackers who spam basic auth attempts. See
 # block all requests from that IP for 1 hour.
 Rack::Attack.blocklist('basic auth crackers') do |req|
   Rack::Attack::Allow2Ban.filter(req.ip, :maxretry => 5, :findtime => 1.minute, :bantime => 1.hour) do
-    # Return true if the authorization header not incorrect
+    # Return true if the authorization header is incorrect
     auth = Rack::Auth::Basic::Request.new(req.env)
     auth.credentials != [my_username, my_password]
   end
