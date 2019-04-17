@@ -37,12 +37,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
   s.add_development_dependency 'rack-test', "~> 1.0"
   s.add_development_dependency 'rake', "~> 12.3"
-  s.add_development_dependency "rubocop", "0.58.2"
+  s.add_development_dependency "rubocop", "0.67.2"
   s.add_development_dependency "timecop", "~> 0.9.1"
 
   # byebug only works with MRI
   if RUBY_ENGINE == "ruby"
-    s.add_development_dependency 'byebug', '~> 10.0'
+    s.add_development_dependency 'byebug', '~> 11.0'
   end
 
   # The following are potential runtime dependencies users may have,

@@ -32,9 +32,6 @@ Performance:
 Security:
   Enabled: true
 
-Lint:
-  Enabled: true
-
 Style/BlockDelimiters:
   Enabled: true
 
