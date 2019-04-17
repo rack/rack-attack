@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.0] - 2018-04-17
+
+### Added
+
+- `#blocklist` and `#safelist` name argument (the first one) is now optional.
+- Added support to subscribe only to specific event types via `ActiveSupport::Notifications`, e.g. subscribe to the
+  `throttle.rack_attack` or the `blocklist.rack_attack` event.
+
+### Changed
+
+- Changed `ActiveSupport::Notifications` event naming to comply with the recommneded format.
+
+### Deprecated
+
+- Subscriptions via `ActiveSupport::Notifications` to the `"rack.attack"` event will continue to work (receive event
+  notifications), but it is going to be removed in a future version. Replace the event name with `/rack_attack/` to
+  continue to be subscribed to all events, or `"throttle.rack_attack"` e.g. for specific type of events only.
+
+### Removed
+
+- Removed support for ruby 2.2.
+- Removed support for obsolete memcache-client as a cache store.
+- Removed deprecated methods `#blacklist` and `#whitelist` (use `#blocklist` and `#safelist` instead).
+
 ## [5.4.2] - 2018-10-30
 
 ### Fixed
@@ -148,6 +172,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.0.0]: https://github.com/kickstarter/rack-attack/compare/v5.4.2...v6.0.0/
 [5.4.2]: https://github.com/kickstarter/rack-attack/compare/v5.4.1...v5.4.2/
 [5.4.1]: https://github.com/kickstarter/rack-attack/compare/v5.4.0...v5.4.1/
 [5.4.0]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...v5.4.0/
