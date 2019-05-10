@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'spec_helper'
 
 describe 'Rack::Attack' do
@@ -14,6 +16,6 @@ describe 'Rack::Attack' do
       end
     end
 
-    allow_ok_requests
+    it_allows_ok_requests
   end
 end

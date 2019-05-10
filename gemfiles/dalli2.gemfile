@@ -3,14 +3,5 @@
 source "https://rubygems.org"
 
 gem "dalli", "~> 2.0"
-gem "rack", "<= 1.4.7", platforms: [:ruby_21, :jruby]
-gem "activesupport", "<= 3.2.22.2", platforms: [:ruby_21, :jruby]
-gem "listen", "<= 3.0.6", platforms: [:ruby_21, :jruby]
 
-group :development do
-  gem "pry"
-  gem "guard"
-  gem "guard-minitest"
-end
-
-gemspec :path => "../"
+gemspec path: "../"

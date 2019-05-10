@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
-    VERSION = '5.0.1'
+    VERSION = '6.0.0'
   end
 end

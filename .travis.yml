@@ -1,14 +1,44 @@
+dist: xenial
 language: ruby
+cache: bundler
+
 rvm:
-  - 2.1.9
-  - 2.2.5
-  - 2.3.1
-  - jruby-9.1.12.0
+  - ruby-head
+  - 2.6.2
+  - 2.5.4
+  - 2.4.5
+  - 2.3.8
+
+before_install:
+  - gem update --system
+  - gem install bundler -v "~> 2.0"
 
 gemfile:
-  - gemfiles/activesupport4.1.gemfile
-  - gemfiles/activesupport4.2.gemfile
+  - gemfiles/rack_2_0.gemfile
+  - gemfiles/rack_1_6.gemfile
+  - gemfiles/rails_6_0.gemfile
+  - gemfiles/rails_5_2.gemfile
+  - gemfiles/rails_5_1.gemfile
+  - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
+  - gemfiles/redis_4.gemfile
+  - gemfiles/redis_3.gemfile
+  - gemfiles/connection_pool_dalli.gemfile
+  - gemfiles/active_support_redis_cache_store.gemfile
+  - gemfiles/active_support_redis_cache_store_pooled.gemfile
+  - gemfiles/redis_store.gemfile
+  - gemfiles/active_support_redis_store.gemfile
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - gemfile: gemfiles/rails_6_0.gemfile
+  exclude:
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.4.5
+    - gemfile: gemfiles/rails_6_0.gemfile
+      rvm: 2.3.8
+  fast_finish: true
 
 services:
   - redis

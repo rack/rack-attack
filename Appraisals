@@ -1,27 +1,78 @@
-appraise 'activesupport3.2' do
-  gem 'activesupport', '~> 3.2.0'
-  gem 'actionpack', '~> 3.2.0'
+# frozen_string_literal: true
+
+appraise "rack_2_0" do
+  gem "rack", "~> 2.0.4"
 end
 
-appraise 'activesupport4.0' do
-  gem 'activesupport', '~> 4.0.0'
-  gem 'actionpack', '~> 4.0.0'
+appraise "rack_1_6" do
+  # Override activesupport and actionpack version constraints by making
+  # it more loose so it's compatible with rack 1.6.x
+  gem "actionpack", ">= 4.2"
+  gem "activesupport", ">= 4.2"
+
+  gem "rack", "~> 1.6.9"
+
+  # Override rack-test version constraint by making it more loose
+  # so it's compatible with actionpack 4.2.x
+  gem "rack-test", ">= 0.6"
 end
 
-appraise 'activesupport4.1' do
-  gem 'activesupport', '~> 4.1.0'
-  gem 'actionpack', '~> 4.1.0'
+appraise 'rails_6_0' do
+  gem 'actionpack', '~> 6.0.0.a'
+  gem 'activesupport', '~> 6.0.0.a'
 end
 
-appraise 'activesupport4.2' do
-  gem 'activesupport', '~> 4.2.0'
+appraise 'rails_5-2' do
+  gem 'actionpack', '~> 5.2.0'
+  gem 'activesupport', '~> 5.2.0'
+end
+
+appraise 'rails_5-1' do
+  gem 'actionpack', '~> 5.1.0'
+  gem 'activesupport', '~> 5.1.0'
+end
+
+appraise 'rails_4-2' do
   gem 'actionpack', '~> 4.2.0'
-end
+  gem 'activesupport', '~> 4.2.0'
 
-appraise 'dalli1.1' do
-  gem 'dalli', '1.1.5'
+  # Override rack-test version constraint by making it more loose
+  # so it's compatible with actionpack 4.2.x
+  gem "rack-test", ">= 0.6"
 end
 
 appraise 'dalli2' do
   gem 'dalli', '~> 2.0'
+end
+
+appraise 'redis_4' do
+  gem 'redis', '~> 4.0'
+end
+
+appraise 'redis_3' do
+  gem 'redis', '~> 3.3'
+end
+
+appraise "connection_pool_dalli" do
+  gem "connection_pool", "~> 2.2"
+  gem "dalli", "~> 2.7"
+end
+
+appraise "active_support_redis_cache_store" do
+  gem "activesupport", "~> 5.2.0"
+  gem "redis", "~> 4.0"
+end
+
+appraise "active_support_redis_cache_store_pooled" do
+  gem "activesupport", "~> 5.2.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 4.0"
+end
+
+appraise "redis_store" do
+  gem "redis-store", "~> 1.5"
+end
+
+appraise "active_support_redis_store" do
+  gem "redis-activesupport", "~> 5.0"
 end

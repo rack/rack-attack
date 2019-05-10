@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     class Allow2Ban < Fail2Ban
       class << self
         protected
+
         def key_prefix
           'allow2ban'
         end

@@ -1,131 +1,142 @@
+# frozen_string_literal: true
+
 require 'rack'
 require 'forwardable'
+require 'rack/attack/path_normalizer'
+require 'rack/attack/request'
+require "ipaddr"
 
 class Rack::Attack
-  autoload :Cache,           'rack/attack/cache'
-  autoload :PathNormalizer,  'rack/attack/path_normalizer'
-  autoload :Check,           'rack/attack/check'
-  autoload :Throttle,        'rack/attack/throttle'
-  autoload :Safelist,       'rack/attack/safelist'
-  autoload :Blocklist,       'rack/attack/blocklist'
-  autoload :Track,           'rack/attack/track'
-  autoload :StoreProxy,      'rack/attack/store_proxy'
-  autoload :DalliProxy,      'rack/attack/store_proxy/dalli_proxy'
-  autoload :MemCacheProxy,   'rack/attack/store_proxy/mem_cache_proxy'
-  autoload :RedisStoreProxy, 'rack/attack/store_proxy/redis_store_proxy'
-  autoload :Fail2Ban,        'rack/attack/fail2ban'
-  autoload :Allow2Ban,       'rack/attack/allow2ban'
-  autoload :Request,         'rack/attack/request'
+  class MisconfiguredStoreError < StandardError; end
+  class MissingStoreError < StandardError; end
+
+  autoload :Cache,                'rack/attack/cache'
+  autoload :Check,                'rack/attack/check'
+  autoload :Throttle,             'rack/attack/throttle'
+  autoload :Safelist,             'rack/attack/safelist'
+  autoload :Blocklist,            'rack/attack/blocklist'
+  autoload :Track,                'rack/attack/track'
+  autoload :StoreProxy,           'rack/attack/store_proxy'
+  autoload :DalliProxy,           'rack/attack/store_proxy/dalli_proxy'
+  autoload :MemCacheStoreProxy,   'rack/attack/store_proxy/mem_cache_store_proxy'
+  autoload :RedisProxy,           'rack/attack/store_proxy/redis_proxy'
+  autoload :RedisStoreProxy,      'rack/attack/store_proxy/redis_store_proxy'
+  autoload :RedisCacheStoreProxy, 'rack/attack/store_proxy/redis_cache_store_proxy'
+  autoload :ActiveSupportRedisStoreProxy, 'rack/attack/store_proxy/active_support_redis_store_proxy'
+  autoload :Fail2Ban,             'rack/attack/fail2ban'
+  autoload :Allow2Ban,            'rack/attack/allow2ban'
 
   class << self
+    attr_accessor :notifier, :blocklisted_response, :throttled_response, :anonymous_blocklists, :anonymous_safelists
 
-    attr_accessor :notifier, :blocklisted_response, :throttled_response
+    def safelist(name = nil, &block)
+      safelist = Safelist.new(name, &block)
 
-    def safelist(name, &block)
-      self.safelists[name] = Safelist.new(name, block)
+      if name
+        safelists[name] = safelist
+      else
+        anonymous_safelists << safelist
+      end
     end
 
-    def whitelist(name, &block)
-      warn "[DEPRECATION] 'Rack::Attack.whitelist' is deprecated.  Please use 'safelist' instead."
-      safelist(name, &block)
+    def blocklist(name = nil, &block)
+      blocklist = Blocklist.new(name, &block)
+
+      if name
+        blocklists[name] = blocklist
+      else
+        anonymous_blocklists << blocklist
+      end
     end
 
-    def blocklist(name, &block)
-      self.blocklists[name] = Blocklist.new(name, block)
+    def blocklist_ip(ip_address)
+      anonymous_blocklists << Blocklist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
-    def blacklist(name, &block)
-      warn "[DEPRECATION] 'Rack::Attack.blacklist' is deprecated.  Please use 'blocklist' instead."
-      blocklist(name, &block)
+    def safelist_ip(ip_address)
+      anonymous_safelists << Safelist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
     end
 
     def throttle(name, options, &block)
-      self.throttles[name] = Throttle.new(name, options, block)
+      throttles[name] = Throttle.new(name, options, &block)
     end
 
     def track(name, options = {}, &block)
-      self.tracks[name] = Track.new(name, options, block)
+      tracks[name] = Track.new(name, options, &block)
     end
 
-    def safelists; @safelists ||= {}; end
-    def blocklists; @blocklists ||= {}; end
-    def throttles;  @throttles  ||= {}; end
-    def tracks;     @tracks     ||= {}; end
-
-    def whitelists
-      warn "[DEPRECATION] 'Rack::Attack.whitelists' is deprecated.  Please use 'safelists' instead."
-      safelists
+    def safelists
+      @safelists  ||= {}
     end
 
-    def blacklists
-      warn "[DEPRECATION] 'Rack::Attack.blacklists' is deprecated.  Please use 'blocklists' instead."
-      blocklists
+    def blocklists
+      @blocklists ||= {}
     end
 
-    def safelisted?(req)
-      safelists.any? do |name, safelist|
-        safelist[req]
+    def throttles
+      @throttles  ||= {}
+    end
+
+    def tracks
+      @tracks     ||= {}
+    end
+
+    def safelisted?(request)
+      anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||
+        safelists.any? { |_name, safelist| safelist.matched_by?(request) }
+    end
+
+    def blocklisted?(request)
+      anonymous_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
+        blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
+    end
+
+    def throttled?(request)
+      throttles.any? do |_name, throttle|
+        throttle.matched_by?(request)
       end
     end
 
-    def whitelisted?(req)
-      warn "[DEPRECATION] 'Rack::Attack.whitelisted?' is deprecated.  Please use 'safelisted?' instead."
-      safelisted?(req)
-    end
-
-    def blocklisted?(req)
-      blocklists.any? do |name, blocklist|
-        blocklist[req]
+    def tracked?(request)
+      tracks.each_value do |track|
+        track.matched_by?(request)
       end
     end
 
-    def blacklisted?(req)
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted?' is deprecated.  Please use 'blocklisted?' instead."
-      blocklisted?(req)
-    end
+    def instrument(request)
+      if notifier
+        event_type = request.env["rack.attack.match_type"]
+        notifier.instrument("#{event_type}.rack_attack", request: request)
 
-    def throttled?(req)
-      throttles.any? do |name, throttle|
-        throttle[req]
+        # Deprecated: Keeping just for backwards compatibility
+        notifier.instrument("rack.attack", request: request)
       end
-    end
-
-    def tracked?(req)
-      tracks.each_value do |tracker|
-        tracker[req]
-      end
-    end
-
-    def instrument(req)
-      notifier.instrument('rack.attack', req) if notifier
     end
 
     def cache
       @cache ||= Cache.new
     end
 
-    def clear!
+    def clear_configuration
       @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+      self.anonymous_blocklists = []
+      self.anonymous_safelists = []
     end
 
-    def blacklisted_response=(res)
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response=' is deprecated.  Please use 'blocklisted_response=' instead."
-      self.blocklisted_response=(res)
+    def clear!
+      warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
+      clear_configuration
     end
-
-    def blacklisted_response
-      warn "[DEPRECATION] 'Rack::Attack.blacklisted_response' is deprecated.  Please use 'blocklisted_response' instead."
-      self.blocklisted_response
-    end
-
   end
 
   # Set defaults
+  @anonymous_blocklists = []
+  @anonymous_safelists = []
   @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-  @blocklisted_response = lambda {|env| [403, {'Content-Type' => 'text/plain'}, ["Forbidden\n"]] }
-  @throttled_response   = lambda {|env|
+  @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+  @throttled_response   = lambda { |env|
     retry_after = (env['rack.attack.match_data'] || {})[:period]
-    [429, {'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s}, ["Retry later\n"]]
+    [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
   }
 
   def initialize(app)
@@ -134,23 +145,20 @@ class Rack::Attack
 
   def call(env)
     env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
-    req = Rack::Attack::Request.new(env)
+    request = Rack::Attack::Request.new(env)
 
-    if safelisted?(req)
+    if safelisted?(request)
       @app.call(env)
-    elsif blocklisted?(req)
+    elsif blocklisted?(request)
       self.class.blocklisted_response.call(env)
-    elsif throttled?(req)
+    elsif throttled?(request)
       self.class.throttled_response.call(env)
     else
-      tracked?(req)
+      tracked?(request)
       @app.call(env)
     end
   end
 
   extend Forwardable
-  def_delegators self, :safelisted?,
-                       :blocklisted?,
-                       :throttled?,
-                       :tracked?
+  def_delegators self, :safelisted?, :blocklisted?, :throttled?, :tracked?
 end

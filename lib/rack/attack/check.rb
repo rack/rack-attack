@@ -1,23 +1,23 @@
+# frozen_string_literal: true
+
 module Rack
   class Attack
     class Check
       attr_reader :name, :block, :type
-      def initialize(name, options = {}, block)
+      def initialize(name, options = {}, &block)
         @name, @block = name, block
         @type = options.fetch(:type, nil)
       end
 
-      def [](req)
-        block[req].tap {|match|
+      def matched_by?(request)
+        block.call(request).tap do |match|
           if match
-            req.env["rack.attack.matched"] = name
-            req.env["rack.attack.match_type"] = type
-            Rack::Attack.instrument(req)
+            request.env["rack.attack.matched"] = name
+            request.env["rack.attack.match_type"] = type
+            Rack::Attack.instrument(request)
           end
-        }
+        end
       end
-
     end
   end
 end
-
