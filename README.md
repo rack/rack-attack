@@ -285,9 +285,9 @@ Rack::Attack.track("special_agent", limit: 6, period: 60) do |req|
 end
 
 # Track it using ActiveSupport::Notification
-ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, payload|
+ActiveSupport::Notifications.subscribe("track.rack_attack") do |name, start, finish, request_id, payload|
   req = payload[:request]
-  if req.env['rack.attack.matched'] == "special_agent" && req.env['rack.attack.match_type'] == :track
+  if req.env['rack.attack.matched'] == "special_agent"
     Rails.logger.info "special_agent: #{req.path}"
     STATSD.increment("special_agent")
   end
