@@ -4,9 +4,9 @@ cache: bundler
 
 rvm:
   - ruby-head
-  - 2.6.2
-  - 2.5.4
-  - 2.4.5
+  - 2.6.3
+  - 2.5.5
+  - 2.4.6
   - 2.3.8
 
 before_install:
@@ -35,7 +35,7 @@ matrix:
     - gemfile: gemfiles/rails_6_0.gemfile
   exclude:
     - gemfile: gemfiles/rails_6_0.gemfile
-      rvm: 2.4.5
+      rvm: 2.4.6
     - gemfile: gemfiles/rails_6_0.gemfile
       rvm: 2.3.8
   fast_finish: true
