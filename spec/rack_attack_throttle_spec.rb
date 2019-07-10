@@ -22,7 +22,14 @@ describe 'Rack::Attack.throttle' do
     end
 
     it 'should populate throttle data' do
-      data = { count: 1, limit: 1, period: @period, epoch_time: Rack::Attack.cache.last_epoch_time.to_i }
+      data = {
+        count: 1,
+        limit: 1,
+        period: @period,
+        epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        discriminator: "1.2.3.4"
+      }
+
       last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
     end
   end
@@ -39,7 +46,15 @@ describe 'Rack::Attack.throttle' do
     it 'should tag the env' do
       last_request.env['rack.attack.matched'].must_equal 'ip/sec'
       last_request.env['rack.attack.match_type'].must_equal :throttle
-      last_request.env['rack.attack.match_data'].must_equal(count: 2, limit: 1, period: @period, epoch_time: Rack::Attack.cache.last_epoch_time.to_i)
+
+      last_request.env['rack.attack.match_data'].must_equal(
+        count: 2,
+        limit: 1,
+        period: @period,
+        epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        discriminator: "1.2.3.4"
+      )
+
       last_request.env['rack.attack.match_discriminator'].must_equal('1.2.3.4')
     end
 
@@ -67,7 +82,14 @@ describe 'Rack::Attack.throttle with limit as proc' do
     end
 
     it 'should populate throttle data' do
-      data = { count: 1, limit: 1, period: @period, epoch_time: Rack::Attack.cache.last_epoch_time.to_i }
+      data = {
+        count: 1,
+        limit: 1,
+        period: @period,
+        epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        discriminator: "1.2.3.4"
+      }
+
       last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
     end
   end
@@ -91,7 +113,14 @@ describe 'Rack::Attack.throttle with period as proc' do
     end
 
     it 'should populate throttle data' do
-      data = { count: 1, limit: 1, period: @period, epoch_time: Rack::Attack.cache.last_epoch_time.to_i }
+      data = {
+        count: 1,
+        limit: 1,
+        period: @period,
+        epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        discriminator: "1.2.3.4"
+      }
+
       last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
     end
   end
