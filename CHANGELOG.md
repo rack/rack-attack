@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.1.0] - 2019-07-11
+
+### Added
+
+- Provide throttle discriminator in the env `throttle_data`
+
 ## [6.0.0] - 2019-04-17
 
 ### Added
@@ -175,6 +181,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.1.0]: https://github.com/kickstarter/rack-attack/compare/v6.0.0...v6.1.0/
 [6.0.0]: https://github.com/kickstarter/rack-attack/compare/v5.4.2...v6.0.0/
 [5.4.2]: https://github.com/kickstarter/rack-attack/compare/v5.4.1...v5.4.2/
 [5.4.1]: https://github.com/kickstarter/rack-attack/compare/v5.4.0...v5.4.1/
