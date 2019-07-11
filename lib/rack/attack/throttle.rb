@@ -31,6 +31,7 @@ module Rack
         epoch_time     = cache.last_epoch_time
 
         data = {
+          discriminator: discriminator,
           count: count,
           period: current_period,
           limit: current_limit,
