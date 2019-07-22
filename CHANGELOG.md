@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Changed `ActiveSupport::Notifications` event naming to comply with the recommneded format.
+- Changed `ActiveSupport::Notifications` event naming to comply with the recommended format.
 - Changed `ActiveSupport::Notifications` event so that the 5th yielded argument to the `#subscribe` method is now a
   `Hash` instead of a `Rack::Attack::Request`, to comply with `ActiveSupport`s spec. The original request object is
   still accessible, being the value of the hash's `:request` key.
