@@ -9,6 +9,7 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 [![Gem Version](https://badge.fury.io/rb/rack-attack.svg)](https://badge.fury.io/rb/rack-attack)
 [![Build Status](https://travis-ci.org/kickstarter/rack-attack.svg?branch=master)](https://travis-ci.org/kickstarter/rack-attack)
 [![Code Climate](https://codeclimate.com/github/kickstarter/rack-attack.svg)](https://codeclimate.com/github/kickstarter/rack-attack)
+[![Join the chat at https://gitter.im/rack-attack/rack-attack](https://badges.gitter.im/rack-attack/rack-attack.svg)](https://gitter.im/rack-attack/rack-attack)
 
 ## Table of contents
 
