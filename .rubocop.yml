@@ -26,6 +26,9 @@ Naming:
   Exclude:
     - "lib/rack/attack/path_normalizer.rb"
 
+Metrics/LineLength:
+  Max: 120
+
 Performance:
   Enabled: true
 

@@ -7,7 +7,9 @@ module Rack
     module StoreProxy
       class MemCacheStoreProxy < SimpleDelegator
         def self.handle?(store)
-          defined?(::Dalli) && defined?(::ActiveSupport::Cache::MemCacheStore) && store.is_a?(::ActiveSupport::Cache::MemCacheStore)
+          defined?(::Dalli) &&
+            defined?(::ActiveSupport::Cache::MemCacheStore) &&
+            store.is_a?(::ActiveSupport::Cache::MemCacheStore)
         end
 
         def write(name, value, options = {})
