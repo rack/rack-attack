@@ -67,7 +67,7 @@ module Rack
       end
 
       def safelists
-        @safelists  ||= {}
+        @safelists ||= {}
       end
 
       def blocklists
@@ -75,11 +75,11 @@ module Rack
       end
 
       def throttles
-        @throttles  ||= {}
+        @throttles ||= {}
       end
 
       def tracks
-        @tracks     ||= {}
+        @tracks ||= {}
       end
 
       def safelisted?(request)
@@ -136,7 +136,7 @@ module Rack
     # Set defaults
     @anonymous_blocklists = []
     @anonymous_safelists = []
-    @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+    @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
     @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
     @throttled_response   = lambda do |env|
       retry_after = (env['rack.attack.match_data'] || {})[:period]
