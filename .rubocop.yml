@@ -46,6 +46,9 @@ Style/ClassAndModuleChildren:
   Exclude:
     - "spec/**/*"
 
+Style/ConditionalAssignment:
+  Enabled: true
+
 Style/Encoding:
   Enabled: true
 
