@@ -32,7 +32,6 @@ gemfile:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - gemfile: gemfiles/rails_6_0.gemfile
   exclude:
     - gemfile: gemfiles/rails_6_0.gemfile
       rvm: 2.4.6
