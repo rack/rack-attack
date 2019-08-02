@@ -52,6 +52,9 @@ Style/ConditionalAssignment:
 Style/Encoding:
   Enabled: true
 
+Style/ExpandPathArguments:
+  Enabled: true
+
 Style/EmptyMethod:
   Enabled: true
 
@@ -80,4 +83,10 @@ Style/Semicolon:
   Enabled: true
 
 Style/SingleLineMethods:
+  Enabled: true
+
+Style/SpecialGlobalVars:
+  Enabled: true
+
+Style/UnneededPercentQ:
   Enabled: true
