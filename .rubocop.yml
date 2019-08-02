@@ -41,6 +41,11 @@ Style/BlockDelimiters:
 Style/BracesAroundHashParameters:
   Enabled: true
 
+Style/ClassAndModuleChildren:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
 Style/Encoding:
   Enabled: true
 
