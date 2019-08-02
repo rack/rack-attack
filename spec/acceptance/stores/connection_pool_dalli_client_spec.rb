@@ -17,8 +17,8 @@ if defined?(::Dalli) && defined?(::ConnectionPool)
       Rack::Attack.cache.store.with { |client| client.flush_all }
     end
 
-    it_works_for_cache_backed_features(fetch_from_store: ->(key) {
-      Rack::Attack.cache.store.with { |client| client.fetch(key) }
-    })
+    it_works_for_cache_backed_features(
+      fetch_from_store: ->(key) { Rack::Attack.cache.store.with { |client| client.fetch(key) } }
+    )
   end
 end

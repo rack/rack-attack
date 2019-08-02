@@ -138,10 +138,10 @@ module Rack
     @anonymous_safelists = []
     @notifier             = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
     @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
-    @throttled_response   = lambda { |env|
+    @throttled_response   = lambda do |env|
       retry_after = (env['rack.attack.match_data'] || {})[:period]
       [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
-    }
+    end
 
     def initialize(app)
       @app = app

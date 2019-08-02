@@ -22,9 +22,9 @@ describe 'Rack::Attack' do
       Rack::Attack.blocklist("ip #{@bad_ip}") { |req| req.ip == @bad_ip }
     end
 
-    it('has a blocklist') {
+    it 'has a blocklist' do
       Rack::Attack.blocklists.key?("ip #{@bad_ip}").must_equal true
-    }
+    end
 
     describe "a bad request" do
       before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
