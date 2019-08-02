@@ -67,6 +67,9 @@ Style/HashSyntax:
 Style/OptionalArguments:
   Enabled: true
 
+Style/ParallelAssignment:
+  Enabled: true
+
 Style/RaiseArgs:
   Enabled: true
 

@@ -119,7 +119,10 @@ module Rack
       end
 
       def clear_configuration
-        @safelists, @blocklists, @throttles, @tracks = {}, {}, {}, {}
+        @safelists = {}
+        @blocklists = {}
+        @throttles = {}
+        @tracks = {}
         self.anonymous_blocklists = []
         self.anonymous_safelists = []
       end
