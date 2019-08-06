@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'rack/attack/version'
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/kickstarter/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.summary = %q{Block & throttle abusive requests}
+  s.summary = 'Block & throttle abusive requests'
   s.test_files = Dir.glob("spec/**/*")
 
   s.metadata = {
@@ -37,7 +37,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
   s.add_development_dependency 'rack-test', "~> 1.0"
   s.add_development_dependency 'rake', "~> 12.3"
-  s.add_development_dependency "rubocop", "0.67.2"
+  s.add_development_dependency "rubocop", "0.74.0"
+  s.add_development_dependency "rubocop-performance", "~> 1.4.1"
   s.add_development_dependency "timecop", "~> 0.9.1"
 
   # byebug only works with MRI

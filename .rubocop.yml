@@ -1,3 +1,6 @@
+require:
+  - rubocop-performance
+
 inherit_mode:
   merge:
     - Exclude
@@ -26,6 +29,9 @@ Naming:
   Exclude:
     - "lib/rack/attack/path_normalizer.rb"
 
+Metrics/LineLength:
+  Max: 120
+
 Performance:
   Enabled: true
 
@@ -34,11 +40,23 @@ Security:
 
 Style/BlockDelimiters:
   Enabled: true
+  IgnoredMethods: [] # Workaround rubocop bug: https://github.com/rubocop-hq/rubocop/issues/6179
 
 Style/BracesAroundHashParameters:
   Enabled: true
 
+Style/ClassAndModuleChildren:
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
+Style/ConditionalAssignment:
+  Enabled: true
+
 Style/Encoding:
+  Enabled: true
+
+Style/ExpandPathArguments:
   Enabled: true
 
 Style/EmptyMethod:
@@ -51,6 +69,9 @@ Style/HashSyntax:
   Enabled: true
 
 Style/OptionalArguments:
+  Enabled: true
+
+Style/ParallelAssignment:
   Enabled: true
 
 Style/RaiseArgs:
@@ -69,4 +90,10 @@ Style/Semicolon:
   Enabled: true
 
 Style/SingleLineMethods:
+  Enabled: true
+
+Style/SpecialGlobalVars:
+  Enabled: true
+
+Style/UnneededPercentQ:
   Enabled: true

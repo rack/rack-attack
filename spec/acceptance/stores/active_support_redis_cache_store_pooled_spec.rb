@@ -2,7 +2,13 @@
 
 require_relative "../../spec_helper"
 
-if defined?(::ConnectionPool) && defined?(::Redis) && Gem::Version.new(::Redis::VERSION) >= Gem::Version.new("4") && defined?(::ActiveSupport::Cache::RedisCacheStore)
+should_run =
+  defined?(::ConnectionPool) &&
+  defined?(::Redis) &&
+  Gem::Version.new(::Redis::VERSION) >= Gem::Version.new("4") &&
+  defined?(::ActiveSupport::Cache::RedisCacheStore)
+
+if should_run
   require_relative "../../support/cache_store_helper"
   require "timecop"
 

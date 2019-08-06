@@ -15,8 +15,6 @@ if defined?(::ConnectionPool) && defined?(::Dalli)
       Rack::Attack.cache.store.clear
     end
 
-    it_works_for_cache_backed_features(fetch_from_store: ->(key) {
-      Rack::Attack.cache.store.read(key)
-    })
+    it_works_for_cache_backed_features(fetch_from_store: ->(key) { Rack::Attack.cache.store.read(key) })
   end
 end

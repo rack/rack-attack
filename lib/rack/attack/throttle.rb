@@ -7,11 +7,12 @@ module Rack
 
       attr_reader :name, :limit, :period, :block, :type
       def initialize(name, options, &block)
-        @name, @block = name, block
+        @name = name
+        @block = block
         MANDATORY_OPTIONS.each do |opt|
           raise ArgumentError, "Must pass #{opt.inspect} option" unless options[opt]
         end
-        @limit  = options[:limit]
+        @limit = options[:limit]
         @period = options[:period].respond_to?(:call) ? options[:period] : options[:period].to_i
         @type   = options.fetch(:type, :throttle)
       end

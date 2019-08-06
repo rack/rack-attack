@@ -5,7 +5,8 @@ module Rack
     class Check
       attr_reader :name, :block, :type
       def initialize(name, options = {}, &block)
-        @name, @block = name, block
+        @name = name
+        @block = block
         @type = options.fetch(:type, nil)
       end
 
