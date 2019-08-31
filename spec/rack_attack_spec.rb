@@ -76,4 +76,27 @@ describe 'Rack::Attack' do
       end
     end
   end
+
+  describe 'enabled' do
+    it 'should be enabled by default' do
+      Rack::Attack.enabled.must_equal true
+    end
+
+    it 'should directly pass request when disabled' do
+      bad_ip = '1.2.3.4'
+      Rack::Attack.blocklist("ip #{bad_ip}") { |req| req.ip == bad_ip }
+
+      get '/', {}, 'REMOTE_ADDR' => bad_ip
+      last_response.status.must_equal 403
+
+      prev_enabled = Rack::Attack.enabled
+      begin
+        Rack::Attack.enabled = false
+        get '/', {}, 'REMOTE_ADDR' => bad_ip
+        last_response.status.must_equal 200
+      ensure
+        Rack::Attack.enabled = prev_enabled
+      end
+    end
+  end
 end

@@ -6,6 +6,8 @@ require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
 require "ipaddr"
 
+require 'rack/attack/railtie' if defined?(Rails)
+
 module Rack
   class Attack
     class MisconfiguredStoreError < StandardError; end
@@ -28,7 +30,8 @@ module Rack
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
     class << self
-      attr_accessor :notifier, :blocklisted_response, :throttled_response, :anonymous_blocklists, :anonymous_safelists
+      attr_accessor :enabled, :notifier, :blocklisted_response, :throttled_response,
+                    :anonymous_blocklists, :anonymous_safelists
 
       def safelist(name = nil, &block)
         safelist = Safelist.new(name, &block)
@@ -134,6 +137,7 @@ module Rack
     end
 
     # Set defaults
+    @enabled = true
     @anonymous_blocklists = []
     @anonymous_safelists = []
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
@@ -148,6 +152,8 @@ module Rack
     end
 
     def call(env)
+      return @app.call(env) unless self.class.enabled
+
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
 

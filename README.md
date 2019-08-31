@@ -68,12 +68,10 @@ Or install it yourself as:
 
 Then tell your ruby web application to use rack-attack as a middleware.
 
-a) For __rails__ applications:
+a) For __rails__ applications it is used by default. You can disable it permanently (like for specific environment) or temporarily (can be useful for specific test cases) by writing:
 
 ```ruby
-# In config/application.rb
-
-config.middleware.use Rack::Attack
+Rack::Attack.enabled = false
 ```
 
 b) For __rack__ applications:
