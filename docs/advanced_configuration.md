@@ -94,7 +94,7 @@ end
 
 ### Match Actions in Rails
 
-Instead of matching the URL with complex regex, it can be much easier to mach specific controller actions:
+Instead of matching the URL with complex regex, it can be much easier to match specific controller actions:
 
 ```ruby
 Rack::Attack.safelist('unlimited requests') do |request|
