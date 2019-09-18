@@ -5,8 +5,7 @@ require "bundler/setup"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-require 'active_support'
-require 'action_dispatch'
+require "rails"
 
 require "rack/attack"
 
@@ -30,6 +29,7 @@ class MiniTest::Spec
   include Rack::Test::Methods
 
   before do
+    Rails.cache = nil
     @_original_throttled_response = Rack::Attack.throttled_response
     @_original_blocklisted_response = Rack::Attack.blocklisted_response
   end

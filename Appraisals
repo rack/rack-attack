@@ -17,24 +17,20 @@ appraise "rack_1_6" do
   gem "rack-test", ">= 0.6"
 end
 
-appraise 'rails_6_0' do
-  gem 'actionpack', '~> 6.0.0'
-  gem 'activesupport', '~> 6.0.0'
+appraise 'rails_6-0' do
+  gem 'railties', '~> 6.0.0'
 end
 
 appraise 'rails_5-2' do
-  gem 'actionpack', '~> 5.2.0'
-  gem 'activesupport', '~> 5.2.0'
+  gem 'railties', '~> 5.2.0'
 end
 
 appraise 'rails_5-1' do
-  gem 'actionpack', '~> 5.1.0'
-  gem 'activesupport', '~> 5.1.0'
+  gem 'railties', '~> 5.1.0'
 end
 
 appraise 'rails_4-2' do
-  gem 'actionpack', '~> 4.2.0'
-  gem 'activesupport', '~> 4.2.0'
+  gem 'railties', '~> 4.2.0'
 
   # Override rack-test version constraint by making it more loose
   # so it's compatible with actionpack 4.2.x

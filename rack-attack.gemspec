@@ -46,8 +46,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  # The following are potential runtime dependencies users may have,
-  # which rack-attack uses only for testing compatibility in test suite.
-  s.add_development_dependency 'actionpack', '~> 5.2'
-  s.add_development_dependency 'activesupport', '~> 5.2'
+  s.add_development_dependency 'railties', '>= 4.2'
 end
