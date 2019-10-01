@@ -34,7 +34,7 @@ if ActiveSupport::VERSION::MAJOR > 3
       end
 
       it 'should instrument without error' do
-        last_response.status.must_equal 429
+        _(last_response.status).must_equal 429
         assert_equal 1, CustomSubscriber.notification_count
       end
     end

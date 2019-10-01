@@ -20,7 +20,7 @@ describe 'Rack::Attack.Fail2Ban' do
     describe 'making ok request' do
       it 'succeeds' do
         get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
-        last_response.status.must_equal 200
+        _(last_response.status).must_equal 200
       end
     end
 
@@ -29,17 +29,17 @@ describe 'Rack::Attack.Fail2Ban' do
         before { get '/?foo=OMGHAX', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
         it 'fails' do
-          last_response.status.must_equal 403
+          _(last_response.status).must_equal 403
         end
 
         it 'increases fail count' do
           key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
-          @cache.store.read(key).must_equal 1
+          _(@cache.store.read(key)).must_equal 1
         end
 
         it 'is not banned' do
           key = "rack::attack:fail2ban:1.2.3.4"
-          @cache.store.read(key).must_be_nil
+          _(@cache.store.read(key)).must_be_nil
         end
       end
 
@@ -51,17 +51,17 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'fails' do
-          last_response.status.must_equal 403
+          _(last_response.status).must_equal 403
         end
 
         it 'increases fail count' do
           key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
-          @cache.store.read(key).must_equal 2
+          _(@cache.store.read(key)).must_equal 2
         end
 
         it 'is banned' do
           key = "rack::attack:fail2ban:ban:1.2.3.4"
-          @cache.store.read(key).must_equal 1
+          _(@cache.store.read(key)).must_equal 1
         end
       end
 
@@ -73,7 +73,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'succeeds' do
-          last_response.status.must_equal 200
+          _(last_response.status).must_equal 200
         end
 
         it 'resets fail count' do
@@ -82,7 +82,7 @@ describe 'Rack::Attack.Fail2Ban' do
         end
 
         it 'IP is not banned' do
-          Rack::Attack::Fail2Ban.banned?('1.2.3.4').must_equal false
+          _(Rack::Attack::Fail2Ban.banned?('1.2.3.4')).must_equal false
         end
       end
     end
@@ -98,7 +98,8 @@ describe 'Rack::Attack.Fail2Ban' do
     describe 'making request for other discriminator' do
       it 'succeeds' do
         get '/', {}, 'REMOTE_ADDR' => '2.2.3.4'
-        last_response.status.must_equal 200
+
+        _(last_response.status).must_equal 200
       end
     end
 
@@ -108,17 +109,17 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 403
+        _(last_response.status).must_equal 403
       end
 
       it 'does not increase fail count' do
         key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
-        @cache.store.read(key).must_equal 2
+        _(@cache.store.read(key)).must_equal 2
       end
 
       it 'is still banned' do
         key = "rack::attack:fail2ban:ban:1.2.3.4"
-        @cache.store.read(key).must_equal 1
+        _(@cache.store.read(key)).must_equal 1
       end
     end
 
@@ -128,17 +129,17 @@ describe 'Rack::Attack.Fail2Ban' do
       end
 
       it 'fails' do
-        last_response.status.must_equal 403
+        _(last_response.status).must_equal 403
       end
 
       it 'does not increase fail count' do
         key = "rack::attack:#{Time.now.to_i / @findtime}:fail2ban:count:1.2.3.4"
-        @cache.store.read(key).must_equal 2
+        _(@cache.store.read(key)).must_equal 2
       end
 
       it 'is still banned' do
         key = "rack::attack:fail2ban:ban:1.2.3.4"
-        @cache.store.read(key).must_equal 1
+        _(@cache.store.read(key)).must_equal 1
       end
     end
   end

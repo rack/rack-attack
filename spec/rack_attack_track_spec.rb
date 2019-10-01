@@ -25,8 +25,9 @@ describe 'Rack::Attack.track' do
 
   it "should tag the env" do
     get '/'
-    last_request.env['rack.attack.matched'].must_equal 'everything'
-    last_request.env['rack.attack.match_type'].must_equal :track
+
+    _(last_request.env['rack.attack.matched']).must_equal 'everything'
+    _(last_request.env['rack.attack.match_type']).must_equal :track
   end
 
   describe "with a notification subscriber and two tracks" do
@@ -43,21 +44,23 @@ describe 'Rack::Attack.track' do
     end
 
     it "should notify twice" do
-      Counter.check.must_equal 2
+      _(Counter.check).must_equal 2
     end
   end
 
   describe "without limit and period options" do
     it "should assign the track filter to a Check instance" do
       track = Rack::Attack.track("homepage") { |req| req.path == "/" }
-      track.filter.class.must_equal Rack::Attack::Check
+
+      _(track.filter.class).must_equal Rack::Attack::Check
     end
   end
 
   describe "with limit and period options" do
     it "should assign the track filter to a Throttle instance" do
       track = Rack::Attack.track("homepage", limit: 10, period: 10) { |req| req.path == "/" }
-      track.filter.class.must_equal Rack::Attack::Throttle
+
+      _(track.filter.class).must_equal Rack::Attack::Throttle
     end
   end
 end

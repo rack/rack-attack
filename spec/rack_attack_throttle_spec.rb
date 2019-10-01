@@ -18,7 +18,7 @@ describe 'Rack::Attack.throttle' do
 
     it 'should set the counter for one request' do
       key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      Rack::Attack.cache.store.read(key).must_equal 1
+      _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
     it 'should populate throttle data' do
@@ -30,7 +30,7 @@ describe 'Rack::Attack.throttle' do
         discriminator: "1.2.3.4"
       }
 
-      last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
+      _(last_request.env['rack.attack.throttle_data']['ip/sec']).must_equal data
     end
   end
 
@@ -40,14 +40,14 @@ describe 'Rack::Attack.throttle' do
     end
 
     it 'should block the last request' do
-      last_response.status.must_equal 429
+      _(last_response.status).must_equal 429
     end
 
     it 'should tag the env' do
-      last_request.env['rack.attack.matched'].must_equal 'ip/sec'
-      last_request.env['rack.attack.match_type'].must_equal :throttle
+      _(last_request.env['rack.attack.matched']).must_equal 'ip/sec'
+      _(last_request.env['rack.attack.match_type']).must_equal :throttle
 
-      last_request.env['rack.attack.match_data'].must_equal(
+      _(last_request.env['rack.attack.match_data']).must_equal(
         count: 2,
         limit: 1,
         period: @period,
@@ -55,11 +55,11 @@ describe 'Rack::Attack.throttle' do
         discriminator: "1.2.3.4"
       )
 
-      last_request.env['rack.attack.match_discriminator'].must_equal('1.2.3.4')
+      _(last_request.env['rack.attack.match_discriminator']).must_equal('1.2.3.4')
     end
 
     it 'should set a Retry-After header' do
-      last_response.headers['Retry-After'].must_equal @period.to_s
+      _(last_response.headers['Retry-After']).must_equal @period.to_s
     end
   end
 end
@@ -78,7 +78,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
 
     it 'should set the counter for one request' do
       key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      Rack::Attack.cache.store.read(key).must_equal 1
+      _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
     it 'should populate throttle data' do
@@ -90,7 +90,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
         discriminator: "1.2.3.4"
       }
 
-      last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
+      _(last_request.env['rack.attack.throttle_data']['ip/sec']).must_equal data
     end
   end
 end
@@ -109,7 +109,7 @@ describe 'Rack::Attack.throttle with period as proc' do
 
     it 'should set the counter for one request' do
       key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      Rack::Attack.cache.store.read(key).must_equal 1
+      _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
     it 'should populate throttle data' do
@@ -121,7 +121,7 @@ describe 'Rack::Attack.throttle with period as proc' do
         discriminator: "1.2.3.4"
       }
 
-      last_request.env['rack.attack.throttle_data']['ip/sec'].must_equal data
+      _(last_request.env['rack.attack.throttle_data']['ip/sec']).must_equal data
     end
   end
 end

@@ -12,7 +12,7 @@ describe 'Rack::Attack' do
 
     it 'blocks requests with trailing slash' do
       get '/foo/'
-      last_response.status.must_equal 403
+      _(last_response.status).must_equal 403
     end
   end
 
@@ -23,20 +23,20 @@ describe 'Rack::Attack' do
     end
 
     it 'has a blocklist' do
-      Rack::Attack.blocklists.key?("ip #{@bad_ip}").must_equal true
+      _(Rack::Attack.blocklists.key?("ip #{@bad_ip}")).must_equal true
     end
 
     describe "a bad request" do
       before { get '/', {}, 'REMOTE_ADDR' => @bad_ip }
 
       it "should return a blocklist response" do
-        last_response.status.must_equal 403
-        last_response.body.must_equal "Forbidden\n"
+        _(last_response.status).must_equal 403
+        _(last_response.body).must_equal "Forbidden\n"
       end
 
       it "should tag the env" do
-        last_request.env['rack.attack.matched'].must_equal "ip #{@bad_ip}"
-        last_request.env['rack.attack.match_type'].must_equal :blocklist
+        _(last_request.env['rack.attack.matched']).must_equal "ip #{@bad_ip}"
+        _(last_request.env['rack.attack.match_type']).must_equal :blocklist
       end
 
       it_allows_ok_requests
@@ -54,25 +54,25 @@ describe 'Rack::Attack' do
         before { get '/', {}, 'REMOTE_ADDR' => @bad_ip, 'HTTP_USER_AGENT' => @good_ua }
 
         it "should allow safelists before blocklists" do
-          last_response.status.must_equal 200
+          _(last_response.status).must_equal 200
         end
 
         it "should tag the env" do
-          last_request.env['rack.attack.matched'].must_equal 'good ua'
-          last_request.env['rack.attack.match_type'].must_equal :safelist
+          _(last_request.env['rack.attack.matched']).must_equal 'good ua'
+          _(last_request.env['rack.attack.match_type']).must_equal :safelist
         end
       end
     end
 
     describe '#blocklisted_response' do
       it 'should exist' do
-        Rack::Attack.blocklisted_response.must_respond_to :call
+        _(Rack::Attack.blocklisted_response).must_respond_to :call
       end
     end
 
     describe '#throttled_response' do
       it 'should exist' do
-        Rack::Attack.throttled_response.must_respond_to :call
+        _(Rack::Attack.throttled_response).must_respond_to :call
       end
     end
   end
