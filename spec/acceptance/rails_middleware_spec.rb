@@ -2,7 +2,7 @@
 
 require_relative "../spec_helper"
 
-if defined?(Rails) && Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.new("5")
+if defined?(Rails)
   describe "Middleware for Rails" do
     before do
       @app = Class.new(Rails::Application) do
@@ -12,21 +12,30 @@ if defined?(Rails) && Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.n
       end
     end
 
-    it "is enabled by default" do
-      @app.initialize!
-      assert_equal 1, @app.middleware.count(Rack::Attack)
+    if Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.new("5")
+      it "is used by default" do
+        @app.initialize!
+        assert_equal 1, @app.middleware.count(Rack::Attack)
+      end
+
+      it "is not added when it was added explicitly" do
+        @app.config.middleware.use(Rack::Attack)
+        @app.initialize!
+        assert_equal 1, @app.middleware.count(Rack::Attack)
+      end
+
+      it "is not added when it was explicitly deleted" do
+        @app.config.middleware.delete(Rack::Attack)
+        @app.initialize!
+        refute @app.middleware.include?(Rack::Attack)
+      end
     end
 
-    it "is not added when it was added explicitly" do
-      @app.config.middleware.use(Rack::Attack)
-      @app.initialize!
-      assert_equal 1, @app.middleware.count(Rack::Attack)
-    end
-
-    it "is not added when it was explicitly deleted" do
-      @app.config.middleware.delete(Rack::Attack)
-      @app.initialize!
-      refute @app.middleware.include?(Rack::Attack)
+    if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("5")
+      it "is not used by default" do
+        @app.initialize!
+        assert_equal 0, @app.middleware.count(Rack::Attack)
+      end
     end
   end
 end
