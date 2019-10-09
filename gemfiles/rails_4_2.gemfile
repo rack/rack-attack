@@ -2,8 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "actionpack", "~> 4.2.0"
-gem "activesupport", "~> 4.2.0"
+gem "railties", "~> 4.2.0"
 gem "rack-test", ">= 0.6"
 
 gemspec path: "../"
