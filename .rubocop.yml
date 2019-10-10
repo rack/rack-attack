@@ -1,4 +1,5 @@
 require:
+  - rubocop-minitest
   - rubocop-performance
 
 inherit_mode:
@@ -23,6 +24,11 @@ Layout:
 
 Lint:
   Enabled: true
+
+Minitest:
+  Enabled: true
+  Include:
+    - '**/spec/**/*'
 
 Naming:
   Enabled: true
