@@ -14,6 +14,7 @@ module Rack
     class Error < StandardError; end
     class MisconfiguredStoreError < Error; end
     class MissingStoreError < Error; end
+    class IncompatibleStoreError < Error; end
 
     autoload :Check,                'rack/attack/check'
     autoload :Throttle,             'rack/attack/throttle'
@@ -51,6 +52,10 @@ module Rack
       def clear!
         warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
         @configuration.clear_configuration
+      end
+
+      def reset!
+        cache.reset!
       end
 
       extend Forwardable

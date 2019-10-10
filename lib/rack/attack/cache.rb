@@ -41,6 +41,17 @@ module Rack
         store.delete("#{prefix}:#{unprefixed_key}")
       end
 
+      def reset!
+        if store.respond_to?(:delete_matched)
+          store.delete_matched("#{prefix}*")
+        else
+          raise(
+            Rack::Attack::IncompatibleStoreError,
+            "Configured store #{store.class.name} doesn't respond to #delete_matched method"
+          )
+        end
+      end
+
       private
 
       def key_and_expiry(unprefixed_key, period)
