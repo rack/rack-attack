@@ -144,3 +144,47 @@ describe 'Rack::Attack.throttle with block retuning nil' do
     end
   end
 end
+
+describe 'Rack::Attack.throttle with discriminator_normalizer' do
+  before do
+    @period = 60
+    @emails = [
+      "person@example.com",
+      "PERSON@example.com ",
+      " person@example.com\r\n  ",
+    ]
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.throttle('logins/email', limit: 4, period: @period) do |req|
+      if req.path == '/login' && req.post?
+        req.params['email']
+      end
+    end
+  end
+
+  it 'should not differentiate requests when discriminator_normalizer is enabled' do
+    post_logins
+    key = "rack::attack:#{Time.now.to_i / @period}:logins/email:person@example.com"
+    _(Rack::Attack.cache.store.read(key)).must_equal 3
+  end
+
+  it 'should differentiate requests when discriminator_normalizer is disabled' do
+    begin
+      prev = Rack::Attack.discriminator_normalizer
+      Rack::Attack.discriminator_normalizer = nil
+
+      post_logins
+      @emails.each do |email|
+        key = "rack::attack:#{Time.now.to_i / @period}:logins/email:#{email}"
+        _(Rack::Attack.cache.store.read(key)).must_equal 1
+      end
+    ensure
+      Rack::Attack.discriminator_normalizer = prev
+    end
+  end
+
+  def post_logins
+    @emails.each do |email|
+      post '/login', email: email
+    end
+  end
+end
