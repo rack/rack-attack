@@ -67,6 +67,8 @@ module Rack
         :blocklisted_response=,
         :throttled_response,
         :throttled_response=,
+        :throttled_response_retry_after_header,
+        :throttled_response_retry_after_header=,
         :clear_configuration,
         :safelists,
         :blocklists,

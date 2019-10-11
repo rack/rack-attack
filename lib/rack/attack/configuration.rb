@@ -4,7 +4,7 @@ module Rack
   class Attack
     class Configuration
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_response, :throttled_response
+      attr_accessor :blocklisted_response, :throttled_response, :throttled_response_retry_after_header
 
       def initialize
         @safelists = {}
@@ -13,11 +13,18 @@ module Rack
         @tracks = {}
         @anonymous_blocklists = []
         @anonymous_safelists = []
+        @throttled_response_retry_after_header = false
 
         @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
         @throttled_response   = lambda do |env|
-          retry_after = (env['rack.attack.match_data'] || {})[:period]
-          [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+          if throttled_response_retry_after_header
+            match_data = env['rack.attack.match_data']
+            now = match_data[:epoch_time]
+            retry_after = match_data[:period] - (now % match_data[:period])
+            [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+          else
+            [429, { 'Content-Type' => 'text/plain' }, ["Retry later\n"]]
+          end
         end
       end
 
@@ -86,6 +93,7 @@ module Rack
         @tracks = {}
         @anonymous_blocklists = []
         @anonymous_safelists = []
+        @throttled_response_retry_after_header = false
       end
     end
   end

@@ -20,7 +20,7 @@ describe "#throttle" do
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 429, last_response.status
-    assert_equal "60", last_response.headers["Retry-After"]
+    assert_nil last_response.headers["Retry-After"]
     assert_equal "Retry later\n", last_response.body
 
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
@@ -31,6 +31,24 @@ describe "#throttle" do
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
       assert_equal 200, last_response.status
+    end
+  end
+
+  it "returns correct Retry-After header if enabled" do
+    Rack::Attack.throttled_response_retry_after_header = true
+
+    Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
+      request.ip
+    end
+
+    Timecop.freeze(Time.at(0)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 200, last_response.status
+    end
+
+    Timecop.freeze(Time.at(25)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal "35", last_response.headers["Retry-After"]
     end
   end
 
