@@ -1,3 +1,6 @@
+__Note__: You are viewing the development version README.
+For the README consistent with the latest released version see https://github.com/kickstarter/rack-attack/blob/6-stable/README.md.
+
 # Rack::Attack
 
 *Rack middleware for blocking & throttling abusive requests*
