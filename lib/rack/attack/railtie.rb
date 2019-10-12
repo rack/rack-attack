@@ -4,7 +4,7 @@ module Rack
   class Attack
     class Railtie < ::Rails::Railtie
       initializer 'rack.attack.middleware', after: :load_config_initializers, before: :build_middleware_stack do |app|
-        if Gem::Version.new(::Rails::VERSION::STRING) >= Gem::Version.new("5")
+        if Gem::Version.new(::Rails::VERSION::STRING) >= Gem::Version.new("5.1")
           middlewares = app.config.middleware
           operations = middlewares.send(:operations) + middlewares.send(:delete_operations)
 

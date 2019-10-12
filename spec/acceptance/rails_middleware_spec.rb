@@ -12,7 +12,7 @@ if defined?(Rails)
       end
     end
 
-    if Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.new("5")
+    if Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.new("5.1")
       it "is used by default" do
         @app.initialize!
         assert_equal 1, @app.middleware.count(Rack::Attack)
@@ -31,7 +31,7 @@ if defined?(Rails)
       end
     end
 
-    if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("5")
+    if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("5.1")
       it "is not used by default" do
         @app.initialize!
         assert_equal 0, @app.middleware.count(Rack::Attack)

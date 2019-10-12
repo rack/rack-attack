@@ -71,7 +71,7 @@ Or install it yourself as:
 
 Then tell your ruby web application to use rack-attack as a middleware.
 
-a) For __rails__ applications with versions >= 5 it is used by default. For older rails versions you should enable it explicitly:
+a) For __rails__ applications with versions >= 5.1 it is used by default. For older rails versions you should enable it explicitly:
 ```ruby
 # In config/application.rb
 
