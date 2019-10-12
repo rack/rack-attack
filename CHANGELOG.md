@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.2.0] - 2019-10-12
+
+### Added
+
+- Failsafe on Redis error replies in RedisCacheStoreProxy (#421) (@cristiangreco)
+- Rack::Attack middleware is now auto added for Rails 5.1+ apps to simplify gem setup (#431) (@fatkodima)
+- You can disable Rack::Attack with `Rack::Attack.enabled = false` (#431) (@fatkodima)
+
 ## [6.1.0] - 2019-07-11
 
 ### Added
@@ -181,6 +189,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.2.0]: https://github.com/kickstarter/rack-attack/compare/v6.1.0...v6.2.0/
 [6.1.0]: https://github.com/kickstarter/rack-attack/compare/v6.0.0...v6.1.0/
 [6.0.0]: https://github.com/kickstarter/rack-attack/compare/v5.4.2...v6.0.0/
 [5.4.2]: https://github.com/kickstarter/rack-attack/compare/v5.4.1...v5.4.2/
