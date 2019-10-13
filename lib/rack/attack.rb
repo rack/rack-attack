@@ -14,6 +14,7 @@ module Rack
     class MisconfiguredStoreError < Error; end
     class MissingStoreError < Error; end
 
+    autoload :Configuration,        'rack/attack/configuration'
     autoload :Cache,                'rack/attack/cache'
     autoload :Check,                'rack/attack/check'
     autoload :Throttle,             'rack/attack/throttle'
@@ -31,82 +32,8 @@ module Rack
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
     class << self
-      attr_accessor :enabled, :notifier, :blocklisted_response, :throttled_response,
-                    :anonymous_blocklists, :anonymous_safelists
-
-      def safelist(name = nil, &block)
-        safelist = Safelist.new(name, &block)
-
-        if name
-          safelists[name] = safelist
-        else
-          anonymous_safelists << safelist
-        end
-      end
-
-      def blocklist(name = nil, &block)
-        blocklist = Blocklist.new(name, &block)
-
-        if name
-          blocklists[name] = blocklist
-        else
-          anonymous_blocklists << blocklist
-        end
-      end
-
-      def blocklist_ip(ip_address)
-        anonymous_blocklists << Blocklist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      end
-
-      def safelist_ip(ip_address)
-        anonymous_safelists << Safelist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
-      end
-
-      def throttle(name, options, &block)
-        throttles[name] = Throttle.new(name, options, &block)
-      end
-
-      def track(name, options = {}, &block)
-        tracks[name] = Track.new(name, options, &block)
-      end
-
-      def safelists
-        @safelists ||= {}
-      end
-
-      def blocklists
-        @blocklists ||= {}
-      end
-
-      def throttles
-        @throttles ||= {}
-      end
-
-      def tracks
-        @tracks ||= {}
-      end
-
-      def safelisted?(request)
-        anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||
-          safelists.any? { |_name, safelist| safelist.matched_by?(request) }
-      end
-
-      def blocklisted?(request)
-        anonymous_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
-          blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
-      end
-
-      def throttled?(request)
-        throttles.any? do |_name, throttle|
-          throttle.matched_by?(request)
-        end
-      end
-
-      def tracked?(request)
-        tracks.each_value do |track|
-          track.matched_by?(request)
-        end
-      end
+      attr_accessor :enabled, :notifier
+      attr_reader :configuration
 
       def instrument(request)
         if notifier
@@ -122,34 +49,27 @@ module Rack
         @cache ||= Cache.new
       end
 
-      def clear_configuration
-        @safelists = {}
-        @blocklists = {}
-        @throttles = {}
-        @tracks = {}
-        self.anonymous_blocklists = []
-        self.anonymous_safelists = []
-      end
-
       def clear!
         warn "[DEPRECATION] Rack::Attack.clear! is deprecated. Please use Rack::Attack.clear_configuration instead"
-        clear_configuration
+        @configuration.clear_configuration
       end
+
+      extend Forwardable
+      def_delegators :@configuration, :safelist, :blocklist, :blocklist_ip, :safelist_ip, :throttle, :track,
+                     :blocklisted_response, :blocklisted_response=, :throttled_response, :throttled_response=,
+                     :clear_configuration, :safelists, :blocklists, :throttles, :tracks
     end
 
     # Set defaults
     @enabled = true
-    @anonymous_blocklists = []
-    @anonymous_safelists = []
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-    @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
-    @throttled_response   = lambda do |env|
-      retry_after = (env['rack.attack.match_data'] || {})[:period]
-      [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
-    end
+    @configuration = Configuration.new
+
+    attr_reader :configuration
 
     def initialize(app)
       @app = app
+      @configuration = self.class.configuration
     end
 
     def call(env)
@@ -158,19 +78,16 @@ module Rack
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
 
-      if safelisted?(request)
+      if configuration.safelisted?(request)
         @app.call(env)
-      elsif blocklisted?(request)
-        self.class.blocklisted_response.call(env)
-      elsif throttled?(request)
-        self.class.throttled_response.call(env)
+      elsif configuration.blocklisted?(request)
+        configuration.blocklisted_response.call(env)
+      elsif configuration.throttled?(request)
+        configuration.throttled_response.call(env)
       else
-        tracked?(request)
+        configuration.tracked?(request)
         @app.call(env)
       end
     end
-
-    extend Forwardable
-    def_delegators self, :safelisted?, :blocklisted?, :throttled?, :tracked?
   end
 end
