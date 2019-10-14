@@ -23,33 +23,49 @@ module Rack
 
       def matched_by?(request)
         discriminator = block.call(request)
+
         return false unless discriminator
 
-        current_period = period.respond_to?(:call) ? period.call(request) : period
-        current_limit  = limit.respond_to?(:call) ? limit.call(request) : limit
-        key            = "#{name}:#{discriminator}"
-        count          = cache.count(key, current_period)
-        epoch_time     = cache.last_epoch_time
+        current_period  = period_for(request)
+        current_limit   = limit_for(request)
+        count           = cache.count("#{name}:#{discriminator}", current_period)
 
         data = {
           discriminator: discriminator,
           count: count,
           period: current_period,
           limit: current_limit,
-          epoch_time: epoch_time
+          epoch_time: cache.last_epoch_time
         }
 
-        (request.env['rack.attack.throttle_data'] ||= {})[name] = data
-
         (count > current_limit).tap do |throttled|
+          annotate_request_with_throttle_data(request, data)
           if throttled
-            request.env['rack.attack.matched']             = name
-            request.env['rack.attack.match_discriminator'] = discriminator
-            request.env['rack.attack.match_type']          = type
-            request.env['rack.attack.match_data']          = data
+            annotate_request_with_matched_data(request, data)
             Rack::Attack.instrument(request)
           end
         end
+      end
+
+      private
+
+      def period_for(request)
+        period.respond_to?(:call) ? period.call(request) : period
+      end
+
+      def limit_for(request)
+        limit.respond_to?(:call) ? limit.call(request) : limit
+      end
+
+      def annotate_request_with_throttle_data(request, data)
+        (request.env['rack.attack.throttle_data'] ||= {})[name] = data
+      end
+
+      def annotate_request_with_matched_data(request, data)
+        request.env['rack.attack.matched']             = name
+        request.env['rack.attack.match_discriminator'] = data[:discriminator]
+        request.env['rack.attack.match_type']          = type
+        request.env['rack.attack.match_data']          = data
       end
     end
   end
