@@ -1,3 +1,8 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=MISSING_ID_HERE
+    - COVERAGE=true
+
 dist: xenial
 language: ruby
 cache: bundler
@@ -12,6 +17,14 @@ rvm:
 before_install:
   - gem update --system
   - gem install bundler -v "~> 2.0"
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 gemfile:
   - gemfiles/rack_2_0.gemfile

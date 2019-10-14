@@ -6,3 +6,4 @@ bin
 .ruby-version
 .ruby-gemset
 .byebug_history
+coverage/
