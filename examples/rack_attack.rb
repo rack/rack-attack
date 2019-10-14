@@ -14,7 +14,7 @@ end
 
 # Throttle login attempts per email, 10/minute/email
 Rack::Attack.throttle "logins/email", limit: 2, period: 60 do |req|
-  req.post? && req.path == "/login" && req.params['email']
+  req.post? && req.path == "/login" && req.params["email"]
 end
 
 # blocklist bad IPs from accessing admin pages
@@ -23,6 +23,6 @@ Rack::Attack.blocklist "bad_ips from logging in" do |req|
 end
 
 # safelist a User-Agent
-Rack::Attack.safelist 'internal user agent' do |req|
-  req.user_agent == 'InternalUserAgent'
+Rack::Attack.safelist "internal user agent" do |req|
+  req.user_agent == "InternalUserAgent"
 end

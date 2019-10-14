@@ -7,7 +7,7 @@ module Rack
         protected
 
         def key_prefix
-          'allow2ban'
+          "allow2ban"
         end
 
         # everything is the same here except we only return true

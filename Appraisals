@@ -17,36 +17,36 @@ appraise "rack_1_6" do
   gem "rack-test", ">= 0.6"
 end
 
-appraise 'rails_6-0' do
-  gem 'railties', '~> 6.0.0'
+appraise "rails_6-0" do
+  gem "railties", "~> 6.0.0"
 end
 
-appraise 'rails_5-2' do
-  gem 'railties', '~> 5.2.0'
+appraise "rails_5-2" do
+  gem "railties", "~> 5.2.0"
 end
 
-appraise 'rails_5-1' do
-  gem 'railties', '~> 5.1.0'
+appraise "rails_5-1" do
+  gem "railties", "~> 5.1.0"
 end
 
-appraise 'rails_4-2' do
-  gem 'railties', '~> 4.2.0'
+appraise "rails_4-2" do
+  gem "railties", "~> 4.2.0"
 
   # Override rack-test version constraint by making it more loose
   # so it's compatible with actionpack 4.2.x
   gem "rack-test", ">= 0.6"
 end
 
-appraise 'dalli2' do
-  gem 'dalli', '~> 2.0'
+appraise "dalli2" do
+  gem "dalli", "~> 2.0"
 end
 
-appraise 'redis_4' do
-  gem 'redis', '~> 4.0'
+appraise "redis_4" do
+  gem "redis", "~> 4.0"
 end
 
-appraise 'redis_3' do
-  gem 'redis', '~> 3.3'
+appraise "redis_3" do
+  gem "redis", "~> 3.3"
 end
 
 appraise "connection_pool_dalli" do

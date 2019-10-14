@@ -58,14 +58,14 @@ module Rack
       end
 
       def annotate_request_with_throttle_data(request, data)
-        (request.env['rack.attack.throttle_data'] ||= {})[name] = data
+        (request.env["rack.attack.throttle_data"] ||= {})[name] = data
       end
 
       def annotate_request_with_matched_data(request, data)
-        request.env['rack.attack.matched']             = name
-        request.env['rack.attack.match_discriminator'] = data[:discriminator]
-        request.env['rack.attack.match_type']          = type
-        request.env['rack.attack.match_data']          = data
+        request.env["rack.attack.matched"]             = name
+        request.env["rack.attack.match_discriminator"] = data[:discriminator]
+        request.env["rack.attack.match_type"]          = type
+        request.env["rack.attack.match_data"]          = data
       end
     end
   end

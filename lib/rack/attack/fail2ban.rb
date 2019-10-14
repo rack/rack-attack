@@ -31,7 +31,7 @@ module Rack
         protected
 
         def key_prefix
-          'fail2ban'
+          "fail2ban"
         end
 
         def fail!(discriminator, bantime, findtime, maxretry)

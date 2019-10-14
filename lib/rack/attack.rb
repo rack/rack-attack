@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'rack'
-require 'forwardable'
-require 'rack/attack/path_normalizer'
-require 'rack/attack/request'
+require "rack"
+require "forwardable"
+require "rack/attack/path_normalizer"
+require "rack/attack/request"
 require "ipaddr"
 
-require 'rack/attack/railtie' if defined?(::Rails)
+require "rack/attack/railtie" if defined?(::Rails)
 
 module Rack
   class Attack
@@ -14,21 +14,21 @@ module Rack
     class MisconfiguredStoreError < Error; end
     class MissingStoreError < Error; end
 
-    autoload :Cache,                'rack/attack/cache'
-    autoload :Check,                'rack/attack/check'
-    autoload :Throttle,             'rack/attack/throttle'
-    autoload :Safelist,             'rack/attack/safelist'
-    autoload :Blocklist,            'rack/attack/blocklist'
-    autoload :Track,                'rack/attack/track'
-    autoload :StoreProxy,           'rack/attack/store_proxy'
-    autoload :DalliProxy,           'rack/attack/store_proxy/dalli_proxy'
-    autoload :MemCacheStoreProxy,   'rack/attack/store_proxy/mem_cache_store_proxy'
-    autoload :RedisProxy,           'rack/attack/store_proxy/redis_proxy'
-    autoload :RedisStoreProxy,      'rack/attack/store_proxy/redis_store_proxy'
-    autoload :RedisCacheStoreProxy, 'rack/attack/store_proxy/redis_cache_store_proxy'
-    autoload :ActiveSupportRedisStoreProxy, 'rack/attack/store_proxy/active_support_redis_store_proxy'
-    autoload :Fail2Ban,             'rack/attack/fail2ban'
-    autoload :Allow2Ban,            'rack/attack/allow2ban'
+    autoload :Cache,                "rack/attack/cache"
+    autoload :Check,                "rack/attack/check"
+    autoload :Throttle,             "rack/attack/throttle"
+    autoload :Safelist,             "rack/attack/safelist"
+    autoload :Blocklist,            "rack/attack/blocklist"
+    autoload :Track,                "rack/attack/track"
+    autoload :StoreProxy,           "rack/attack/store_proxy"
+    autoload :DalliProxy,           "rack/attack/store_proxy/dalli_proxy"
+    autoload :MemCacheStoreProxy,   "rack/attack/store_proxy/mem_cache_store_proxy"
+    autoload :RedisProxy,           "rack/attack/store_proxy/redis_proxy"
+    autoload :RedisStoreProxy,      "rack/attack/store_proxy/redis_store_proxy"
+    autoload :RedisCacheStoreProxy, "rack/attack/store_proxy/redis_cache_store_proxy"
+    autoload :ActiveSupportRedisStoreProxy, "rack/attack/store_proxy/active_support_redis_store_proxy"
+    autoload :Fail2Ban,             "rack/attack/fail2ban"
+    autoload :Allow2Ban,            "rack/attack/allow2ban"
 
     class << self
       attr_accessor :enabled, :notifier, :blocklisted_response, :throttled_response,
@@ -142,10 +142,10 @@ module Rack
     @anonymous_blocklists = []
     @anonymous_safelists = []
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-    @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+    @blocklisted_response = lambda { |_env| [403, { "Content-Type" => "text/plain" }, ["Forbidden\n"]] }
     @throttled_response   = lambda do |env|
-      retry_after = (env['rack.attack.match_data'] || {})[:period]
-      [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+      retry_after = (env["rack.attack.match_data"] || {})[:period]
+      [429, { "Content-Type" => "text/plain", "Retry-After" => retry_after.to_s }, ["Retry later\n"]]
     end
 
     def initialize(app)
@@ -155,7 +155,7 @@ module Rack
     def call(env)
       return @app.call(env) unless self.class.enabled
 
-      env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
+      env["PATH_INFO"] = PathNormalizer.normalize_path(env["PATH_INFO"])
       request = Rack::Attack::Request.new(env)
 
       if safelisted?(request)

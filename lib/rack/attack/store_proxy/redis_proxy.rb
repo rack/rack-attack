@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'delegate'
+require "delegate"
 
 module Rack
   class Attack
@@ -8,7 +8,7 @@ module Rack
       class RedisProxy < SimpleDelegator
         def initialize(*args)
           if Gem::Version.new(Redis::VERSION) < Gem::Version.new("3")
-            warn 'RackAttack requires Redis gem >= 3.0.0.'
+            warn "RackAttack requires Redis gem >= 3.0.0."
           end
 
           super(*args)

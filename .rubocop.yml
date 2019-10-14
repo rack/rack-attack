@@ -97,3 +97,8 @@ Style/SpecialGlobalVars:
 
 Style/UnneededPercentQ:
   Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  Exclude:
+    - "spec/**/*"

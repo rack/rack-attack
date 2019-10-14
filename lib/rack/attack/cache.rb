@@ -8,7 +8,7 @@ module Rack
 
       def initialize
         self.store = ::Rails.cache if defined?(::Rails.cache)
-        @prefix = 'rack::attack'
+        @prefix = "rack::attack"
       end
 
       attr_reader :store
