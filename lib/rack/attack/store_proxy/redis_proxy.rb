@@ -31,16 +31,12 @@ module Rack
         end
 
         def increment(key, amount, options = {})
-          count = nil
-
           rescuing do
             pipelined do
-              count = incrby(key, amount)
+              incrby(key, amount)
               expire(key, options[:expires_in]) if options[:expires_in]
-            end
+            end.first
           end
-
-          count.value if count
         end
 
         def delete(key, _options = {})

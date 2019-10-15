@@ -45,3 +45,15 @@ if defined?(::Dalli)
     end
   end
 end
+
+if defined?(Redis)
+  describe 'when Redis is offline' do
+    include OfflineExamples
+
+    before do
+      @cache = Rack::Attack::Cache.new
+      # Use presumably unused port for Redis client
+      @cache.store = Redis.new(host: '127.0.0.1', port: 3333)
+    end
+  end
+end
