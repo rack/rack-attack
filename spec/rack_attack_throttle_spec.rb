@@ -57,10 +57,6 @@ describe 'Rack::Attack.throttle' do
 
       _(last_request.env['rack.attack.match_discriminator']).must_equal('1.2.3.4')
     end
-
-    it 'should set a Retry-After header' do
-      _(last_response.headers['Retry-After']).must_equal @period.to_s
-    end
   end
 end
 
