@@ -55,9 +55,24 @@ module Rack
       end
 
       extend Forwardable
-      def_delegators :@configuration, :safelist, :blocklist, :blocklist_ip, :safelist_ip, :throttle, :track,
-                     :blocklisted_response, :blocklisted_response=, :throttled_response, :throttled_response=,
-                     :clear_configuration, :safelists, :blocklists, :throttles, :tracks
+      def_delegators(
+        :@configuration,
+        :safelist,
+        :blocklist,
+        :blocklist_ip,
+        :safelist_ip,
+        :throttle,
+        :track,
+        :blocklisted_response,
+        :blocklisted_response=,
+        :throttled_response,
+        :throttled_response=,
+        :clear_configuration,
+        :safelists,
+        :blocklists,
+        :throttles,
+        :tracks
+      )
     end
 
     # Set defaults
