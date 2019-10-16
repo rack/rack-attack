@@ -2,6 +2,8 @@
 
 require 'rack'
 require 'forwardable'
+require 'rack/attack/cache'
+require 'rack/attack/configuration'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
 require "ipaddr"
@@ -14,8 +16,6 @@ module Rack
     class MisconfiguredStoreError < Error; end
     class MissingStoreError < Error; end
 
-    autoload :Configuration,        'rack/attack/configuration'
-    autoload :Cache,                'rack/attack/cache'
     autoload :Check,                'rack/attack/check'
     autoload :Throttle,             'rack/attack/throttle'
     autoload :Safelist,             'rack/attack/safelist'
