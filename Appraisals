@@ -17,8 +17,10 @@ appraise "rack_1_6" do
   gem "rack-test", ">= 0.6"
 end
 
-appraise 'rails_6-0' do
-  gem 'railties', '~> 6.0.0'
+if !ENV.key?("CI") || (ENV["CI"] && RUBY_VERSION >= "2.5")
+  appraise 'rails_6-0' do
+    gem 'railties', '~> 6.0.0'
+  end
 end
 
 appraise 'rails_5-2' do

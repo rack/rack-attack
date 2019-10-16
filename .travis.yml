@@ -13,30 +13,17 @@ before_install:
   - gem update --system
   - gem install bundler -v "~> 2.0"
 
-gemfile:
-  - gemfiles/rack_2_0.gemfile
-  - gemfiles/rack_1_6.gemfile
-  - gemfiles/rails_6_0.gemfile
-  - gemfiles/rails_5_2.gemfile
-  - gemfiles/rails_5_1.gemfile
-  - gemfiles/rails_4_2.gemfile
-  - gemfiles/dalli2.gemfile
-  - gemfiles/redis_4.gemfile
-  - gemfiles/redis_3.gemfile
-  - gemfiles/connection_pool_dalli.gemfile
-  - gemfiles/active_support_redis_cache_store.gemfile
-  - gemfiles/active_support_redis_cache_store_pooled.gemfile
-  - gemfiles/redis_store.gemfile
-  - gemfiles/active_support_redis_store.gemfile
+install:
+  - bundle install --jobs=3 --retry=3
+  - bundle exec appraisal install --jobs=3 --retry=3
+
+script:
+  - bundle exec rubocop
+  - bundle exec appraisal rake
 
 matrix:
   allow_failures:
     - rvm: ruby-head
-  exclude:
-    - gemfile: gemfiles/rails_6_0.gemfile
-      rvm: 2.4.9
-    - gemfile: gemfiles/rails_6_0.gemfile
-      rvm: 2.3.8
   fast_finish: true
 
 services:
