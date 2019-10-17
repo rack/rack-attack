@@ -8,7 +8,6 @@ rvm:
   - 2.6.6
   - 2.5.8
   - 2.4.10
-  - 2.3.8
 
 before_install:
   - yes | gem update --system
@@ -40,8 +39,6 @@ matrix:
       rvm: 2.7.1
     - gemfile: gemfiles/rails_6_0.gemfile
       rvm: 2.4.10
-    - gemfile: gemfiles/rails_6_0.gemfile
-      rvm: 2.3.8
   fast_finish: true
 
 services:

@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     "source_code_uri" => "https://github.com/kickstarter/rack-attack"
   }
 
-  s.required_ruby_version = '>= 2.3'
+  s.required_ruby_version = '>= 2.4'
 
   s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
 
