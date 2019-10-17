@@ -3,6 +3,20 @@
 module Rack
   class Attack
     class Configuration
+      DEFAULT_BLOCKLISTED_RESPONSE = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+
+      DEFAULT_THROTTLED_RESPONSE = lambda do |env|
+        if Rack::Attack.configuration.throttled_response_retry_after_header
+          match_data = env['rack.attack.match_data']
+          now = match_data[:epoch_time]
+          retry_after = match_data[:period] - (now % match_data[:period])
+
+          [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+        else
+          [429, { 'Content-Type' => 'text/plain' }, ["Retry later\n"]]
+        end
+      end
+
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
       attr_accessor :blocklisted_response, :throttled_response, :throttled_response_retry_after_header
 
@@ -15,17 +29,8 @@ module Rack
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false
 
-        @blocklisted_response = lambda { |_env| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
-        @throttled_response   = lambda do |env|
-          if throttled_response_retry_after_header
-            match_data = env['rack.attack.match_data']
-            now = match_data[:epoch_time]
-            retry_after = match_data[:period] - (now % match_data[:period])
-            [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
-          else
-            [429, { 'Content-Type' => 'text/plain' }, ["Retry later\n"]]
-          end
-        end
+        @blocklisted_response = DEFAULT_BLOCKLISTED_RESPONSE
+        @throttled_response = DEFAULT_THROTTLED_RESPONSE
       end
 
       def safelist(name = nil, &block)
@@ -94,6 +99,9 @@ module Rack
         @anonymous_blocklists = []
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false
+
+        @blocklisted_response = DEFAULT_BLOCKLISTED_RESPONSE
+        @throttled_response = DEFAULT_THROTTLED_RESPONSE
       end
     end
   end
