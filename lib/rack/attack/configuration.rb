@@ -21,16 +21,7 @@ module Rack
       attr_accessor :blocklisted_response, :throttled_response, :throttled_response_retry_after_header
 
       def initialize
-        @safelists = {}
-        @blocklists = {}
-        @throttles = {}
-        @tracks = {}
-        @anonymous_blocklists = []
-        @anonymous_safelists = []
-        @throttled_response_retry_after_header = false
-
-        @blocklisted_response = DEFAULT_BLOCKLISTED_RESPONSE
-        @throttled_response = DEFAULT_THROTTLED_RESPONSE
+        set_defaults
       end
 
       def safelist(name = nil, &block)
@@ -92,6 +83,12 @@ module Rack
       end
 
       def clear_configuration
+        set_defaults
+      end
+
+      private
+
+      def set_defaults
         @safelists = {}
         @blocklists = {}
         @throttles = {}
