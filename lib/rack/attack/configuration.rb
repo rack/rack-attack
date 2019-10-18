@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "ipaddr"
+
 module Rack
   class Attack
     class Configuration

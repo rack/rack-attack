@@ -6,7 +6,6 @@ require 'rack/attack/cache'
 require 'rack/attack/configuration'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
-require "ipaddr"
 
 require 'rack/attack/railtie' if defined?(::Rails)
 
