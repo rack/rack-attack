@@ -11,21 +11,26 @@ module Rack
         end
 
         def increment(name, amount = 1, options = {})
-          # RedisCacheStore#increment ignores options[:expires_in].
-          #
-          # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
-          # the counter. After that we continue using the original RedisCacheStore#increment.
-          if options[:expires_in] && !read(name)
-            write(name, amount, options)
-
-            amount
-          else
-            super
+          rescuing do
+            redis.with do |conn|
+              conn.multi do
+                conn.incrby(name, amount)
+                conn.expire(name, options[:expires_in]) if options[:expires_in]
+              end.first
+            end
           end
         end
 
         def write(name, value, options = {})
           super(name, value, options.merge!(raw: true))
+        end
+
+        private
+
+        def rescuing
+          yield
+        rescue Redis::BaseConnectionError
+          nil
         end
       end
     end

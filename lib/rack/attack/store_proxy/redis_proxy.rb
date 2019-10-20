@@ -32,7 +32,7 @@ module Rack
 
         def increment(key, amount, options = {})
           rescuing do
-            pipelined do
+            multi do
               incrby(key, amount)
               expire(key, options[:expires_in]) if options[:expires_in]
             end.first
