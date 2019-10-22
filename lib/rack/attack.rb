@@ -31,7 +31,7 @@ module Rack
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
     class << self
-      attr_accessor :enabled, :notifier
+      attr_accessor :enabled, :notifier, :discriminator_normalizer
       attr_reader :configuration
 
       def instrument(request)
@@ -79,6 +79,9 @@ module Rack
     # Set defaults
     @enabled = true
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
+    @discriminator_normalizer = lambda do |discriminator|
+      discriminator.to_s.strip.downcase
+    end
     @configuration = Configuration.new
 
     attr_reader :configuration

@@ -22,8 +22,7 @@ module Rack
       end
 
       def matched_by?(request)
-        discriminator = block.call(request)
-
+        discriminator = discriminator_for(request)
         return false unless discriminator
 
         current_period  = period_for(request)
@@ -48,6 +47,14 @@ module Rack
       end
 
       private
+
+      def discriminator_for(request)
+        discriminator = block.call(request)
+        if discriminator && Rack::Attack.discriminator_normalizer
+          discriminator = Rack::Attack.discriminator_normalizer.call(discriminator)
+        end
+        discriminator
+      end
 
       def period_for(request)
         period.respond_to?(:call) ? period.call(request) : period
