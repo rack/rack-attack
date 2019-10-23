@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'delegate'
+require 'rack/attack/base_proxy'
 
 module Rack
   class Attack
     module StoreProxy
-      class DalliProxy < SimpleDelegator
+      class DalliProxy < BaseProxy
         def self.handle?(store)
           return false unless defined?(::Dalli)
 

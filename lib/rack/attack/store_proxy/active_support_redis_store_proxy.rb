@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'delegate'
+require 'rack/attack/base_proxy'
 
 module Rack
   class Attack
     module StoreProxy
-      class ActiveSupportRedisStoreProxy < SimpleDelegator
+      class ActiveSupportRedisStoreProxy < BaseProxy
         def self.handle?(store)
           defined?(::Redis) &&
             defined?(::ActiveSupport::Cache::RedisStore) &&
