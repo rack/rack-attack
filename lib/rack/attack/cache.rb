@@ -14,7 +14,12 @@ module Rack
       attr_reader :store
 
       def store=(store)
-        @store = StoreProxy.build(store)
+        @store =
+          if (proxy = BaseProxy.lookup(store))
+            proxy.new(store)
+          else
+            store
+          end
       end
 
       def count(unprefixed_key, period)
