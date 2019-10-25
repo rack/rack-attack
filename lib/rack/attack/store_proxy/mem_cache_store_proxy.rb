@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'delegate'
+require 'rack/attack/base_proxy'
 
 module Rack
   class Attack
     module StoreProxy
-      class MemCacheStoreProxy < SimpleDelegator
+      class MemCacheStoreProxy < BaseProxy
         def self.handle?(store)
           defined?(::Dalli) &&
             defined?(::ActiveSupport::Cache::MemCacheStore) &&

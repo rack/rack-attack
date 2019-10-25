@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'delegate'
+require 'rack/attack/store_proxy/redis_proxy'
 
 module Rack
   class Attack

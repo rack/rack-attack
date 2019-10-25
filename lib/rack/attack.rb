@@ -6,6 +6,12 @@ require 'rack/attack/cache'
 require 'rack/attack/configuration'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
+require 'rack/attack/store_proxy/dalli_proxy'
+require 'rack/attack/store_proxy/mem_cache_store_proxy'
+require 'rack/attack/store_proxy/redis_proxy'
+require 'rack/attack/store_proxy/redis_store_proxy'
+require 'rack/attack/store_proxy/redis_cache_store_proxy'
+require 'rack/attack/store_proxy/active_support_redis_store_proxy'
 
 require 'rack/attack/railtie' if defined?(::Rails)
 
@@ -21,13 +27,6 @@ module Rack
     autoload :Safelist,             'rack/attack/safelist'
     autoload :Blocklist,            'rack/attack/blocklist'
     autoload :Track,                'rack/attack/track'
-    autoload :StoreProxy,           'rack/attack/store_proxy'
-    autoload :DalliProxy,           'rack/attack/store_proxy/dalli_proxy'
-    autoload :MemCacheStoreProxy,   'rack/attack/store_proxy/mem_cache_store_proxy'
-    autoload :RedisProxy,           'rack/attack/store_proxy/redis_proxy'
-    autoload :RedisStoreProxy,      'rack/attack/store_proxy/redis_store_proxy'
-    autoload :RedisCacheStoreProxy, 'rack/attack/store_proxy/redis_cache_store_proxy'
-    autoload :ActiveSupportRedisStoreProxy, 'rack/attack/store_proxy/active_support_redis_store_proxy'
     autoload :Fail2Ban,             'rack/attack/fail2ban'
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
