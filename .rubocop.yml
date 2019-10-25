@@ -6,7 +6,7 @@ inherit_mode:
     - Exclude
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
   DisabledByDefault: true
   Exclude:
     - "examples/instrumentation.rb"
