@@ -46,6 +46,8 @@ class MiniTest::Spec
     Rack::Builder.new do
       # Use Rack::Lint to test that rack-attack is complying with the rack spec
       use Rack::Lint
+      # Intentionally added twice to test idempotence property
+      use Rack::Attack
       use Rack::Attack
       use Rack::Lint
 

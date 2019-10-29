@@ -18,12 +18,6 @@ if defined?(Rails)
         assert_equal 1, @app.middleware.count(Rack::Attack)
       end
 
-      it "is not added when it was added explicitly" do
-        @app.config.middleware.use(Rack::Attack)
-        @app.initialize!
-        assert_equal 1, @app.middleware.count(Rack::Attack)
-      end
-
       it "is not added when it was explicitly deleted" do
         @app.config.middleware.delete(Rack::Attack)
         @app.initialize!

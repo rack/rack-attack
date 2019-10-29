@@ -153,8 +153,9 @@ module Rack
     end
 
     def call(env)
-      return @app.call(env) unless self.class.enabled
+      return @app.call(env) if !self.class.enabled || env["rack.attack.called"]
 
+      env["rack.attack.called"] = true
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
 
