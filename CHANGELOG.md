@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.2.1] - 2019-10-30
+
+### Fixed
+
+- Remove unintended side-effects on Rails app initialization order. It was potentially affecting the order of `config/initializers/*` in respect to gems initializers (#457)
+
 ## [6.2.0] - 2019-10-12
 
 ### Added
@@ -189,6 +195,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.2.1]: https://github.com/kickstarter/rack-attack/compare/v6.2.0...v6.2.1/
 [6.2.0]: https://github.com/kickstarter/rack-attack/compare/v6.1.0...v6.2.0/
 [6.1.0]: https://github.com/kickstarter/rack-attack/compare/v6.0.0...v6.1.0/
 [6.0.0]: https://github.com/kickstarter/rack-attack/compare/v5.4.2...v6.0.0/
