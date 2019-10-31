@@ -12,24 +12,9 @@ if defined?(Rails)
       end
     end
 
-    if Gem::Version.new(Rails::VERSION::STRING) >= Gem::Version.new("5.1")
-      it "is used by default" do
-        @app.initialize!
-        assert_equal 1, @app.middleware.count(Rack::Attack)
-      end
-
-      it "is not added when it was explicitly deleted" do
-        @app.config.middleware.delete(Rack::Attack)
-        @app.initialize!
-        refute @app.middleware.include?(Rack::Attack)
-      end
-    end
-
-    if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("5.1")
-      it "is not used by default" do
-        @app.initialize!
-        assert_equal 0, @app.middleware.count(Rack::Attack)
-      end
+    it "is used by default" do
+      @app.initialize!
+      assert @app.middleware.include?(Rack::Attack)
     end
   end
 end
