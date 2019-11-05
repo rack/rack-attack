@@ -313,18 +313,18 @@ Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2b
 Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC).
 
 ```ruby
-Rack::Attack.blocklisted_response = lambda do |env|
+Rack::Attack.blocklisted_callback = lambda do |request|
   # Using 503 because it may make attacker think that they have successfully
   # DOSed the site. Rack::Attack returns 403 for blocklists by default
   [ 503, {}, ['Blocked']]
 end
 
-Rack::Attack.throttled_response = lambda do |env|
+Rack::Attack.throttled_callback = lambda do |request|
   # NB: you have access to the name and other data about the matched throttle
-  #  env['rack.attack.matched'],
-  #  env['rack.attack.match_type'],
-  #  env['rack.attack.match_data'],
-  #  env['rack.attack.match_discriminator']
+  #  request.env['rack.attack.matched'],
+  #  request.env['rack.attack.match_type'],
+  #  request.env['rack.attack.match_data'],
+  #  request.env['rack.attack.match_discriminator']
 
   # Using 503 because it may make attacker think that they have successfully
   # DOSed the site. Rack::Attack returns 429 for throttling by default
@@ -411,9 +411,10 @@ def call(env)
   if safelisted?(req)
     @app.call(env)
   elsif blocklisted?(req)
-    self.class.blocklisted_response.call(env)
+    self.class.blocklisted_callback.call(req)
   elsif throttled?(req)
     self.class.throttled_response.call(env)
+    self.class.throttled_callback.call(req)
   else
     tracked?(req)
     @app.call(env)

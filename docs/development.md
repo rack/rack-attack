@@ -8,6 +8,10 @@ Install dependencies by running
 
     $ bundle install
 
+Install test dependencies by running:
+
+    $ bundle exec appraisal install
+
 Then run the test suite by running
 
     $ bundle exec appraisal rake test
