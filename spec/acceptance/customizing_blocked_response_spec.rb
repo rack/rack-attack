@@ -28,7 +28,7 @@ describe "Customizing block responses" do
     matched = nil
     match_type = nil
 
-     Rack::Attack.blocklisted_callback = lambda do |req|
+    Rack::Attack.blocklisted_callback = lambda do |req|
       matched = req.env['rack.attack.matched']
       match_type = req.env['rack.attack.match_type']
 
