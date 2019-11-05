@@ -58,4 +58,23 @@ describe "Customizing throttled response" do
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
     assert_equal 3, match_data[:count]
   end
+
+  it "supports old style" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 200, last_response.status
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 429, last_response.status
+
+    Rack::Attack.throttled_response = lambda do |_req|
+      [503, {}, ["Throttled"]]
+    end
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 503, last_response.status
+    assert_equal "Throttled", last_response.body
+  end
 end

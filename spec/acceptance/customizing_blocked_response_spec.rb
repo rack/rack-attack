@@ -40,4 +40,19 @@ describe "Customizing block responses" do
     assert_equal "block 1.2.3.4", matched
     assert_equal :blocklist, match_type
   end
+
+  it "supports old style" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 403, last_response.status
+
+    Rack::Attack.blocklisted_response = lambda do |_env|
+      [503, {}, ["Blocked"]]
+    end
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 503, last_response.status
+    assert_equal "Blocked", last_response.body
+  end
 end
