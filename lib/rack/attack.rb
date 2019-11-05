@@ -66,6 +66,10 @@ module Rack
         :safelist_ip,
         :throttle,
         :track,
+        :throttled_callback,
+        :throttled_callback=,
+        :blocklisted_callback,
+        :blocklisted_callback=,
         :blocklisted_response,
         :blocklisted_response=,
         :throttled_response,
@@ -105,9 +109,13 @@ module Rack
       if configuration.safelisted?(request)
         @app.call(env)
       elsif configuration.blocklisted?(request)
-        configuration.blocklisted_response.call(env)
+        # Deprecated: Keeping blocklisted_response for backwards compatibility
+        configuration.blocklisted_response ? configuration.blocklisted_response.call(env) :
+            configuration.blocklisted_callback.call(request)
       elsif configuration.throttled?(request)
-        configuration.throttled_response.call(env)
+        # Deprecated: Keeping throttled_response for backwards compatibility
+        configuration.throttled_response ? configuration.throttled_response.call(env) :
+            configuration.throttled_callback.call(request)
       else
         configuration.tracked?(request)
         @app.call(env)
