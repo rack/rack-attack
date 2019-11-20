@@ -5,16 +5,14 @@ module Rack
     class Fail2Ban
       class << self
         def filter(discriminator, options)
+          # Return true for blocklist
+          return true if banned?(discriminator)
+
           bantime   = options[:bantime]   or raise ArgumentError, "Must pass bantime option"
           findtime  = options[:findtime]  or raise ArgumentError, "Must pass findtime option"
           maxretry  = options[:maxretry]  or raise ArgumentError, "Must pass maxretry option"
 
-          if banned?(discriminator)
-            # Return true for blocklist
-            true
-          elsif yield
-            fail!(discriminator, bantime, findtime, maxretry)
-          end
+          fail!(discriminator, bantime, findtime, maxretry) if yield
         end
 
         def reset(discriminator, options)
