@@ -343,7 +343,7 @@ end
 While Rack::Attack's primary focus is minimizing harm from abusive clients, it
 can also be used to return rate limit data that's helpful for well-behaved clients.
 
-If you want to return to user how many seconds to wait until he can start sending requests again, this can be done through enabling `Retry-After` header:
+If you want to return to user how many seconds to wait until they can start sending requests again, this can be done through enabling `Retry-After` header:
 ```ruby
 Rack::Attack.throttled_response_retry_after_header = true
 ```
