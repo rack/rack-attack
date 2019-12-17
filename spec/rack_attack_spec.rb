@@ -64,15 +64,15 @@ describe 'Rack::Attack' do
       end
     end
 
-    describe '#blocklisted_response' do
+    describe '#blocklisted_callback' do
       it 'should exist' do
-        _(Rack::Attack.blocklisted_response).must_respond_to :call
+        _(Rack::Attack.blocklisted_callback).must_respond_to :call
       end
     end
 
-    describe '#throttled_response' do
+    describe '#throttled_callback' do
       it 'should exist' do
-        _(Rack::Attack.throttled_response).must_respond_to :call
+        _(Rack::Attack.throttled_callback).must_respond_to :call
       end
     end
   end
