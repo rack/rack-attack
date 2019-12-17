@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.2.2] - 2019-12-18
+
+### Fixed
+
+- Fixed occasional `Redis::FutureNotReady` error (#445) (@fatkodima)
+
 ## [6.2.1] - 2019-10-30
 
 ### Fixed
@@ -195,6 +201,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.2.2]: https://github.com/kickstarter/rack-attack/compare/v6.2.1...v6.2.2/
 [6.2.1]: https://github.com/kickstarter/rack-attack/compare/v6.2.0...v6.2.1/
 [6.2.0]: https://github.com/kickstarter/rack-attack/compare/v6.1.0...v6.2.0/
 [6.1.0]: https://github.com/kickstarter/rack-attack/compare/v6.0.0...v6.1.0/
