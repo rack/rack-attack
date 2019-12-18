@@ -4,6 +4,7 @@ cache: bundler
 
 rvm:
   - ruby-head
+  - 2.7.0-preview3
   - 2.6.5
   - 2.5.7
   - 2.4.9
@@ -32,6 +33,10 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
+    - gemfile: gemfiles/rack_1_6.gemfile
+      rvm: 2.7.0-preview3
+    - gemfile: gemfiles/rails_4_2.gemfile
+      rvm: 2.7.0-preview3
     - gemfile: gemfiles/rails_6_0.gemfile
       rvm: 2.4.9
   fast_finish: true
