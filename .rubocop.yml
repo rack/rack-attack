@@ -21,6 +21,9 @@ Gemspec:
 Layout:
   Enabled: true
 
+Layout/LineLength:
+  Max: 120
+
 Lint:
   Enabled: true
 
@@ -28,9 +31,6 @@ Naming:
   Enabled: true
   Exclude:
     - "lib/rack/attack/path_normalizer.rb"
-
-Metrics/LineLength:
-  Max: 120
 
 Performance:
   Enabled: true
@@ -83,6 +83,9 @@ Style/RedundantBegin:
 Style/RedundantFreeze:
   Enabled: true
 
+Style/RedundantPercentQ:
+  Enabled: true
+
 Style/RedundantSelf:
   Enabled: true
 
@@ -93,7 +96,4 @@ Style/SingleLineMethods:
   Enabled: true
 
 Style/SpecialGlobalVars:
-  Enabled: true
-
-Style/UnneededPercentQ:
   Enabled: true
