@@ -15,8 +15,8 @@ before_install:
   - gem install bundler -v "~> 2.0"
 
 gemfile:
-  - gemfiles/rack_2_0.gemfile
-  - gemfiles/rack_1_6.gemfile
+  - gemfiles/rack_2.gemfile
+  - gemfiles/rack_1.gemfile
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_5_1.gemfile
@@ -34,7 +34,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
-    - gemfile: gemfiles/rack_1_6.gemfile
+    - gemfile: gemfiles/rack_1.gemfile
       rvm: 2.7.0
     - gemfile: gemfiles/rails_4_2.gemfile
       rvm: 2.7.0
