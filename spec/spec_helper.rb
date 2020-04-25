@@ -30,16 +30,11 @@ class MiniTest::Spec
 
   before do
     Rails.cache = nil
-    @_original_throttled_response = Rack::Attack.throttled_response
-    @_original_blocklisted_response = Rack::Attack.blocklisted_response
   end
 
   after do
     Rack::Attack.clear_configuration
     Rack::Attack.instance_variable_set(:@cache, nil)
-
-    Rack::Attack.throttled_response = @_original_throttled_response
-    Rack::Attack.blocklisted_response = @_original_blocklisted_response
   end
 
   def app

@@ -15,33 +15,17 @@ module Rack
           #
           # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
           # the counter. After that we continue using the original RedisCacheStore#increment.
-          rescuing do
-            if options[:expires_in] && !read(name)
-              write(name, amount, options)
+          if options[:expires_in] && !read(name)
+            write(name, amount, options)
 
-              amount
-            else
-              super
-            end
+            amount
+          else
+            super
           end
-        end
-
-        def read(*_args)
-          rescuing { super }
         end
 
         def write(name, value, options = {})
-          rescuing do
-            super(name, value, options.merge!(raw: true))
-          end
-        end
-
-        private
-
-        def rescuing
-          yield
-        rescue Redis::BaseError
-          nil
+          super(name, value, options.merge!(raw: true))
         end
       end
     end

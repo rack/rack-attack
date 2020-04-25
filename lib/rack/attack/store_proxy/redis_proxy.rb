@@ -47,7 +47,7 @@ module Rack
 
         def rescuing
           yield
-        rescue Redis::BaseError
+        rescue Redis::BaseConnectionError
           nil
         end
       end
