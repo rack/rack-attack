@@ -110,12 +110,18 @@ module Rack
         @app.call(env)
       elsif configuration.blocklisted?(request)
         # Deprecated: Keeping blocklisted_response for backwards compatibility
-        configuration.blocklisted_response ? configuration.blocklisted_response.call(env) :
-            configuration.blocklisted_callback.call(request)
+        if configuration.blocklisted_response
+          configuration.blocklisted_response.call(env)
+        else
+          configuration.blocklisted_callback.call(request)
+        end
       elsif configuration.throttled?(request)
         # Deprecated: Keeping throttled_response for backwards compatibility
-        configuration.throttled_response ? configuration.throttled_response.call(env) :
-            configuration.throttled_callback.call(request)
+        if configuration.throttled_response
+          configuration.throttled_response.call(env)
+        else
+          configuration.throttled_callback.call(request)
+        end
       else
         configuration.tracked?(request)
         @app.call(env)

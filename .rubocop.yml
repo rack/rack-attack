@@ -68,6 +68,12 @@ Style/FrozenStringLiteralComment:
 Style/HashSyntax:
   Enabled: true
 
+Style/MultilineTernaryOperator:
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Enabled: true
+
 Style/OptionalArguments:
   Enabled: true
 
