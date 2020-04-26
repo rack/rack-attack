@@ -37,6 +37,7 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 - [Customizing responses](#customizing-responses)
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
 - [Logging & Instrumentation](#logging--instrumentation)
+- [Testing](#testing)
 - [How it works](#how-it-works)
   - [About Tracks](#about-tracks)
 - [Testing](#testing)
@@ -397,6 +398,16 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
   # Your code here
 end
 ```
+
+## Testing
+
+### Disabling
+
+`Rack::Attack.enabled = false` can be used to either completely disable Rack::Attack in your tests, or to disable/enable for specific test cases only.
+
+### Test case isolation
+
+`Rack::Attack.reset!` can be used in your test suite to clear any Rack::Attack state between different test cases.
 
 ## How it works
 
