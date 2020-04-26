@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.3.0] - 2020-04-26
+
+### Added
+
+- `Rack::Attack.reset!` to reset state (#436) (@fatkodima)
+- `Rack::Attack.throttled_response_retry_after_header=` setting that enables a `Retry-After` response header when client is throttled (#440) (@fatkodima)
+
+### Changed
+
+- No longer swallow Redis non-connection errors if Redis is configured as cache store (#450) (@fatkodima)
+
+### Fixed
+
+- `Rack::Attack.clear_configuration` also clears `blocklisted_response` and `throttled_response` back to defaults
+
 ## [6.2.2] - 2019-12-18
 
 ### Fixed
@@ -201,6 +216,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.3.0]: https://github.com/kickstarter/rack-attack/compare/v6.2.2...v6.3.0/
 [6.2.2]: https://github.com/kickstarter/rack-attack/compare/v6.2.1...v6.2.2/
 [6.2.1]: https://github.com/kickstarter/rack-attack/compare/v6.2.0...v6.2.1/
 [6.2.0]: https://github.com/kickstarter/rack-attack/compare/v6.1.0...v6.2.0/
@@ -229,3 +245,5 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 [2.3.0]: https://github.com/kickstarter/rack-attack/compare/v2.2.1...v2.3.0/
 [2.2.1]: https://github.com/kickstarter/rack-attack/compare/v2.2.0...v2.2.1/
 [2.2.0]: https://github.com/kickstarter/rack-attack/compare/v2.1.1...v2.2.0/
+
+[@fatkodima]: https://github.com/fatkodima
