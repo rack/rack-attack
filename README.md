@@ -40,7 +40,6 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 - [Testing](#testing)
 - [How it works](#how-it-works)
   - [About Tracks](#about-tracks)
-- [Testing](#testing)
 - [Performance](#performance)
 - [Motivation](#motivation)
 - [Contributing](#contributing)
@@ -401,6 +400,10 @@ end
 
 ## Testing
 
+A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will
+need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
+for more on how to do this.
+
 ### Disabling
 
 `Rack::Attack.enabled = false` can be used to either completely disable Rack::Attack in your tests, or to disable/enable for specific test cases only.
@@ -444,13 +447,6 @@ can cleanly monkey patch helper methods onto the
 ### About Tracks
 
 `Rack::Attack.track` doesn't affect request processing. Tracks are an easy way to log and measure requests matching arbitrary attributes.
-
-
-## Testing
-
-A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will
-need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
-for more on how to do this.
 
 ## Performance
 
