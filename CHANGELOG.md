@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.3.1] - 2020-05-21
+
+### Fixed
+
+- Warning when using `ActiveSupport::Cache::RedisCacheStore` as a cache store with rails 5.2.4.3 (#482) (@rofreg)
+
 ## [6.3.0] - 2020-04-26
 
 ### Added
@@ -216,6 +222,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.3.1]: https://github.com/kickstarter/rack-attack/compare/v6.3.0...v6.3.1/
 [6.3.0]: https://github.com/kickstarter/rack-attack/compare/v6.2.2...v6.3.0/
 [6.2.2]: https://github.com/kickstarter/rack-attack/compare/v6.2.1...v6.2.2/
 [6.2.1]: https://github.com/kickstarter/rack-attack/compare/v6.2.0...v6.2.1/
@@ -247,3 +254,4 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 [2.2.0]: https://github.com/kickstarter/rack-attack/compare/v2.1.1...v2.2.0/
 
 [@fatkodima]: https://github.com/fatkodima
+[@rofreg]: https://github.com/rofreg
