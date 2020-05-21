@@ -24,6 +24,10 @@ module Rack
           end
         end
 
+        def read(name, options = {})
+          super(name, options.merge!(raw: true))
+        end
+
         def write(name, value, options = {})
           super(name, value, options.merge!(raw: true))
         end
