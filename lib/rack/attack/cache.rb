@@ -12,6 +12,7 @@ module Rack
       end
 
       attr_reader :store
+
       def store=(store)
         @store = StoreProxy.build(store)
       end

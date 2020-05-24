@@ -6,6 +6,7 @@ module Rack
       MANDATORY_OPTIONS = [:limit, :period].freeze
 
       attr_reader :name, :limit, :period, :block, :type
+
       def initialize(name, options, &block)
         @name = name
         @block = block
