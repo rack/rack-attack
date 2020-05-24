@@ -12,6 +12,7 @@ module Rack
       end
 
       attr_reader :store
+
       def store=(store)
         @store =
           if (proxy = BaseProxy.lookup(store))
