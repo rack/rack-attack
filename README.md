@@ -140,7 +140,7 @@ E.g.
 # Provided that trusted users use an HTTP request header named APIKey
 Rack::Attack.safelist("mark any authenticated access safe") do |request|
   # Requests are allowed if the return value is truthy
-  request.env["APIKey"] == "secret-string"
+  request.env["HTTP_APIKEY"] == "secret-string"
 end
 
 # Always allow requests from localhost
