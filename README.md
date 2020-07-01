@@ -79,6 +79,21 @@ You can disable it permanently (like for specific environment) or temporarily (c
 Rack::Attack.enabled = false
 ```
 
+You can also tweak its position in the Rack middleware stack.
+
+```ruby
+# in config/application.rb
+
+# by index
+config.rack_attack.middleware_position = 0
+
+# relative to another middleware
+config.rack_attack.middleware_position = {
+  before: AnotherMiddleware, # optional
+  after: YetAnotherMiddleware # optional
+} 
+```
+
 b) For __rack__ applications:
 
 ```ruby
