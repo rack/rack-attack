@@ -20,7 +20,8 @@ module Rack
       end
 
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_callback, :throttled_callback, :throttled_response_retry_after_header
+      attr_accessor :blocklisted_callback, :middleware_position, :throttled_callback,
+                    :throttled_response_retry_after_header
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 

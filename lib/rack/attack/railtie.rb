@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require "rails"
-
 module Rack
   class Attack
     class Railtie < ::Rails::Railtie
       # Initialize rack-attack own configuration object in application config
-      config.rack_attack = ActiveSupport::OrderedOptions.new
+      config.rack_attack = Rack::Attack.configuration
 
       # Set Rack middleware position. By default it is unset.
       config.rack_attack.middleware_position = nil

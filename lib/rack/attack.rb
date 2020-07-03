@@ -13,8 +13,6 @@ require 'rack/attack/store_proxy/redis_store_proxy'
 require 'rack/attack/store_proxy/redis_cache_store_proxy'
 require 'rack/attack/store_proxy/active_support_redis_store_proxy'
 
-require 'rack/attack/railtie' if defined?(::Rails)
-
 module Rack
   class Attack
     class Error < StandardError; end
@@ -129,3 +127,5 @@ module Rack
     end
   end
 end
+
+require 'rack/attack/railtie' if defined?(::Rails)
