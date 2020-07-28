@@ -263,10 +263,12 @@ Rack::Attack.throttle("requests by ip", limit: 5, period: 2) do |request|
 end
 
 # Throttle login attempts for a given email parameter to 6 reqs/minute
-# Return the email as a discriminator on POST /login requests
+# Return the *normalized* email as a discriminator on POST /login requests
 Rack::Attack.throttle('limit logins per email', limit: 6, period: 60) do |req|
   if req.path == '/login' && req.post?
-    req.params['email']
+    # Normalize the email, using the same logic as your authentication process, to
+    # protect against rate limit bypasses.
+    req.params['email'].to_s.downcase.gsub(/\s+/, "")
   end
 end
 
