@@ -13,8 +13,10 @@ Rack::Attack.throttle "logins/ip", limit: 2, period: 1 do |req|
 end
 
 # Throttle login attempts per email, 10/minute/email
+# Normalize the email, using the same logic as your authentication process, to
+# protect against rate limit bypasses.
 Rack::Attack.throttle "logins/email", limit: 2, period: 60 do |req|
-  req.post? && req.path == "/login" && req.params['email']
+  req.post? && req.path == "/login" && req.params['email'].to_s.downcase.gsub(/\s+/, "")
 end
 
 # blocklist bad IPs from accessing admin pages
