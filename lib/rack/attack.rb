@@ -126,6 +126,8 @@ module Rack
         configuration.tracked?(request)
         @app.call(env)
       end
+    rescue Rack::Utils::InvalidParameterError, Rack::QueryParser::InvalidParameterError
+      [400, {}, []]
     end
   end
 end
