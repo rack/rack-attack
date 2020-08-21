@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'spec_helper'
+require 'rack/query_parser'
 
 describe 'Rack::Attack' do
   it_allows_ok_requests
