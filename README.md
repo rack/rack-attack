@@ -379,7 +379,7 @@ Rack::Attack uses the [ActiveSupport::Notifications](http://api.rubyonrails.org/
 
 You can subscribe to `rack_attack` events and log it, graph it, etc.
 
-To get notified about specific type of events, subscribe to the event name followed by the `rack_attack` namesapce.
+To get notified about specific type of events, subscribe to the event name followed by the `rack_attack` namespace.
 E.g. for throttles use:
 
 ```ruby
