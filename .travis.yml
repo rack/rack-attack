@@ -7,7 +7,6 @@ rvm:
   - 2.7.2
   - 2.6.6
   - 2.5.8
-  - 2.4.10
 
 before_install:
   - yes | gem update --system
@@ -19,7 +18,6 @@ gemfile:
   - gemfiles/rails_6_1.gemfile
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_5_2.gemfile
-  - gemfiles/rails_5_1.gemfile
   - gemfiles/rails_4_2.gemfile
   - gemfiles/dalli2.gemfile
   - gemfiles/redis_4.gemfile
@@ -36,8 +34,6 @@ matrix:
       rvm: 3.0.0
     - gemfile: gemfiles/rails_5_2.gemfile
       rvm: 3.0.0
-    - gemfile: gemfiles/rails_5_1.gemfile
-      rvm: 3.0.0
     - gemfile: gemfiles/rails_4_2.gemfile
       rvm: 3.0.0
     - gemfile: gemfiles/dalli2.gemfile
@@ -48,10 +44,6 @@ matrix:
       rvm: 2.7.2
     - gemfile: gemfiles/rails_4_2.gemfile
       rvm: 2.7.2
-    - gemfile: gemfiles/rails_6_1.gemfile
-      rvm: 2.4.10
-    - gemfile: gemfiles/rails_6_0.gemfile
-      rvm: 2.4.10
   fast_finish: true
 
 services:
