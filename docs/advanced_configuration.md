@@ -6,7 +6,7 @@ If you're feeling ambitious or you have a very particular use-case for Rack::Att
 
 ### Exponential Backoff
 
-By layering throttles with linearly increasing limits and exponentially increasing periods, you can mimic an exponential backoff throttle. See [#106](https://github.com/kickstarter/rack-attack/issues/106) for more discussion.
+By layering throttles with linearly increasing limits and exponentially increasing periods, you can mimic an exponential backoff throttle. See [#106](https://github.com/rack/rack-attack/issues/106) for more discussion.
 
 ```ruby
 # Allows 20 requests in 8  seconds
@@ -24,7 +24,7 @@ end
 
 ### Rack::Attack::Request Helpers
 
-You can define helpers on requests like `localhost?` or `subdomain` by monkey-patching `Rack::Attack::Request`. See [#73](https://github.com/kickstarter/rack-attack/issues/73) for more discussion.
+You can define helpers on requests like `localhost?` or `subdomain` by monkey-patching `Rack::Attack::Request`. See [#73](https://github.com/rack/rack-attack/issues/73) for more discussion.
 
 ```ruby
 class Rack::Attack::Request < ::Rack::Request
@@ -38,7 +38,7 @@ Rack::Attack.safelist("localhost") { |req| req.localhost? }
 
 ### Blocklisting From ENV Variables
 
-You can have `Rack::Attack` configure its blocklists from ENV variables to simplify maintenance. See [#110](https://github.com/kickstarter/rack-attack/issues/110) for more discussion.
+You can have `Rack::Attack` configure its blocklists from ENV variables to simplify maintenance. See [#110](https://github.com/rack/rack-attack/issues/110) for more discussion.
 
 ```ruby
 class Rack::Attack
@@ -57,7 +57,7 @@ end
 
 ### Reset Specific Throttles
 
-By doing a bunch of monkey-patching, you can add a helper for resetting specific throttles. The implementation is kind of long, so see [#113](https://github.com/kickstarter/rack-attack/issues/113) for more discussion.
+By doing a bunch of monkey-patching, you can add a helper for resetting specific throttles. The implementation is kind of long, so see [#113](https://github.com/rack/rack-attack/issues/113) for more discussion.
 
 ```ruby
 Rack::Attack.reset_throttle "logins/email", "user@example.com"
@@ -65,7 +65,7 @@ Rack::Attack.reset_throttle "logins/email", "user@example.com"
 
 ### Blocklisting From Rails.cache
 
-You can configure blocklists to check values stored in `Rails.cache` to allow setting blocklists from inside your application. See [#111](https://github.com/kickstarter/rack-attack/issues/111) for more discussion.
+You can configure blocklists to check values stored in `Rails.cache` to allow setting blocklists from inside your application. See [#111](https://github.com/rack/rack-attack/issues/111) for more discussion.
 
 ```ruby
 # Block attacks from IPs in cache
@@ -78,7 +78,7 @@ end
 
 ### Throttle Basic Auth Crackers
 
-An example implementation for blocking hackers who spam basic auth attempts. See [#47](https://github.com/kickstarter/rack-attack/issues/47) for more discussion.
+An example implementation for blocking hackers who spam basic auth attempts. See [#47](https://github.com/rack/rack-attack/issues/47) for more discussion.
 
 ```ruby
 # After 5 requests with incorrect auth in 1 minute,

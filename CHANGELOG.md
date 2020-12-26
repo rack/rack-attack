@@ -96,9 +96,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Support "plain" `Redis` as a cache store backend ([#280](https://github.com/kickstarter/rack-attack/pull/280)). Thanks @bfad and @ryandv.
+- Support "plain" `Redis` as a cache store backend ([#280](https://github.com/rack/rack-attack/pull/280)). Thanks @bfad and @ryandv.
 - When overwriting `Rack::Attack.throttled_response` you can now access the exact epoch integer that was used for caching
-so your custom code is less prone to race conditions ([#282](https://github.com/kickstarter/rack-attack/pull/282)). Thanks @doliveirakn.
+so your custom code is less prone to race conditions ([#282](https://github.com/rack/rack-attack/pull/282)). Thanks @doliveirakn.
 
 ### Dependency changes
 
@@ -120,43 +120,43 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 
 ### Added
 
-- Add support for [`ActiveSupport::Cache::RedisCacheStore`](http://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html) as a store backend ([#340](https://github.com/kickstarter/rack-attack/pull/340) and [#350](https://github.com/kickstarter/rack-attack/pull/350))
+- Add support for [`ActiveSupport::Cache::RedisCacheStore`](http://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html) as a store backend ([#340](https://github.com/rack/rack-attack/pull/340) and [#350](https://github.com/rack/rack-attack/pull/350))
 
 ## [5.2.0] - 2018-03-29
 
 ### Added
 
-- Shorthand for blocking an IP address `Rack::Attack.blocklist_ip("1.2.3.4")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
-- Shorthand for blocking an IP subnet `Rack::Attack.blocklist_ip("1.2.0.0/16")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
-- Shorthand for safelisting an IP address `Rack::Attack.safelist_ip("5.6.7.8")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
-- Shorthand for safelisting an IP subnet `Rack::Attack.safelist_ip("5.6.0.0/16")` ([#320](https://github.com/kickstarter/rack-attack/pull/320))
-- Throw helpful error message when using `allow2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
-- Throw helpful error message when using `fail2ban` but cache store is misconfigured ([#315](https://github.com/kickstarter/rack-attack/issues/315))
+- Shorthand for blocking an IP address `Rack::Attack.blocklist_ip("1.2.3.4")` ([#320](https://github.com/rack/rack-attack/pull/320))
+- Shorthand for blocking an IP subnet `Rack::Attack.blocklist_ip("1.2.0.0/16")` ([#320](https://github.com/rack/rack-attack/pull/320))
+- Shorthand for safelisting an IP address `Rack::Attack.safelist_ip("5.6.7.8")` ([#320](https://github.com/rack/rack-attack/pull/320))
+- Shorthand for safelisting an IP subnet `Rack::Attack.safelist_ip("5.6.0.0/16")` ([#320](https://github.com/rack/rack-attack/pull/320))
+- Throw helpful error message when using `allow2ban` but cache store is misconfigured ([#315](https://github.com/rack/rack-attack/issues/315))
+- Throw helpful error message when using `fail2ban` but cache store is misconfigured ([#315](https://github.com/rack/rack-attack/issues/315))
 
 ## [5.1.0] - 2018-03-10
 
-  - Fixes edge case bug when using ruby 2.5.0 and redis [#253](https://github.com/kickstarter/rack-attack/issues/253) ([#271](https://github.com/kickstarter/rack-attack/issues/271))
-  - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs ([#274](https://github.com/kickstarter/rack-attack/issues/274))
-  - Removed legacy code that was originally intended for Rails 3 apps ([#264](https://github.com/kickstarter/rack-attack/issues/264))
+  - Fixes edge case bug when using ruby 2.5.0 and redis [#253](https://github.com/rack/rack-attack/issues/253) ([#271](https://github.com/rack/rack-attack/issues/271))
+  - Throws errors with better semantics when missing or misconfigured store caches to aid in developers debugging their configs ([#274](https://github.com/rack/rack-attack/issues/274))
+  - Removed legacy code that was originally intended for Rails 3 apps ([#264](https://github.com/rack/rack-attack/issues/264))
 
 ## [5.0.1] - 2016-08-11
 
-  - Fixes arguments passed to deprecated internal methods. ([#198](https://github.com/kickstarter/rack-attack/issues/198))
+  - Fixes arguments passed to deprecated internal methods. ([#198](https://github.com/rack/rack-attack/issues/198))
 
 ## [5.0.0] - 2016-08-09
 
-  - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. ([#181](https://github.com/kickstarter/rack-attack/issues/181),
+  - Deprecate `whitelist`/`blacklist` in favor of `safelist`/`blocklist`. ([#181](https://github.com/rack/rack-attack/issues/181),
     thanks @renee-travisci).  To upgrade and fix deprecations, find and replace instances of `whitelist` and `blacklist` with `safelist` and `blocklist`. If you reference `rack.attack.match_type`, note that it will have values like `:safelist`/`:blocklist`.
   - Remove test coverage for unsupported ruby dependencies: ruby 2.0, activesupport 3.2/4.0, and dalli 1.
 
 ## [4.4.1] - 2016-02-17
 
   - Fix a bug affecting apps using Redis::Store and ActiveSupport that could generate an error
-    saying dalli was a required dependency. I learned all about ActiveSupport autoloading. ([#165](https://github.com/kickstarter/rack-attack/issues/165))
+    saying dalli was a required dependency. I learned all about ActiveSupport autoloading. ([#165](https://github.com/rack/rack-attack/issues/165))
 
 ## [4.4.0] - 2016-02-10
 
-  - New: support for MemCacheStore ([#153](https://github.com/kickstarter/rack-attack/issues/153)). Thanks @elhu.
+  - New: support for MemCacheStore ([#153](https://github.com/rack/rack-attack/issues/153)). Thanks @elhu.
   - Some documentation and test harness improvements.
 
 ## [4.3.1] - 2015-12-18
@@ -222,36 +222,36 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
-[6.3.1]: https://github.com/kickstarter/rack-attack/compare/v6.3.0...v6.3.1/
-[6.3.0]: https://github.com/kickstarter/rack-attack/compare/v6.2.2...v6.3.0/
-[6.2.2]: https://github.com/kickstarter/rack-attack/compare/v6.2.1...v6.2.2/
-[6.2.1]: https://github.com/kickstarter/rack-attack/compare/v6.2.0...v6.2.1/
-[6.2.0]: https://github.com/kickstarter/rack-attack/compare/v6.1.0...v6.2.0/
-[6.1.0]: https://github.com/kickstarter/rack-attack/compare/v6.0.0...v6.1.0/
-[6.0.0]: https://github.com/kickstarter/rack-attack/compare/v5.4.2...v6.0.0/
-[5.4.2]: https://github.com/kickstarter/rack-attack/compare/v5.4.1...v5.4.2/
-[5.4.1]: https://github.com/kickstarter/rack-attack/compare/v5.4.0...v5.4.1/
-[5.4.0]: https://github.com/kickstarter/rack-attack/compare/v5.3.2...v5.4.0/
-[5.3.2]: https://github.com/kickstarter/rack-attack/compare/v5.3.1...v5.3.2/
-[5.3.1]: https://github.com/kickstarter/rack-attack/compare/v5.3.0...v5.3.1/
-[5.3.0]: https://github.com/kickstarter/rack-attack/compare/v5.2.0...v5.3.0/
-[5.2.0]: https://github.com/kickstarter/rack-attack/compare/v5.1.0...v5.2.0/
-[5.1.0]: https://github.com/kickstarter/rack-attack/compare/v5.0.1...v5.1.0/
-[5.0.1]: https://github.com/kickstarter/rack-attack/compare/v5.0.0...v5.0.1/
-[5.0.0]: https://github.com/kickstarter/rack-attack/compare/v4.4.1...v5.0.0/
-[4.4.1]: https://github.com/kickstarter/rack-attack/compare/v4.4.0...v4.4.1/
-[4.4.0]: https://github.com/kickstarter/rack-attack/compare/v4.3.1...v4.4.0/
-[4.3.1]: https://github.com/kickstarter/rack-attack/compare/v4.3.0...v4.3.1/
-[4.3.0]: https://github.com/kickstarter/rack-attack/compare/v4.2.0...v4.3.0/
-[4.2.0]: https://github.com/kickstarter/rack-attack/compare/v4.1.1...v4.2.0/
-[4.1.1]: https://github.com/kickstarter/rack-attack/compare/v4.1.0...v4.1.1/
-[4.1.0]: https://github.com/kickstarter/rack-attack/compare/v4.0.1...v4.1.0/
-[4.0.1]: https://github.com/kickstarter/rack-attack/compare/v4.0.0...v4.0.1/
-[4.0.0]: https://github.com/kickstarter/rack-attack/compare/v3.0.0...v4.0.0/
-[3.0.0]: https://github.com/kickstarter/rack-attack/compare/v2.3.0...v3.0.0/
-[2.3.0]: https://github.com/kickstarter/rack-attack/compare/v2.2.1...v2.3.0/
-[2.2.1]: https://github.com/kickstarter/rack-attack/compare/v2.2.0...v2.2.1/
-[2.2.0]: https://github.com/kickstarter/rack-attack/compare/v2.1.1...v2.2.0/
+[6.3.1]: https://github.com/rack/rack-attack/compare/v6.3.0...v6.3.1/
+[6.3.0]: https://github.com/rack/rack-attack/compare/v6.2.2...v6.3.0/
+[6.2.2]: https://github.com/rack/rack-attack/compare/v6.2.1...v6.2.2/
+[6.2.1]: https://github.com/rack/rack-attack/compare/v6.2.0...v6.2.1/
+[6.2.0]: https://github.com/rack/rack-attack/compare/v6.1.0...v6.2.0/
+[6.1.0]: https://github.com/rack/rack-attack/compare/v6.0.0...v6.1.0/
+[6.0.0]: https://github.com/rack/rack-attack/compare/v5.4.2...v6.0.0/
+[5.4.2]: https://github.com/rack/rack-attack/compare/v5.4.1...v5.4.2/
+[5.4.1]: https://github.com/rack/rack-attack/compare/v5.4.0...v5.4.1/
+[5.4.0]: https://github.com/rack/rack-attack/compare/v5.3.2...v5.4.0/
+[5.3.2]: https://github.com/rack/rack-attack/compare/v5.3.1...v5.3.2/
+[5.3.1]: https://github.com/rack/rack-attack/compare/v5.3.0...v5.3.1/
+[5.3.0]: https://github.com/rack/rack-attack/compare/v5.2.0...v5.3.0/
+[5.2.0]: https://github.com/rack/rack-attack/compare/v5.1.0...v5.2.0/
+[5.1.0]: https://github.com/rack/rack-attack/compare/v5.0.1...v5.1.0/
+[5.0.1]: https://github.com/rack/rack-attack/compare/v5.0.0...v5.0.1/
+[5.0.0]: https://github.com/rack/rack-attack/compare/v4.4.1...v5.0.0/
+[4.4.1]: https://github.com/rack/rack-attack/compare/v4.4.0...v4.4.1/
+[4.4.0]: https://github.com/rack/rack-attack/compare/v4.3.1...v4.4.0/
+[4.3.1]: https://github.com/rack/rack-attack/compare/v4.3.0...v4.3.1/
+[4.3.0]: https://github.com/rack/rack-attack/compare/v4.2.0...v4.3.0/
+[4.2.0]: https://github.com/rack/rack-attack/compare/v4.1.1...v4.2.0/
+[4.1.1]: https://github.com/rack/rack-attack/compare/v4.1.0...v4.1.1/
+[4.1.0]: https://github.com/rack/rack-attack/compare/v4.0.1...v4.1.0/
+[4.0.1]: https://github.com/rack/rack-attack/compare/v4.0.0...v4.0.1/
+[4.0.0]: https://github.com/rack/rack-attack/compare/v3.0.0...v4.0.0/
+[3.0.0]: https://github.com/rack/rack-attack/compare/v2.3.0...v3.0.0/
+[2.3.0]: https://github.com/rack/rack-attack/compare/v2.2.1...v2.3.0/
+[2.2.1]: https://github.com/rack/rack-attack/compare/v2.2.0...v2.2.1/
+[2.2.0]: https://github.com/rack/rack-attack/compare/v2.1.1...v2.2.0/
 
 [@fatkodima]: https://github.com/fatkodima
 [@rofreg]: https://github.com/rofreg

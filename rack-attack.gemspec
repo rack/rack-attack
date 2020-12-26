@@ -15,16 +15,16 @@ Gem::Specification.new do |s|
   s.email = "aaron@ktheory.com"
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md)
-  s.homepage = 'https://github.com/kickstarter/rack-attack'
+  s.homepage = 'https://github.com/rack/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.summary = 'Block & throttle abusive requests'
   s.test_files = Dir.glob("spec/**/*")
 
   s.metadata = {
-    "bug_tracker_uri" => "https://github.com/kickstarter/rack-attack/issues",
-    "changelog_uri" => "https://github.com/kickstarter/rack-attack/blob/master/CHANGELOG.md",
-    "source_code_uri" => "https://github.com/kickstarter/rack-attack"
+    "bug_tracker_uri" => "https://github.com/rack/rack-attack/issues",
+    "changelog_uri" => "https://github.com/rack/rack-attack/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/rack/rack-attack"
   }
 
   s.required_ruby_version = '>= 2.4'
