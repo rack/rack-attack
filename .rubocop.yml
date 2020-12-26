@@ -8,6 +8,7 @@ inherit_mode:
 AllCops:
   TargetRubyVersion: 2.4
   DisabledByDefault: true
+  NewCops: disable
   Exclude:
     - "examples/instrumentation.rb"
     - "gemfiles/**/*"
