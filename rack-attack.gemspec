@@ -15,16 +15,16 @@ Gem::Specification.new do |s|
   s.email = "aaron@ktheory.com"
 
   s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md)
-  s.homepage = 'https://github.com/kickstarter/rack-attack'
+  s.homepage = 'https://github.com/rack/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.summary = 'Block & throttle abusive requests'
   s.test_files = Dir.glob("spec/**/*")
 
   s.metadata = {
-    "bug_tracker_uri" => "https://github.com/kickstarter/rack-attack/issues",
-    "changelog_uri" => "https://github.com/kickstarter/rack-attack/blob/master/CHANGELOG.md",
-    "source_code_uri" => "https://github.com/kickstarter/rack-attack"
+    "bug_tracker_uri" => "https://github.com/rack/rack-attack/issues",
+    "changelog_uri" => "https://github.com/rack/rack-attack/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/rack/rack-attack"
   }
 
   s.required_ruby_version = '>= 2.4'
@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
   s.add_development_dependency 'rack-test', "~> 1.0"
   s.add_development_dependency 'rake', "~> 13.0"
-  s.add_development_dependency "rubocop", "0.84.0"
+  s.add_development_dependency "rubocop", "0.89.1"
   s.add_development_dependency "rubocop-performance", "~> 1.5.0"
   s.add_development_dependency "timecop", "~> 0.9.1"
 
@@ -46,5 +46,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  s.add_development_dependency 'railties', '>= 4.2', '< 6.1'
+  s.add_development_dependency 'railties', '>= 4.2', '< 6.2'
 end
