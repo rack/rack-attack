@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.4.0] - 2021-01-23
+
+### Added
+
+- Added support for ruby v3.0
+
+### Removed
+
+- Dropped support for ruby v2.3
+
 ## [6.3.1] - 2020-05-21
 
 ### Fixed
@@ -222,6 +232,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.4.0]: https://github.com/rack/rack-attack/compare/v6.3.1...v6.4.0/
 [6.3.1]: https://github.com/rack/rack-attack/compare/v6.3.0...v6.3.1/
 [6.3.0]: https://github.com/rack/rack-attack/compare/v6.2.2...v6.3.0/
 [6.2.2]: https://github.com/rack/rack-attack/compare/v6.2.1...v6.2.2/
