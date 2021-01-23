@@ -3,8 +3,8 @@ language: ruby
 cache: bundler
 
 rvm:
-  - ruby-head
-  - 2.7.1
+  - 3.0.0
+  - 2.7.2
   - 2.6.6
   - 2.5.8
   - 2.4.10
@@ -16,6 +16,7 @@ before_install:
 gemfile:
   - gemfiles/rack_2.gemfile
   - gemfiles/rack_1.gemfile
+  - gemfiles/rails_6_1.gemfile
   - gemfiles/rails_6_0.gemfile
   - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_5_1.gemfile
@@ -30,13 +31,25 @@ gemfile:
   - gemfiles/active_support_redis_store.gemfile
 
 matrix:
-  allow_failures:
-    - rvm: ruby-head
   exclude:
     - gemfile: gemfiles/rack_1.gemfile
-      rvm: 2.7.1
+      rvm: 3.0.0
+    - gemfile: gemfiles/rails_5_2.gemfile
+      rvm: 3.0.0
+    - gemfile: gemfiles/rails_5_1.gemfile
+      rvm: 3.0.0
     - gemfile: gemfiles/rails_4_2.gemfile
-      rvm: 2.7.1
+      rvm: 3.0.0
+    - gemfile: gemfiles/dalli2.gemfile
+      rvm: 3.0.0
+    - gemfile: gemfiles/connection_pool_dalli.gemfile
+      rvm: 3.0.0
+    - gemfile: gemfiles/rack_1.gemfile
+      rvm: 2.7.2
+    - gemfile: gemfiles/rails_4_2.gemfile
+      rvm: 2.7.2
+    - gemfile: gemfiles/rails_6_1.gemfile
+      rvm: 2.4.10
     - gemfile: gemfiles/rails_6_0.gemfile
       rvm: 2.4.10
   fast_finish: true

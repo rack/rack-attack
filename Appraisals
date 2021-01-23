@@ -17,6 +17,10 @@ appraise "rack_1" do
   gem "rack-test", ">= 0.6"
 end
 
+appraise 'rails_6-1' do
+  gem 'railties', '~> 6.1.0'
+end
+
 appraise 'rails_6-0' do
   gem 'railties', '~> 6.0.0'
 end
@@ -55,12 +59,12 @@ appraise "connection_pool_dalli" do
 end
 
 appraise "active_support_redis_cache_store" do
-  gem "activesupport", "~> 5.2.0"
+  gem "activesupport", ">= 5.2", "< 6.2"
   gem "redis", "~> 4.0"
 end
 
 appraise "active_support_redis_cache_store_pooled" do
-  gem "activesupport", "~> 5.2.0"
+  gem "activesupport", ">= 5.2", "< 6.2"
   gem "connection_pool", "~> 2.2"
   gem "redis", "~> 4.0"
 end
