@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.5.0] - 2021-02-07
+
+### Added
+
+- Added ability to normalize throttle discriminator by setting `Rack::Attack.throttle_discriminator_normalizer` (@fatkodima)
+
+  Example:
+
+      Rack::Attack.throttle_discriminator_normalizer = ->(discriminator) { ... }
+
+  or disable default normalization with:
+
+      Rack::Attack.throttle_discriminator_normalizer = nil
+
+### Removed
+
+- Dropped support for ruby v2.4
+- Dropped support for rails v5.1
+
 ## [6.4.0] - 2021-01-23
 
 ### Added
@@ -232,6 +251,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+[6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/
 [6.4.0]: https://github.com/rack/rack-attack/compare/v6.3.1...v6.4.0/
 [6.3.1]: https://github.com/rack/rack-attack/compare/v6.3.0...v6.3.1/
 [6.3.0]: https://github.com/rack/rack-attack/compare/v6.2.2...v6.3.0/

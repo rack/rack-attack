@@ -145,7 +145,7 @@ describe 'Rack::Attack.throttle with block retuning nil' do
   end
 end
 
-describe 'Rack::Attack.throttle with discriminator_normalizer' do
+describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
   before do
     @period = 60
     @emails = [
@@ -161,16 +161,16 @@ describe 'Rack::Attack.throttle with discriminator_normalizer' do
     end
   end
 
-  it 'should not differentiate requests when discriminator_normalizer is enabled' do
+  it 'should not differentiate requests when throttle_discriminator_normalizer is enabled' do
     post_logins
     key = "rack::attack:#{Time.now.to_i / @period}:logins/email:person@example.com"
     _(Rack::Attack.cache.store.read(key)).must_equal 3
   end
 
-  it 'should differentiate requests when discriminator_normalizer is disabled' do
+  it 'should differentiate requests when throttle_discriminator_normalizer is disabled' do
     begin
-      prev = Rack::Attack.discriminator_normalizer
-      Rack::Attack.discriminator_normalizer = nil
+      prev = Rack::Attack.throttle_discriminator_normalizer
+      Rack::Attack.throttle_discriminator_normalizer = nil
 
       post_logins
       @emails.each do |email|
@@ -178,7 +178,7 @@ describe 'Rack::Attack.throttle with discriminator_normalizer' do
         _(Rack::Attack.cache.store.read(key)).must_equal 1
       end
     ensure
-      Rack::Attack.discriminator_normalizer = prev
+      Rack::Attack.throttle_discriminator_normalizer = prev
     end
   end
 
