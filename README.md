@@ -315,13 +315,13 @@ Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2b
 Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC).
 
 ```ruby
-Rack::Attack.blocklisted_callback = lambda do |request|
+Rack::Attack.blocklisted_response = lambda do |request|
   # Using 503 because it may make attacker think that they have successfully
   # DOSed the site. Rack::Attack returns 403 for blocklists by default
   [ 503, {}, ['Blocked']]
 end
 
-Rack::Attack.throttled_callback = lambda do |request|
+Rack::Attack.throttled_response = lambda do |request|
   # NB: you have access to the name and other data about the matched throttle
   #  request.env['rack.attack.matched'],
   #  request.env['rack.attack.match_type'],
