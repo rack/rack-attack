@@ -1,4 +1,4 @@
-__Note__: You are viewing the development version README.
+:warning:  You are viewing the development's branch version of README which might contain documentation for unreleased features.
 For the README consistent with the latest released version see https://github.com/rack/rack-attack/blob/6-stable/README.md.
 
 # Rack::Attack
