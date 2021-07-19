@@ -1,0 +1,63 @@
+name: build
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+      memcached:
+        image: memcached
+        ports:
+          - 11211:11211
+    strategy:
+      matrix:
+        ruby:
+          - 3.0.0
+          - 2.7.2
+          - 2.6.6
+          - 2.5.8
+        gemfile:
+          - rack_2
+          - rack_1
+          - rails_6_1
+          - rails_6_0
+          - rails_5_2
+          - rails_4_2
+          - dalli2
+          - redis_4
+          - redis_3
+          - connection_pool_dalli
+          - active_support_redis_cache_store
+          - active_support_redis_cache_store_pooled
+          - redis_store
+          - active_support_redis_store
+        exclude:
+          - gemfile: rack_1
+            ruby: 3.0.0
+          - gemfile: rails_5_2
+            ruby: 3.0.0
+          - gemfile: rails_4_2
+            ruby: 3.0.0
+          - gemfile: dalli2
+            ruby: 3.0.0
+          - gemfile: connection_pool_dalli
+            ruby: 3.0.0
+          - gemfile: rack_1
+            ruby: 2.7.2
+          - gemfile: rails_4_2
+            ruby: 2.7.2
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+    - run: bundle exec rake
+
