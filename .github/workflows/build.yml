@@ -52,6 +52,10 @@ jobs:
             ruby: 2.7.4
           - gemfile: rails_4_2
             ruby: 2.7.4
+          - gemfile: rack_1
+            ruby: truffleruby-head
+          - gemfile: rails_4_2
+            ruby: truffleruby-head
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
