@@ -21,6 +21,7 @@ jobs:
           - 2.7.4
           - 2.6.8
           - 2.5.8
+          - truffleruby-head
         gemfile:
           - rack_2
           - rack_1
