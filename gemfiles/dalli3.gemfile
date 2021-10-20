@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "connection_pool", "~> 2.2"
 gem "dalli", "~> 3.0"
 
 gemspec path: "../"
