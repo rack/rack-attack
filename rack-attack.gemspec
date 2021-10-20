@@ -46,5 +46,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  s.add_development_dependency 'railties', '>= 4.2', '< 6.2'
+  s.add_development_dependency 'railties', '>= 4.2', '< 7.1'
 end
