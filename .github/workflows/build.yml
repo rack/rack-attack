@@ -28,6 +28,7 @@ jobs:
           - rails_6_0
           - rails_5_2
           - rails_4_2
+          - dalli3
           - dalli2
           - redis_4
           - redis_3
@@ -44,8 +45,6 @@ jobs:
           - gemfile: rails_4_2
             ruby: 3.0.2
           - gemfile: dalli2
-            ruby: 3.0.2
-          - gemfile: connection_pool_dalli
             ruby: 3.0.2
           - gemfile: rack_1
             ruby: 2.7.4
