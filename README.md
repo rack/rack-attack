@@ -312,7 +312,7 @@ Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2b
 
 ## Customizing responses
 
-Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC).
+Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC.rdoc).
 
 ```ruby
 Rack::Attack.blocklisted_callback = lambda do |request|
