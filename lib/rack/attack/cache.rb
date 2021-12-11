@@ -16,7 +16,7 @@ module Rack
       def store=(store)
         @store =
           if (proxy = BaseProxy.lookup(store))
-            proxy.new(store)
+            proxy.build(store)
           else
             store
           end
@@ -62,9 +62,9 @@ module Rack
 
       def key_and_expiry(unprefixed_key, period)
         @last_epoch_time = Time.now.to_i
-        # Add 1 to expires_in to avoid timing error: https://git.io/i1PHXA
-        expires_in = (period - (@last_epoch_time % period) + 1).to_i
-        ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
+
+        period = period.to_i
+        ["#{prefix}:#{period}:#{unprefixed_key}", period]
       end
 
       def do_count(key, expires_in)

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class Minitest::Spec
-  def self.it_works_for_cache_backed_features(options)
-    fetch_from_store = options.fetch(:fetch_from_store)
+  READ_FROM_STORE = ->(key) { Rack::Attack.cache.store.read(key) }
+
+  def self.it_works_for_cache_backed_features(fetch_from_store: READ_FROM_STORE)
 
     it "works for throttle" do
       Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
@@ -64,19 +65,13 @@ class Minitest::Spec
         request.ip
       end
 
-      key = nil
+      key = "rack::attack:1:by ip:1.2.3.4"
 
-      # Freeze time during these statement to be sure that the key used by rack attack is the same
-      # we pre-calculate in local variable `key`
-      Timecop.freeze do
-        key = "rack::attack:#{Time.now.to_i}:by ip:1.2.3.4"
-
-        get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      end
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
       assert fetch_from_store.call(key)
 
-      sleep 2.1
+      sleep 1.01
 
       assert_nil fetch_from_store.call(key)
     end

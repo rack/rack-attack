@@ -12,8 +12,8 @@ module Rack
             store.is_a?(::ActiveSupport::Cache::MemCacheStore)
         end
 
-        def write(name, value, options = {})
-          super(name, value, options.merge!(raw: true))
+        def self.build(store)
+          DalliProxy.build(store.instance_variable_get(:@data))
         end
       end
     end

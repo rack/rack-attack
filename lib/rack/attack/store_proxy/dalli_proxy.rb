@@ -18,57 +18,40 @@ module Rack
           end
         end
 
-        def initialize(client)
-          super(client)
-          stub_with_if_missing
-        end
-
         def read(key)
-          rescuing do
-            with do |client|
-              client.get(key)
-            end
+          rescuing_with do |client|
+            client.get(key)
           end
         end
 
         def write(key, value, options = {})
-          rescuing do
-            with do |client|
-              client.set(key, value, options.fetch(:expires_in, 0), raw: true)
-            end
+          rescuing_with do |client|
+            client.set(key, value, options.fetch(:expires_in, 0), raw: true)
           end
         end
 
         def increment(key, amount, options = {})
-          rescuing do
-            with do |client|
-              client.incr(key, amount, options.fetch(:expires_in, 0), amount)
-            end
+          rescuing_with do |client|
+            client.incr(key, amount, options.fetch(:expires_in, 0), amount)
           end
         end
 
         def delete(key)
-          rescuing do
-            with do |client|
-              client.delete(key)
-            end
+          rescuing_with do |client|
+            client.delete(key)
+          end
+        end
+
+        def flush_all
+          rescuing_with do |client|
+            client.flush_all
           end
         end
 
         private
 
-        def stub_with_if_missing
-          unless __getobj__.respond_to?(:with)
-            class << self
-              def with
-                yield __getobj__
-              end
-            end
-          end
-        end
-
-        def rescuing
-          yield
+        def rescuing_with
+          with { |client| yield client }
         rescue Dalli::DalliError
           nil
         end

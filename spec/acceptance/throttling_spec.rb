@@ -114,7 +114,7 @@ describe "#throttle" do
       assert_equal 429, last_response.status
     end
 
-    Timecop.travel(Time.at(30)) do
+    Timecop.travel(Time.at(30.01)) do
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
       assert_equal 200, last_response.status
     end
@@ -127,7 +127,7 @@ describe "#throttle" do
       assert_equal 429, last_response.status
     end
 
-    Timecop.travel(Time.at(10)) do
+    Timecop.travel(Time.at(10.01)) do
       get "/", {}, "REMOTE_ADDR" => "5.6.7.8", "X-APIKey" => "private-secret"
       assert_equal 200, last_response.status
     end

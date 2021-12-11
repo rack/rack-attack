@@ -12,6 +12,7 @@ require 'rack/attack/store_proxy/redis_proxy'
 require 'rack/attack/store_proxy/redis_store_proxy'
 require 'rack/attack/store_proxy/redis_cache_store_proxy'
 require 'rack/attack/store_proxy/active_support_redis_store_proxy'
+require 'rack/attack/store_proxy/active_support_memory_store_proxy'
 
 require 'rack/attack/railtie' if defined?(::Rails)
 

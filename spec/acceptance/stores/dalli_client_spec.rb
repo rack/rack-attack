@@ -4,8 +4,6 @@ require_relative "../../spec_helper"
 
 if defined?(::Dalli)
   require_relative "../../support/cache_store_helper"
-  require "dalli"
-  require "timecop"
 
   describe "Dalli::Client as a cache backend" do
     before do
@@ -16,6 +14,6 @@ if defined?(::Dalli)
       Rack::Attack.cache.store.flush_all
     end
 
-    it_works_for_cache_backed_features(fetch_from_store: ->(key) { Rack::Attack.cache.store.fetch(key) })
+    it_works_for_cache_backed_features
   end
 end
