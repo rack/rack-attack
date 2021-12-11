@@ -6,13 +6,8 @@ require 'rack/attack/cache'
 require 'rack/attack/configuration'
 require 'rack/attack/path_normalizer'
 require 'rack/attack/request'
-require 'rack/attack/store_proxy/dalli_proxy'
-require 'rack/attack/store_proxy/mem_cache_store_proxy'
-require 'rack/attack/store_proxy/redis_proxy'
-require 'rack/attack/store_proxy/redis_store_proxy'
-require 'rack/attack/store_proxy/redis_cache_store_proxy'
-require 'rack/attack/store_proxy/active_support_redis_store_proxy'
-require 'rack/attack/store_proxy/active_support_memory_store_proxy'
+
+require 'rack/attack/store_handlers'
 
 require 'rack/attack/railtie' if defined?(::Rails)
 
@@ -22,6 +17,13 @@ module Rack
     class MisconfiguredStoreError < Error; end
     class MissingStoreError < Error; end
     class IncompatibleStoreError < Error; end
+
+    module Adapters
+      autoload :RedisAdapter,                    'rack/attack/adapters/redis_adapter'
+      autoload :RedisStoreAdapter,               'rack/attack/adapters/redis_store_adapter'
+      autoload :DalliClientAdapter,              'rack/attack/adapters/dalli_client_adapter'
+      autoload :ActiveSupportMemoryStoreAdapter, 'rack/attack/adapters/active_support_memory_store_adapter'
+    end
 
     autoload :Check,                'rack/attack/check'
     autoload :Throttle,             'rack/attack/throttle'

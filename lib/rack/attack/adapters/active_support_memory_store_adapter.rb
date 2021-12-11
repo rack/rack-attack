@@ -1,24 +1,36 @@
 # frozen_string_literal: true
 
-require 'rack/attack/base_proxy'
+require 'rack/attack/adapters/base'
 
 module Rack
   class Attack
-    module StoreProxy
-      class ActiveSupportMemoryStoreProxy < BaseProxy
-        def self.handle?(store)
-          store.class.name == 'ActiveSupport::Cache::MemoryStore'
+    module Adapters
+      class ActiveSupportMemoryStoreAdapter < Base
+        def read(key)
+          backend.read(key)
+        end
+
+        def write(key, value, options)
+          backend.write(key, value, options)
         end
 
         def increment(key, amount = 1, options = {})
-          synchronize do
-            count = read(key, options)
+          backend.synchronize do
+            count = backend.read(key)
             expires_in = calculate_expiration_for(key, count, options[:expires_in])
 
             (count.to_i + amount).tap do |incremented|
-              write(key, incremented, expires_in: expires_in)
+              backend.write(key, incremented, expires_in: expires_in)
             end
           end
+        end
+
+        def delete(key)
+          backend.delete(key)
+        end
+
+        def delete_matched(matcher)
+          backend.delete_matched(matcher)
         end
 
         private

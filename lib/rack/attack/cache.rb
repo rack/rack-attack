@@ -14,12 +14,7 @@ module Rack
       attr_reader :store
 
       def store=(store)
-        @store =
-          if (proxy = BaseProxy.lookup(store))
-            proxy.build(store)
-          else
-            store
-          end
+        @store = StoreHandlers.adapter_for(store) || store
       end
 
       def count(unprefixed_key, period)

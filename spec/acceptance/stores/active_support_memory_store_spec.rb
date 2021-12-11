@@ -9,7 +9,7 @@ describe "ActiveSupport::Cache::MemoryStore as a cache backend" do
   end
 
   after do
-    Rack::Attack.cache.store.clear
+    Rack::Attack.reset!
   end
 
   it_works_for_cache_backed_features
