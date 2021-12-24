@@ -34,7 +34,7 @@ describe 'Rack::Attack.Allow2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i / @findtime}:allow2ban:count:1.2.3.4"
+          key, _ = Rack::Attack.cache.send(:key_and_expiry, "allow2ban:count:1.2.3.4", @findtime)
 
           _(@cache.store.read(key)).must_equal 1
         end
@@ -57,7 +57,7 @@ describe 'Rack::Attack.Allow2Ban' do
         end
 
         it 'increases fail count' do
-          key = "rack::attack:#{Time.now.to_i / @findtime}:allow2ban:count:1.2.3.4"
+          key, _ = Rack::Attack.cache.send(:key_and_expiry, "allow2ban:count:1.2.3.4", @findtime)
           _(@cache.store.read(key)).must_equal 2
         end
 
@@ -94,7 +94,7 @@ describe 'Rack::Attack.Allow2Ban' do
       end
 
       it 'does not increase fail count' do
-        key = "rack::attack:#{Time.now.to_i / @findtime}:allow2ban:count:1.2.3.4"
+        key, _ = Rack::Attack.cache.send(:key_and_expiry, "allow2ban:count:1.2.3.4", @findtime)
         _(@cache.store.read(key)).must_equal 2
       end
 
@@ -114,7 +114,7 @@ describe 'Rack::Attack.Allow2Ban' do
       end
 
       it 'does not increase fail count' do
-        key = "rack::attack:#{Time.now.to_i / @findtime}:allow2ban:count:1.2.3.4"
+        key, _ = Rack::Attack.cache.send(:key_and_expiry, "allow2ban:count:1.2.3.4", @findtime)
         _(@cache.store.read(key)).must_equal 2
       end
 
