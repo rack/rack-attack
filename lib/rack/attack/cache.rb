@@ -63,12 +63,21 @@ module Rack
 
       def key_and_expiry(unprefixed_key, period)
         @last_epoch_time = Time.now.to_i
-        time_into_period = @last_epoch_time % period
+        offset = offset_for(unprefixed_key, period)
+        period_number, time_into_period = period_number_and_time_into(period, offset)
         period_remainder = period - time_into_period
         @last_retry_after_time = @last_epoch_time + period_remainder
         # Add 1 to expires_in to avoid timing error: https://git.io/i1PHXA
         expires_in = period_remainder + 1
-        ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
+        ["#{prefix}:#{period_number}:#{unprefixed_key}", expires_in]
+      end
+
+      def offset_for(unprefixed_key, period)
+        0
+      end
+
+      def period_number_and_time_into(period, offset)
+        [((@last_epoch_time + offset) / period).to_i, (@last_epoch_time + offset) % period]
       end
 
       def do_count(key, expires_in)
