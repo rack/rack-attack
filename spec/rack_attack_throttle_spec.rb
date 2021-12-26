@@ -17,7 +17,7 @@ describe 'Rack::Attack.throttle' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period)
+      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period, true)
       _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
@@ -75,7 +75,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period)
+      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period, true)
       _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
@@ -107,7 +107,7 @@ describe 'Rack::Attack.throttle with period as proc' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should set the counter for one request' do
-      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period)
+      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period, true)
       _(Rack::Attack.cache.store.read(key)).must_equal 1
     end
 
@@ -139,7 +139,7 @@ describe 'Rack::Attack.throttle with block retuning nil' do
     before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
 
     it 'should not set the counter' do
-      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period)
+      key, _ = Rack::Attack.cache.send(:key_and_expiry, "ip/sec:1.2.3.4", @period, true)
       assert_nil Rack::Attack.cache.store.read(key)
     end
 
@@ -167,7 +167,7 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
 
   it 'should not differentiate requests when throttle_discriminator_normalizer is enabled' do
     post_logins
-    key, _ = Rack::Attack.cache.send(:key_and_expiry, "logins/email:person@example.com", @period)
+    key, _ = Rack::Attack.cache.send(:key_and_expiry, "logins/email:person@example.com", @period, true)
     _(Rack::Attack.cache.store.read(key)).must_equal 3
   end
 
@@ -178,7 +178,7 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
 
       post_logins
       @emails.each do |email|
-        key, _ = Rack::Attack.cache.send(:key_and_expiry, "logins/email:#{email}", @period)
+        key, _ = Rack::Attack.cache.send(:key_and_expiry, "logins/email:#{email}", @period, true)
         _(Rack::Attack.cache.store.read(key)).must_equal 1
       end
     ensure
