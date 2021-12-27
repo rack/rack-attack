@@ -27,6 +27,7 @@ describe 'Rack::Attack.throttle' do
         limit: 1,
         period: @period,
         epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        retry_after: Rack::Attack.cache.last_retry_after_time.to_i,
         discriminator: "1.2.3.4"
       }
 
@@ -52,6 +53,7 @@ describe 'Rack::Attack.throttle' do
         limit: 1,
         period: @period,
         epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        retry_after: Rack::Attack.cache.last_retry_after_time.to_i,
         discriminator: "1.2.3.4"
       )
 
@@ -83,6 +85,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
         limit: 1,
         period: @period,
         epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        retry_after: Rack::Attack.cache.last_retry_after_time.to_i,
         discriminator: "1.2.3.4"
       }
 
@@ -114,6 +117,7 @@ describe 'Rack::Attack.throttle with period as proc' do
         limit: 1,
         period: @period,
         epoch_time: Rack::Attack.cache.last_epoch_time.to_i,
+        retry_after: Rack::Attack.cache.last_retry_after_time.to_i,
         discriminator: "1.2.3.4"
       }
 

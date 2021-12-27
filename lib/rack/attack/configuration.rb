@@ -10,8 +10,7 @@ module Rack
       DEFAULT_THROTTLED_CALLBACK = lambda do |req|
         if Rack::Attack.configuration.throttled_response_retry_after_header
           match_data = req.env['rack.attack.match_data']
-          now = match_data[:epoch_time]
-          retry_after = match_data[:period] - (now % match_data[:period])
+          retry_after = match_data[:retry_after] - match_data[:epoch_time]
 
           [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
         else

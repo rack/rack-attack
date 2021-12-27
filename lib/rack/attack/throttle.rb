@@ -35,7 +35,8 @@ module Rack
           count: count,
           period: current_period,
           limit: current_limit,
-          epoch_time: cache.last_epoch_time
+          epoch_time: cache.last_epoch_time,
+          retry_after: cache.last_retry_after_time
         }
 
         (count > current_limit).tap do |throttled|

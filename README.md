@@ -339,33 +339,31 @@ end
 While Rack::Attack's primary focus is minimizing harm from abusive clients, it
 can also be used to return rate limit data that's helpful for well-behaved clients.
 
-If you want to return to user how many seconds to wait until they can start sending requests again, this can be done through enabling `Retry-After` header:
+If you want to report to the client how many seconds to wait until they can start sending requests again, per RFCs 6585 and 7231, this can be done through enabling the `Retry-After` header:
 ```ruby
 Rack::Attack.throttled_response_retry_after_header = true
 ```
 
-Here's an example response that includes conventional `RateLimit-*` headers:
+If you prefer to emit one of the RateLimit-style standards, you might write your own lambda like this (this example uses the [IETF WG standard](https://github.com/ietf-wg-httpapi/ratelimit-headers)):
 
 ```ruby
 Rack::Attack.throttled_response = lambda do |env|
   match_data = env['rack.attack.match_data']
-  now = match_data[:epoch_time]
 
   headers = {
     'RateLimit-Limit' => match_data[:limit].to_s,
     'RateLimit-Remaining' => '0',
-    'RateLimit-Reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
+    'RateLimit-Reset' => (match_data[:retry_after] - match_data[:epoch_time]).to_s
   }
 
   [ 429, headers, ["Throttled\n"]]
 end
 ```
 
-
-For responses that did not exceed a throttle limit, Rack::Attack annotates the env with match data:
+For responses that exceeded a throttle limit, Rack::Attack annotates the env with match data:
 
 ```ruby
-request.env['rack.attack.throttle_data'][name] # => { discriminator: d, count: n, period: p, limit: l, epoch_time: t }
+request.env['rack.attack.throttle_data'][name] # => { discriminator: d, count: n, period: p, limit: l, epoch_time: t, retry_after: r }
 ```
 
 ## Logging & Instrumentation
