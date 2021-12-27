@@ -88,7 +88,7 @@ module Rack
       end
 
       def throttled?(request)
-        use_offset = false
+        use_offset = true
         @throttles.any? do |_name, throttle|
           throttle.matched_by?(request, use_offset)
         end

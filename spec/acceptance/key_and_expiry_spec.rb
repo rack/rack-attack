@@ -33,6 +33,12 @@ describe "Behavior of key_and_expiry" do
         assert_equal "rack::attack:1000000:abc789", key
         assert_equal 1001 - 123, expiry
       end
+
+      Digest::MD5.stub :hexdigest, "123" do
+        key, expiry = Rack::Attack.cache.send(:key_and_expiry, unprefixed_key, period, true)
+        assert_equal "rack::attack:1000000:abc789", key
+        assert_equal 1001 - "123".hex, expiry
+      end
     end
   end
 

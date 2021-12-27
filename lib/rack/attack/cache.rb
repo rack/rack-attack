@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 module Rack
   class Attack
     class Cache
@@ -73,7 +75,7 @@ module Rack
       end
 
       def offset_for(unprefixed_key, period, use_offset)
-        0
+        use_offset ? Digest::MD5.hexdigest(unprefixed_key).hex % period : 0
       end
 
       def period_number_and_time_into(period, offset)
