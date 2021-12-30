@@ -23,8 +23,8 @@ module Rack
           end
       end
 
-      def count(unprefixed_key, period)
-        key, expires_in = key_and_expiry(unprefixed_key, period)
+      def count(unprefixed_key, period, use_offset = false)
+        key, expires_in = key_and_expiry(unprefixed_key, period, use_offset)
         do_count(key, expires_in)
       end
 
@@ -61,9 +61,9 @@ module Rack
 
       private
 
-      def key_and_expiry(unprefixed_key, period)
+      def key_and_expiry(unprefixed_key, period, use_offset = false)
         @last_epoch_time = Time.now.to_i
-        offset = offset_for(unprefixed_key, period)
+        offset = offset_for(unprefixed_key, period, use_offset)
         period_number, time_into_period = period_number_and_time_into(period, offset)
         period_remainder = period - time_into_period
         @last_retry_after_time = @last_epoch_time + period_remainder
@@ -72,7 +72,7 @@ module Rack
         ["#{prefix}:#{period_number}:#{unprefixed_key}", expires_in]
       end
 
-      def offset_for(unprefixed_key, period)
+      def offset_for(unprefixed_key, period, use_offset)
         0
       end
 

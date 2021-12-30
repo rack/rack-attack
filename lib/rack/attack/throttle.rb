@@ -22,13 +22,13 @@ module Rack
         Rack::Attack.cache
       end
 
-      def matched_by?(request)
+      def matched_by?(request, use_offset = false)
         discriminator = discriminator_for(request)
         return false unless discriminator
 
         current_period  = period_for(request)
         current_limit   = limit_for(request)
-        count           = cache.count("#{name}:#{discriminator}", current_period)
+        count           = cache.count("#{name}:#{discriminator}", current_period, use_offset)
 
         data = {
           discriminator: discriminator,
