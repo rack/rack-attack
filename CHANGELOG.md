@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.x.x] = 2022-xx-xx
+
+### Added
+
+- Added pseudo-random time offsets to throttling. If your application uses a custom throttle lambda to emit RateLimit-style headers, see the README for updated sample code.
+
 ## [6.5.0] - 2021-02-07
 
 ### Added
