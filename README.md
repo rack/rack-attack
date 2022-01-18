@@ -407,7 +407,7 @@ for more on how to do this.
 
 ### Test case isolation
 
-`Rack::Attack.reset!` can be used in your test suite to clear any Rack::Attack state between different test cases.
+`Rack::Attack.reset!` can be used in your test suite to clear any Rack::Attack state between different test cases. If you're testing blocklist and safelist configurations, consider using `Rack::Attack.clear_configuration` to unset the values for those lists between test cases.
 
 ## How it works
 
