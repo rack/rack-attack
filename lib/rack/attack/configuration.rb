@@ -5,9 +5,9 @@ require "ipaddr"
 module Rack
   class Attack
     class Configuration
-      DEFAULT_BLOCKLISTED_CALLBACK = lambda { |_req| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+      DEFAULT_BLOCKLISTED_RESPONDER = lambda { |_req| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
 
-      DEFAULT_THROTTLED_CALLBACK = lambda do |req|
+      DEFAULT_THROTTLED_RESPONDER = lambda do |req|
         if Rack::Attack.configuration.throttled_response_retry_after_header
           match_data = req.env['rack.attack.match_data']
           now = match_data[:epoch_time]
@@ -20,22 +20,22 @@ module Rack
       end
 
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_callback, :throttled_callback, :throttled_response_retry_after_header
+      attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 
-      def blocklisted_response=(callback)
+      def blocklisted_response=(responder)
         # TODO: uncomment in 7.0
         # warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
-        #   "Please use Rack::Attack.blocklisted_callback instead."
-        @blocklisted_response = callback
+        #   "Please use Rack::Attack.blocklisted_responder instead."
+        @blocklisted_response = responder
       end
 
-      def throttled_response=(callback)
+      def throttled_response=(responder)
         # TODO: uncomment in 7.0
         # warn "[DEPRECATION] Rack::Attack.throttled_response is deprecated. "\
-        #   "Please use Rack::Attack.throttled_callback instead"
-        @throttled_response = callback
+        #   "Please use Rack::Attack.throttled_responder instead"
+        @throttled_response = responder
       end
 
       def initialize
@@ -115,8 +115,8 @@ module Rack
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false
 
-        @blocklisted_callback = DEFAULT_BLOCKLISTED_CALLBACK
-        @throttled_callback = DEFAULT_THROTTLED_CALLBACK
+        @blocklisted_responder = DEFAULT_BLOCKLISTED_RESPONDER
+        @throttled_responder = DEFAULT_THROTTLED_RESPONDER
 
         # Deprecated: Keeping these for backwards compatibility
         @blocklisted_response = nil

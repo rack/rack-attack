@@ -14,7 +14,7 @@ describe "Customizing block responses" do
 
     assert_equal 403, last_response.status
 
-    Rack::Attack.blocklisted_callback = lambda do |_req|
+    Rack::Attack.blocklisted_responder = lambda do |_req|
       [503, {}, ["Blocked"]]
     end
 
@@ -28,7 +28,7 @@ describe "Customizing block responses" do
     matched = nil
     match_type = nil
 
-    Rack::Attack.blocklisted_callback = lambda do |req|
+    Rack::Attack.blocklisted_responder = lambda do |req|
       matched = req.env['rack.attack.matched']
       match_type = req.env['rack.attack.match_type']
 
