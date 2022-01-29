@@ -46,8 +46,10 @@ describe "Customizing block responses" do
 
     assert_equal 403, last_response.status
 
-    Rack::Attack.blocklisted_response = lambda do |_env|
-      [503, {}, ["Blocked"]]
+    silence_warnings do
+      Rack::Attack.blocklisted_response = lambda do |_env|
+        [503, {}, ["Blocked"]]
+      end
     end
 
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"

@@ -25,16 +25,14 @@ module Rack
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 
       def blocklisted_response=(responder)
-        # TODO: uncomment in 7.0
-        # warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
-        #   "Please use Rack::Attack.blocklisted_responder instead."
+        warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
+          "Please use Rack::Attack.blocklisted_responder instead."
         @blocklisted_response = responder
       end
 
       def throttled_response=(responder)
-        # TODO: uncomment in 7.0
-        # warn "[DEPRECATION] Rack::Attack.throttled_response is deprecated. "\
-        #   "Please use Rack::Attack.throttled_responder instead"
+        warn "[DEPRECATION] Rack::Attack.throttled_response is deprecated. "\
+          "Please use Rack::Attack.throttled_responder instead"
         @throttled_response = responder
       end
 
