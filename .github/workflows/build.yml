@@ -25,6 +25,7 @@ jobs:
         gemfile:
           - rack_2
           - rack_1
+          - rails_7_0
           - rails_6_1
           - rails_6_0
           - rails_5_2
@@ -59,6 +60,10 @@ jobs:
             ruby: 2.7.5
           - gemfile: rails_4_2
             ruby: 2.7.5
+          - gemfile: rails_7_0
+            ruby: 2.6.9
+          - gemfile: rails_7_0
+            ruby: 2.5.8
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
