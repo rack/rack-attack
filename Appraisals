@@ -18,8 +18,7 @@ appraise "rack_1" do
 end
 
 appraise 'rails_7-0' do
-  gem 'railties', '~> 7.0.0.a'
-  gem 'dalli', '~> 3.0'
+  gem 'railties', '~> 7.0.0'
 end
 
 appraise 'rails_6-1' do
