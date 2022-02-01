@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "A rack middleware for throttling and blocking abusive requests"
   s.email = "aaron@ktheory.com"
 
-  s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md)
+  s.files = Dir.glob("{bin,lib}/**/*") + %w(Rakefile README.md LICENSE)
   s.homepage = 'https://github.com/rack/rack-attack'
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/rack/rack-attack/issues",
-    "changelog_uri" => "https://github.com/rack/rack-attack/blob/master/CHANGELOG.md",
+    "changelog_uri" => "https://github.com/rack/rack-attack/blob/main/CHANGELOG.md",
     "source_code_uri" => "https://github.com/rack/rack-attack"
   }
 
@@ -46,5 +46,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  s.add_development_dependency 'railties', '>= 4.2', '< 6.2'
+  s.add_development_dependency 'railties', '>= 4.2', '< 7.1'
 end
