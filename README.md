@@ -409,6 +409,23 @@ for more on how to do this.
 
 `Rack::Attack.reset!` can be used in your test suite to clear any Rack::Attack state between different test cases. If you're testing blocklist and safelist configurations, consider using `Rack::Attack.clear_configuration` to unset the values for those lists between test cases.
 
+You might find that rack-attack sometimes allows more requests through than is expected. This can happen at the boundary between two throttling periods and is time dependent. The first set of requests are made right at the end of the first throttling period and have a small cache key expiry set on them, e.g. 0.01 seconds. The remaining requests are then made during the following period where the count has been reset. This can cause flaky tests.
+
+One possible workaround for this issue to is to ensure all requests are made during the same throttling period. We can sleep for a short duration based on [this line of code](https://github.com/rack/rack-attack/blob/c07fcdde434b6864c556baf0c5adf1e0edab854c/lib/rack/attack/cache.rb#L66) from the gem:
+
+```ruby
+before do
+  expires_in = (20 - (Time.now.to_i % 20) + 1).to_i
+  sleep 4 if expires_in < 3
+end
+
+it "throttles requests" do
+  # ...
+end
+```
+
+You'll need to change `20` to match the throttling period that you have set for your requests.
+
 ## How it works
 
 The Rack::Attack middleware compares each request against *safelists*, *blocklists*, *throttles*, and *tracks* that you define. There are none by default.
