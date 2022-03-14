@@ -17,6 +17,10 @@ appraise "rack_1" do
   gem "rack-test", ">= 0.6"
 end
 
+appraise 'rails_7-0' do
+  gem 'railties', '~> 7.0.0'
+end
+
 appraise 'rails_6-1' do
   gem 'railties', '~> 6.1.0'
 end

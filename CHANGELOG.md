@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file.
 
 - Added pseudo-random time offsets to throttling. If your application uses a custom throttle lambda to emit RateLimit-style headers, see the README for updated sample code.
 
+## [6.6.0] - 2022-01-29
+
+### Added
+
+- Ability to have access to the `request` object instead of only `env` (still can access env with `request.env`) when
+customizing throttle and blocklist responses with new methods `Rack::Attack.blocklisted_responder=` and
+`Rack::Attack.throttled_responder=` which yield the request to your lambda. ([@NikolayRys])
+
+### Deprecated
+
+- `Rack::Attack.blocklisted_response=`
+- `Rack::Attack.throttled_response=`
+
 ## [6.5.0] - 2021-02-07
 
 ### Added
@@ -257,6 +270,8 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+
+[6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
 [6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/
 [6.4.0]: https://github.com/rack/rack-attack/compare/v6.3.1...v6.4.0/
 [6.3.1]: https://github.com/rack/rack-attack/compare/v6.3.0...v6.3.1/
@@ -292,3 +307,4 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 
 [@fatkodima]: https://github.com/fatkodima
 [@rofreg]: https://github.com/rofreg
+[@NikolayRys]: https://github.com/NikolayRys

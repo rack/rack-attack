@@ -17,13 +17,15 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 3.0.2
-          - 2.7.4
-          - 2.6.8
+          - 3.1.0
+          - 3.0.3
+          - 2.7.5
+          - 2.6.9
           - 2.5.8
         gemfile:
           - rack_2
           - rack_1
+          - rails_7_0
           - rails_6_1
           - rails_6_0
           - rails_5_2
@@ -39,17 +41,29 @@ jobs:
           - active_support_redis_store
         exclude:
           - gemfile: rack_1
-            ruby: 3.0.2
+            ruby: 3.1.0
           - gemfile: rails_5_2
-            ruby: 3.0.2
+            ruby: 3.1.0
           - gemfile: rails_4_2
-            ruby: 3.0.2
+            ruby: 3.1.0
           - gemfile: dalli2
-            ruby: 3.0.2
+            ruby: 3.1.0
           - gemfile: rack_1
-            ruby: 2.7.4
+            ruby: 3.0.3
+          - gemfile: rails_5_2
+            ruby: 3.0.3
           - gemfile: rails_4_2
-            ruby: 2.7.4
+            ruby: 3.0.3
+          - gemfile: dalli2
+            ruby: 3.0.3
+          - gemfile: rack_1
+            ruby: 2.7.5
+          - gemfile: rails_4_2
+            ruby: 2.7.5
+          - gemfile: rails_7_0
+            ruby: 2.6.9
+          - gemfile: rails_7_0
+            ruby: 2.5.8
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:

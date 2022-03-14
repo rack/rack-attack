@@ -20,7 +20,7 @@ describe "Customizing throttled response" do
 
     assert_equal 429, last_response.status
 
-    Rack::Attack.throttled_callback = lambda do |_req|
+    Rack::Attack.throttled_responder = lambda do |_req|
       [503, {}, ["Throttled"]]
     end
 
@@ -36,7 +36,7 @@ describe "Customizing throttled response" do
     match_data = nil
     match_discriminator = nil
 
-    Rack::Attack.throttled_callback = lambda do |req|
+    Rack::Attack.throttled_responder = lambda do |req|
       matched = req.env['rack.attack.matched']
       match_type = req.env['rack.attack.match_type']
       match_data = req.env['rack.attack.match_data']
@@ -68,8 +68,10 @@ describe "Customizing throttled response" do
 
     assert_equal 429, last_response.status
 
-    Rack::Attack.throttled_response = lambda do |_req|
-      [503, {}, ["Throttled"]]
+    silence_warnings do
+      Rack::Attack.throttled_response = lambda do |_req|
+        [503, {}, ["Throttled"]]
+      end
     end
 
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
