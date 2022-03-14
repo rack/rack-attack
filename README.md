@@ -332,7 +332,7 @@ Rack::Attack.throttled_responder = lambda do |request|
   # DOSed the site. Rack::Attack returns 429 for throttling by default
   [ 503, {}, ["Server Error\n"]]
 end
-Rack::Attack.configuration.throttled_callback_is_offset_aware = true
+Rack::Attack.configuration.throttled_responder_is_offset_aware = true
 ```
 
 ### RateLimit headers for well-behaved clients
@@ -359,7 +359,7 @@ Rack::Attack.throttled_response = lambda do |env|
 
   [ 429, headers, ["Throttled\n"]]
 end
-Rack::Attack.configuration.throttled_callback_is_offset_aware = true
+Rack::Attack.configuration.throttled_responder_is_offset_aware = true
 ```
 
 For responses that exceeded a throttle limit, Rack::Attack annotates the env with match data:

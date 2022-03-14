@@ -20,7 +20,7 @@ module Rack
 
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
       attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header,
-                    :throttled_callback_is_offset_aware
+                    :throttled_responder_is_offset_aware
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 
@@ -87,8 +87,8 @@ module Rack
       end
 
       def throttled?(request)
-        use_offset = throttled_callback_is_offset_aware ||
-                     ( !throttled_response && throttled_callback == DEFAULT_THROTTLED_CALLBACK )
+        use_offset = throttled_responder_is_offset_aware ||
+                     ( !throttled_response && throttled_responder == DEFAULT_THROTTLED_RESPONDER )
         @throttles.any? do |_name, throttle|
           throttle.matched_by?(request, use_offset)
         end
@@ -117,7 +117,7 @@ module Rack
 
         @blocklisted_responder = DEFAULT_BLOCKLISTED_RESPONDER
         @throttled_responder = DEFAULT_THROTTLED_RESPONDER
-        @throttled_callback_is_offset_aware = false
+        @throttled_responder_is_offset_aware = false
 
         # Deprecated: Keeping these for backwards compatibility
         @blocklisted_response = nil
