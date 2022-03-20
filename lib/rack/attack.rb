@@ -32,14 +32,14 @@ module Rack
 
     THREAD_CALLING_KEY = 'rack.attack.calling'
     DEFAULT_FAILURE_COOLDOWN = 60
-    DEFAULT_IGNORED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
+    DEFAULT_ALLOWED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
 
     class << self
       attr_accessor :enabled,
                     :notifier,
                     :throttle_discriminator_normalizer,
                     :error_handler,
-                    :ignored_errors,
+                    :allowed_errors,
                     :failure_cooldown
 
       attr_reader :configuration
@@ -76,8 +76,8 @@ module Rack
         Time.now < @last_failure_at + failure_cooldown
       end
 
-      def ignored_error?(error)
-        ignored_errors&.any? do |ignored_error|
+      def allow_error?(error)
+        allowed_errors&.any? do |ignored_error|
           case ignored_error
           when String then error.class.ancestors.any? {|a| a.name == ignored_error }
           else error.is_a?(ignored_error)
@@ -129,7 +129,7 @@ module Rack
 
     # Set class defaults
     self.failure_cooldown = DEFAULT_FAILURE_COOLDOWN
-    self.ignored_errors = DEFAULT_IGNORED_ERRORS.dup
+    self.allowed_errors = DEFAULT_ALLOWED_ERRORS.dup
 
     # Set instance defaults
     @enabled = true
@@ -214,7 +214,7 @@ module Rack
       handler = self.class.error_handler
       if handler
         error_handler_result(handler, error, request, env)
-      elsif self.class.ignored_error?(error)
+      elsif self.class.allow_error?(error)
         :allow
       end
     end

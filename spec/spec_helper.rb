@@ -39,7 +39,7 @@ class MiniTest::Spec
     Rack::Attack.instance_variable_set(:@last_failure_at, nil)
     Rack::Attack.error_handler = nil
     Rack::Attack.failure_cooldown = Rack::Attack::DEFAULT_FAILURE_COOLDOWN
-    Rack::Attack.ignored_errors = Rack::Attack::DEFAULT_IGNORED_ERRORS.dup
+    Rack::Attack.allowed_errors = Rack::Attack::DEFAULT_ALLOWED_ERRORS.dup
   end
 
   def app

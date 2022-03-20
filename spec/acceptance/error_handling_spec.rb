@@ -16,22 +16,22 @@ describe "error handling" do
     end
   end
 
-  describe '.ignored_errors' do
+  describe '.allowed_errors' do
     before do
       allow(store).to receive(:read).and_raise(RuntimeError)
     end
 
     it 'has default value' do
-      assert_equal Rack::Attack.ignored_errors, %w[Dalli::DalliError Redis::BaseError]
+      assert_equal Rack::Attack.allowed_errors, %w[Dalli::DalliError Redis::BaseError]
     end
 
     it 'can get and set value' do
-      Rack::Attack.ignored_errors = %w[Foobar]
-      assert_equal Rack::Attack.ignored_errors, %w[Foobar]
+      Rack::Attack.allowed_errors = %w[Foobar]
+      assert_equal Rack::Attack.allowed_errors, %w[Foobar]
     end
 
     it 'can ignore error as Class' do
-      Rack::Attack.ignored_errors = [RuntimeError]
+      Rack::Attack.allowed_errors = [RuntimeError]
 
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
@@ -39,7 +39,7 @@ describe "error handling" do
     end
 
     it 'can ignore error ancestor as Class' do
-      Rack::Attack.ignored_errors = [StandardError]
+      Rack::Attack.allowed_errors = [StandardError]
 
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
@@ -47,7 +47,7 @@ describe "error handling" do
     end
 
     it 'can ignore error as String' do
-      Rack::Attack.ignored_errors = %w[RuntimeError]
+      Rack::Attack.allowed_errors = %w[RuntimeError]
 
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
@@ -55,7 +55,7 @@ describe "error handling" do
     end
 
     it 'can ignore error error ancestor as String' do
-      Rack::Attack.ignored_errors = %w[StandardError]
+      Rack::Attack.allowed_errors = %w[StandardError]
 
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
@@ -69,25 +69,25 @@ describe "error handling" do
     end
   end
 
-  describe '.ignored_errors?' do
+  describe '.allowed_errors?' do
 
     it 'can match String or Class' do
-      Rack::Attack.ignored_errors = ['ArgumentError', RuntimeError]
-      assert Rack::Attack.ignored_error?(ArgumentError.new)
-      assert Rack::Attack.ignored_error?(RuntimeError.new)
-      refute Rack::Attack.ignored_error?(StandardError.new)
+      Rack::Attack.allowed_errors = ['ArgumentError', RuntimeError]
+      assert Rack::Attack.allow_error?(ArgumentError.new)
+      assert Rack::Attack.allow_error?(RuntimeError.new)
+      refute Rack::Attack.allow_error?(StandardError.new)
     end
 
     it 'can match Class ancestors' do
-      Rack::Attack.ignored_errors = [StandardError]
-      assert Rack::Attack.ignored_error?(ArgumentError.new)
-      refute Rack::Attack.ignored_error?(Exception.new)
+      Rack::Attack.allowed_errors = [StandardError]
+      assert Rack::Attack.allow_error?(ArgumentError.new)
+      refute Rack::Attack.allow_error?(Exception.new)
     end
 
     it 'can match String ancestors' do
-      Rack::Attack.ignored_errors = ['StandardError']
-      assert Rack::Attack.ignored_error?(ArgumentError.new)
-      refute Rack::Attack.ignored_error?(Exception.new)
+      Rack::Attack.allowed_errors = ['StandardError']
+      assert Rack::Attack.allow_error?(ArgumentError.new)
+      refute Rack::Attack.allow_error?(Exception.new)
     end
   end
 
@@ -206,7 +206,7 @@ describe "error handling" do
       let(:error_handler) { :throttle }
 
       before do
-        Rack::Attack.ignored_errors = [ArgumentError]
+        Rack::Attack.allowed_errors = [ArgumentError]
       end
 
       it 'calls handler despite ignored error' do

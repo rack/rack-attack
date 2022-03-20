@@ -413,10 +413,10 @@ This section explains how to configure your application and handle errors in ord
 
 By default, Rack::Attack "does the right thing" when errors occur:
 
-- If the error is a Redis or Dalli cache error, Rack::Attack ignores the error and allow the request.
+- If the error is a Redis or Dalli cache error, Rack::Attack allows the error and allow the request.
 - Otherwise, Rack::Attack re-raises the error. The request will fail.
 
-All errors will trigger a failure cooldown (see below), regardless of whether they are ignored or raised.
+All errors will trigger a failure cooldown (see below), regardless of whether they are allowed or raised.
 
 ### Expose Rails cache errors to Rack::Attack
 
@@ -463,7 +463,7 @@ To use different timeout values specific to Rack::Attack, you may set a
 
 When any error occurs, Rack::Attack becomes disabled for a 60 seconds "cooldown" period.
 This prevents a cache outage from adding timeout latency on each Rack::Attack request.
-The failure cooldown is triggered by all errors, regardless of whether they are ignored or handled.
+All errors trigger the failure cooldown, regardless of whether they are allowed or handled.
 You can configure the cooldown period as follows:
 
 ```ruby
@@ -481,22 +481,22 @@ Rack::Attack.failure_cooldown = nil
 For most use cases, it is not necessary to re-configure Rack::Attack's default error handling.
 However, there are several ways you may do so.
 
-First, you may specify the list of errors to ignore as an array of Class and/or String values.
+First, you may specify the list of errors to allow as an array of Class and/or String values.
 
 ```ruby
 # in initializers/rack_attack.rb
-Rack::Attack.ignored_errors += [MyErrorClass, 'MyOtherErrorClass']
+Rack::Attack.allowed_errors += [MyErrorClass, 'MyOtherErrorClass']
 ```
 
 Alternatively, you may define a custom error handler as a Proc. The error handler will receive all errors,
-regardless of whether they are on the ignore list. Your handler should return either `:allow`, `:block`,
+regardless of whether they are on the allow list. Your handler should return either `:allow`, `:block`,
 or `:throttle`, or else re-raise the error; other returned values will allow the request.
 
 ```ruby
-# Set a custom error handler which blocks ignored errors
+# Set a custom error handler which blocks allowed errors
 # and raises all others
 Rack::Attack.error_handler = -> (error) do
-  if Rack::Attack.ignored_error?(error)
+  if Rack::Attack.allow_error?(error)
     Rails.logger.warn("Blocking error: #{error}")
     :block
   else

@@ -15,7 +15,7 @@ describe ".failure_cooldown" do
 
   before do
     Rack::Attack.cache.store = store
-    Rack::Attack.ignored_errors << ignored_error
+    Rack::Attack.allowed_errors << ignored_error
 
     Rack::Attack.blocklist("fail2ban pentesters") do |request|
       Rack::Attack::Fail2Ban.filter(request.ip, maxretry: 0, bantime: 600, findtime: 30) { true }
