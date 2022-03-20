@@ -37,6 +37,11 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 - [Customizing responses](#customizing-responses)
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
 - [Logging & Instrumentation](#logging--instrumentation)
+- [Fault Tolerance & Error Handling](#fault-tolerance--error-handling)
+  - [Expose Rails cache errors to Rack::Attack](#expose-rails-cache-errors-to-rackattack)
+  - [Configure cache timeout](#configure-cache-timeout)
+  - [Failure cooldown](#failure-cooldown)
+  - [Custom error handling](#custom-error-handling)
 - [Testing](#testing)
 - [How it works](#how-it-works)
   - [About Tracks](#about-tracks)
@@ -393,6 +398,104 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
 
   # Your code here
 end
+```
+
+## Fault Tolerance & Error Handling
+
+Rack::Attack has a mission-critical dependency on your [cache store](#cache-store-configuration).
+If the cache system experiences an outage, it may cause severe latency within Rack::Attack
+and lead to an overall application outage.
+
+This section explains how to configure your application and handle errors in order to mitigate issues.
+
+### Expose Rails cache errors to Rack::Attack
+
+If using Rails cache, by default, Rails cache will suppress any errors raised by the underlying cache store.
+You'll need to expose these errors to Rack::Attack with a custom error handler follows:
+
+```ruby
+# in your Rails config
+config.cache_store = :redis_cache_store,
+                     { # ...
+                       error_handler: -> (method:, returning:, exception:) do
+                         raise exception if Rack::Attack.calling?
+                       end }
+```
+
+By default, if a Redis or Dalli cache error occurs, Rack::Attack will ignore the error and allow the request.
+
+### Configure cache timeout
+
+In your application config, it is recommended to set your cache timeout to 0.1 seconds or lower.
+Please refer to the [Rails Guide](https://guides.rubyonrails.org/caching_with_rails.html).
+
+```ruby
+# Set 100 millisecond timeout on Redis
+config.cache_store = :redis_cache_store,
+                     { # ...
+                       connect_timeout: 0.1,
+                       read_timeout: 0.1,
+                       write_timeout: 0.1 }
+```
+
+To use different timeout values specific to Rack::Attack, you may set a
+[Rack::Attack-specific cache configuration](#cache-store-configuration).
+
+### Failure cooldown
+
+When any error occurs, Rack::Attack becomes disabled for a 60 seconds "cooldown" period.
+This prevents a cache outage from adding timeout latency on each Rack::Attack request.
+You can configure the cooldown period as follows:
+
+```ruby
+# in initializers/rack_attack.rb
+
+# Disable Rack::Attack for 5 minutes if any cache failure occurs
+Rack::Attack.failure_cooldown = 300
+
+# Do not use failure cooldown
+Rack::Attack.failure_cooldown = nil
+```
+
+### Custom error handling
+
+By default, Rack::Attack will ignore any Redis or Dalli cache errors, and raise any other errors it receives.
+Note that ignored errors will still trigger the failure cooldown. Ignored errors may be specified as Class
+or String values.
+
+```ruby
+# in initializers/rack_attack.rb
+Rack::Attack.ignored_errors += [MyErrorClass, 'MyOtherErrorClass']
+```
+
+Alternatively, you may define a custom error handler as a Proc. The error handler will receive all errors,
+regardless of whether they are on the ignore list. Your handler should return either `:allow`, `:block`,
+or `:throttle`, or else re-raise the error; other returned values will allow the request.
+
+```ruby
+# Set a custom error handler which blocks ignored errors
+# and raises all others
+Rack::Attack.error_handler = -> (error) do
+  if Rack::Attack.ignored_error?(error)
+    Rails.logger.warn("Blocking error: #{error}")
+    :block
+  else
+    raise(error)
+  end
+end
+```
+
+Lastly, you can define the error handlers as a Symbol shortcut:
+
+```ruby
+# Handle all errors with block response
+Rack::Attack.error_handler = :block
+
+# Handle all errors with throttle response
+Rack::Attack.error_handler = :throttle
+
+# Handle all errors by allowing the request
+Rack::Attack.error_handler = :allow
 ```
 
 ## Testing

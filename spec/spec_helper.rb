@@ -4,6 +4,7 @@ require "bundler/setup"
 
 require "minitest/autorun"
 require "minitest/pride"
+require "rspec/mocks/minitest_integration"
 require "rack/test"
 require "rails"
 
@@ -35,6 +36,10 @@ class MiniTest::Spec
   after do
     Rack::Attack.clear_configuration
     Rack::Attack.instance_variable_set(:@cache, nil)
+    Rack::Attack.instance_variable_set(:@last_failure_at, nil)
+    Rack::Attack.error_handler = nil
+    Rack::Attack.failure_cooldown = Rack::Attack::DEFAULT_FAILURE_COOLDOWN
+    Rack::Attack.ignored_errors = Rack::Attack::DEFAULT_IGNORED_ERRORS.dup
   end
 
   def app

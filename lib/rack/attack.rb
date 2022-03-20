@@ -30,8 +30,18 @@ module Rack
     autoload :Fail2Ban,             'rack/attack/fail2ban'
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
+    THREAD_CALLING_KEY = 'rack.attack.calling'
+    DEFAULT_FAILURE_COOLDOWN = 60
+    DEFAULT_IGNORED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
+
     class << self
-      attr_accessor :enabled, :notifier, :throttle_discriminator_normalizer
+      attr_accessor :enabled,
+                    :notifier,
+                    :throttle_discriminator_normalizer,
+                    :error_handler,
+                    :ignored_errors,
+                    :failure_cooldown
+
       attr_reader :configuration
 
       def instrument(request)
@@ -55,6 +65,39 @@ module Rack
 
       def reset!
         cache.reset!
+      end
+
+      def failed!
+        @last_failure_at = Time.now
+      end
+
+      def failure_cooldown?
+        return unless @last_failure_at && failure_cooldown
+        Time.now < @last_failure_at + failure_cooldown
+      end
+
+      def ignored_error?(error)
+        ignored_errors&.any? do |ignored_error|
+          case ignored_error
+          when String then error.class.ancestors.any? {|a| a.name == ignored_error }
+          else error.is_a?(ignored_error)
+          end
+        end
+      end
+
+      def calling?
+        !!thread_store[THREAD_CALLING_KEY]
+      end
+
+      def with_calling
+        thread_store[THREAD_CALLING_KEY] = true
+        yield
+      ensure
+        thread_store[THREAD_CALLING_KEY] = nil
+      end
+
+      def thread_store
+        defined?(RequestStore) ? RequestStore.store : Thread.current
       end
 
       extend Forwardable
@@ -84,7 +127,11 @@ module Rack
       )
     end
 
-    # Set defaults
+    # Set class defaults
+    self.failure_cooldown = DEFAULT_FAILURE_COOLDOWN
+    self.ignored_errors = DEFAULT_IGNORED_ERRORS.dup
+
+    # Set instance defaults
     @enabled = true
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
     @throttle_discriminator_normalizer = lambda do |discriminator|
@@ -100,32 +147,87 @@ module Rack
     end
 
     def call(env)
-      return @app.call(env) if !self.class.enabled || env["rack.attack.called"]
+      return @app.call(env) if !self.class.enabled || env["rack.attack.called"] || self.class.failure_cooldown?
 
-      env["rack.attack.called"] = true
+      env['rack.attack.called'] = true
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
+      result = :allow
 
+      self.class.with_calling do
+        result = get_result(request)
+      rescue StandardError => error
+        return do_error_response(error, request, env)
+      end
+
+      do_response(result, request, env)
+    end
+
+    private
+
+    def get_result(request)
       if configuration.safelisted?(request)
-        @app.call(env)
+        :allow
       elsif configuration.blocklisted?(request)
-        # Deprecated: Keeping blocklisted_response for backwards compatibility
-        if configuration.blocklisted_response
-          configuration.blocklisted_response.call(env)
-        else
-          configuration.blocklisted_responder.call(request)
-        end
+        :block
       elsif configuration.throttled?(request)
-        # Deprecated: Keeping throttled_response for backwards compatibility
-        if configuration.throttled_response
-          configuration.throttled_response.call(env)
-        else
-          configuration.throttled_responder.call(request)
-        end
+        :throttle
       else
         configuration.tracked?(request)
-        @app.call(env)
+        :allow
       end
+    end
+
+    def do_response(result, request, env)
+      case result
+      when :block then do_block_response(request, env)
+      when :throttle then do_throttle_response(request, env)
+      else @app.call(env)
+      end
+    end
+
+    def do_block_response(request, env)
+      # Deprecated: Keeping blocklisted_response for backwards compatibility
+      if configuration.blocklisted_response
+        configuration.blocklisted_response.call(env)
+      else
+        configuration.blocklisted_responder.call(request)
+      end
+    end
+
+    def do_throttle_response(request, env)
+      # Deprecated: Keeping throttled_response for backwards compatibility
+      if configuration.throttled_response
+        configuration.throttled_response.call(env)
+      else
+        configuration.throttled_responder.call(request)
+      end
+    end
+
+    def do_error_response(error, request, env)
+      self.class.failed!
+      result = error_result(error, request, env)
+      result ? do_response(result, request, env) : raise(error)
+    end
+
+    def error_result(error, request, env)
+      handler = self.class.error_handler
+      if handler
+        error_handler_result(handler, error, request, env)
+      elsif self.class.ignored_error?(error)
+        :allow
+      end
+    end
+
+    def error_handler_result(handler, error, request, env)
+      result = handler
+
+      if handler.is_a?(Proc)
+        args = [error, request, env].first(handler.arity)
+        result = handler.call(*args) # may raise error
+      end
+
+      %i[block throttle].include?(result) ? result : :allow
     end
   end
 end
