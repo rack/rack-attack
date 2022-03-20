@@ -38,10 +38,10 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
 - [Logging & Instrumentation](#logging--instrumentation)
 - [Fault Tolerance & Error Handling](#fault-tolerance--error-handling)
+  - [Built-in error handling](#built-in-error-handling)
   - [Expose Rails cache errors to Rack::Attack](#expose-rails-cache-errors-to-rackattack)
   - [Configure cache timeout](#configure-cache-timeout)
   - [Failure cooldown](#failure-cooldown)
-  - [Built-in error handling](#built-in-error-handling)
   - [Custom error handling](#custom-error-handling)
 - [Testing](#testing)
 - [How it works](#how-it-works)
@@ -409,10 +409,24 @@ and lead to an overall application outage.
 
 This section explains how to configure your application and handle errors in order to mitigate issues.
 
+### Built-in error handling
+
+By default, Rack::Attack "does the right thing" when errors occur:
+
+- If the error is a Redis or Dalli cache error, Rack::Attack ignores the error and allow the request.
+- Otherwise, Rack::Attack re-raises the error. The request will fail.
+
+All errors will trigger a failure cooldown (see below), regardless of whether they are ignored or raised.
+
 ### Expose Rails cache errors to Rack::Attack
 
-If using Rails cache, by default, Rails cache will suppress any errors raised by the underlying cache store.
-You'll need to expose these errors to Rack::Attack with a custom error handler follows:
+If you are using Rack::Attack with Rails cache, by default, Rails cache will **suppress**
+any such errors, and Rack::Attack will not be able to handle them properly as per above.
+This can be dangerous: if your cache is timing out due to high request volume,
+for example, Rack::Attack will continue to blindly send requests to your cache and worsen the problem.
+
+When using Rails cache with `:redis_cache_store`, you'll need to expose errors to Rack::Attack
+with a custom error handler as follows:
 
 ```ruby
 # in your Rails config
@@ -420,10 +434,12 @@ config.cache_store = :redis_cache_store,
                      { # ...
                        error_handler: -> (method:, returning:, exception:) do
                          raise exception if Rack::Attack.calling?
-                       end }
+                       end
+                     }
 ```
 
-By default, if a Redis or Dalli cache error occurs, Rack::Attack will ignore the error and allow the request.
+Rails `:mem_cache_store` and `:dalli_store` suppress all Dalli errors. The recommended
+workaround is to set a [Rack::Attack-specific cache configuration](#cache-store-configuration).
 
 ### Configure cache timeout
 
@@ -436,7 +452,8 @@ config.cache_store = :redis_cache_store,
                      { # ...
                        connect_timeout: 0.1,
                        read_timeout: 0.1,
-                       write_timeout: 0.1 }
+                       write_timeout: 0.1
+                     }
 ```
 
 To use different timeout values specific to Rack::Attack, you may set a
@@ -446,6 +463,7 @@ To use different timeout values specific to Rack::Attack, you may set a
 
 When any error occurs, Rack::Attack becomes disabled for a 60 seconds "cooldown" period.
 This prevents a cache outage from adding timeout latency on each Rack::Attack request.
+The failure cooldown is triggered by all errors, regardless of whether they are ignored or handled.
 You can configure the cooldown period as follows:
 
 ```ruby
@@ -458,21 +476,12 @@ Rack::Attack.failure_cooldown = 300
 Rack::Attack.failure_cooldown = nil
 ```
 
-### Built-in error handling
-
-By default, Rack::Attack "does the right thing" when internal errors occur:
-
-- If the error is a Redis or Dalli cache error, ignore the error and allow the request.
-- Otherwise, raise the error. The request will fail.
-
-All errors will trigger the failure cooldown, regardless of whether they are ignored or raised.
-
 ### Custom error handling
 
 For most use cases, it is not necessary to re-configure Rack::Attack's default error handling.
 However, there are several ways you may do so.
 
-First, you may specify the list of errors to ignore as an array of Class and/or String values:
+First, you may specify the list of errors to ignore as an array of Class and/or String values.
 
 ```ruby
 # in initializers/rack_attack.rb
