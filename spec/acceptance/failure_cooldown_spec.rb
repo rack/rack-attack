@@ -127,3 +127,34 @@ describe ".failure_cooldown" do
     end
   end
 end
+
+describe '.failure_cooldown?' do
+
+  it 'returns false if no failure' do
+    refute Rack::Attack.failure_cooldown?
+  end
+
+  it 'returns false if failure_cooldown is nil' do
+    Rack::Attack.failure_cooldown = nil
+    refute Rack::Attack.failure_cooldown?
+  end
+
+  it 'returns true if still within cooldown period' do
+    Rack::Attack.instance_variable_set(:@last_failure_at, Time.now - 30)
+    assert Rack::Attack.failure_cooldown?
+  end
+
+  it 'returns false if cooldown period elapsed' do
+    Rack::Attack.instance_variable_set(:@last_failure_at, Time.now - 61)
+    refute Rack::Attack.failure_cooldown?
+  end
+end
+
+describe '.failed!' do
+
+  it 'sets last failure timestamp' do
+    assert_nil Rack::Attack.instance_variable_get(:@last_failure_at)
+    Rack::Attack.failed!
+    refute_nil Rack::Attack.instance_variable_get(:@last_failure_at)
+  end
+end

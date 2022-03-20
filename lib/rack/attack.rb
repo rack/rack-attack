@@ -72,7 +72,7 @@ module Rack
       end
 
       def failure_cooldown?
-        return unless @last_failure_at && failure_cooldown
+        return false unless @last_failure_at && failure_cooldown
         Time.now < @last_failure_at + failure_cooldown
       end
 
