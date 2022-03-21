@@ -32,9 +32,9 @@ module Rack
 
         def increment(key, amount, options = {})
           rescuing do
-            pipelined do
-              incrby(key, amount)
-              expire(key, options[:expires_in]) if options[:expires_in]
+            pipelined do |redis|
+              redis.incrby(key, amount)
+              redis.expire(key, options[:expires_in]) if options[:expires_in]
             end.first
           end
         end

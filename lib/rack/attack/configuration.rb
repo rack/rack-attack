@@ -5,16 +5,16 @@ require "ipaddr"
 module Rack
   class Attack
     class Configuration
-      DEFAULT_BLOCKLISTED_RESPONDER = lambda { |_req| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+      DEFAULT_BLOCKLISTED_RESPONDER = lambda { |_req| [403, { 'content-type' => 'text/plain' }, ["Forbidden\n"]] }
 
       DEFAULT_THROTTLED_RESPONDER = lambda do |req|
         if Rack::Attack.configuration.throttled_response_retry_after_header
           match_data = req.env['rack.attack.match_data']
           retry_after = match_data[:retry_after] - match_data[:epoch_time]
 
-          [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+          [429, { 'content-type' => 'text/plain', 'retry-after' => retry_after.to_s }, ["Retry later\n"]]
         else
-          [429, { 'Content-Type' => 'text/plain' }, ["Retry later\n"]]
+          [429, { 'content-type' => 'text/plain' }, ["Retry later\n"]]
         end
       end
 

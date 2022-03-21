@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/rack/rack-attack/issues",
-    "changelog_uri" => "https://github.com/rack/rack-attack/blob/master/CHANGELOG.md",
+    "changelog_uri" => "https://github.com/rack/rack-attack/blob/main/CHANGELOG.md",
     "source_code_uri" => "https://github.com/rack/rack-attack"
   }
 
