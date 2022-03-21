@@ -348,7 +348,7 @@ Rack::Attack.throttled_response_retry_after_header = true
 If you prefer to emit one of the RateLimit-style standards, you might write your own lambda like this (this example uses the [IETF WG standard](https://github.com/ietf-wg-httpapi/ratelimit-headers)):
 
 ```ruby
-Rack::Attack.throttled_response = lambda do |request|
+Rack::Attack.throttled_responder = lambda do |request|
   match_data = request.env['rack.attack.match_data']
 
   headers = {
