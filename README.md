@@ -350,11 +350,12 @@ If you prefer to emit one of the RateLimit-style standards, you might write your
 ```ruby
 Rack::Attack.throttled_responder = lambda do |request|
   match_data = request.env['rack.attack.match_data']
+  now = match_data[:epoch_time]
 
   headers = {
     'RateLimit-Limit' => match_data[:limit].to_s,
     'RateLimit-Remaining' => '0',
-    'RateLimit-Reset' => (match_data[:retry_after] - match_data[:epoch_time]).to_s
+    'RateLimit-Reset' => (match_data[:retry_after] - now).to_s
   }
 
   [ 429, headers, ["Throttled\n"]]
