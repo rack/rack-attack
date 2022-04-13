@@ -19,14 +19,14 @@ describe "Customizing throttled response" do
 
   it "does not use offset if responder is not default and aware is not set" do
     assert_equal false, Rack::Attack.configuration.throttled_responder_is_offset_aware
-    Rack::Attack.throttled_responder = lambda do |req|
+    Rack::Attack.throttled_responder = lambda do |_req|
       [429, {}, ["Throttled"]]
     end
     assert_equal 100, count_429_responses
   end
 
   it "uses offset if responder is not default and aware is set" do
-    Rack::Attack.throttled_responder = lambda do |req|
+    Rack::Attack.throttled_responder = lambda do |_req|
       [429, {}, ["Throttled"]]
     end
     Rack::Attack.configuration.throttled_responder_is_offset_aware = true

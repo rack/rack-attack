@@ -88,7 +88,7 @@ module Rack
 
       def throttled?(request)
         use_offset = throttled_responder_is_offset_aware ||
-                     ( !throttled_response && throttled_responder == DEFAULT_THROTTLED_RESPONDER )
+                     (!throttled_response && throttled_responder == DEFAULT_THROTTLED_RESPONDER)
         @throttles.any? do |_name, throttle|
           throttle.matched_by?(request, use_offset)
         end
