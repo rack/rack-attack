@@ -69,7 +69,7 @@ module Rack
         period_number, time_into_period = period_number_and_time_into(period, offset)
         period_remainder = period - time_into_period
         @last_retry_after_time = @last_epoch_time + period_remainder
-        # Add 1 to expires_in to avoid timing error: https://git.io/i1PHXA
+        # Add 1 to expires_in to avoid timing error: https://github.com/rack/rack-attack/pull/85
         expires_in = period_remainder + 1
         ["#{prefix}:#{period_number}:#{unprefixed_key}", expires_in]
       end
