@@ -73,6 +73,7 @@ module Rack
 
       def failure_cooldown?
         return false unless @last_failure_at && failure_cooldown
+
         Time.now < @last_failure_at + failure_cooldown
       end
 
@@ -149,18 +150,20 @@ module Rack
     def call(env)
       return @app.call(env) if !self.class.enabled || env["rack.attack.called"] || self.class.failure_cooldown?
 
-      env['rack.attack.called'] = true
+      env["rack.attack.called"] = true
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
       result = :allow
 
       self.class.with_calling do
-        result = get_result(request)
-      rescue StandardError => error
-        return do_error_response(error, request, env)
+        begin
+          result = get_result(request)
+        rescue StandardError => error
+          return do_error_response(error, request)
+        end
       end
 
-      do_response(result, request, env)
+      do_response(result, request)
     end
 
     private
@@ -178,52 +181,52 @@ module Rack
       end
     end
 
-    def do_response(result, request, env)
+    def do_response(result, request)
       case result
-      when :block then do_block_response(request, env)
-      when :throttle then do_throttle_response(request, env)
-      else @app.call(env)
+      when :block then do_block_response(request)
+      when :throttle then do_throttle_response(request)
+      else @app.call(request.env)
       end
     end
 
-    def do_block_response(request, env)
+    def do_block_response(request)
       # Deprecated: Keeping blocklisted_response for backwards compatibility
       if configuration.blocklisted_response
-        configuration.blocklisted_response.call(env)
+        configuration.blocklisted_response.call(request.env)
       else
         configuration.blocklisted_responder.call(request)
       end
     end
 
-    def do_throttle_response(request, env)
+    def do_throttle_response(request)
       # Deprecated: Keeping throttled_response for backwards compatibility
       if configuration.throttled_response
-        configuration.throttled_response.call(env)
+        configuration.throttled_response.call(request.env)
       else
         configuration.throttled_responder.call(request)
       end
     end
 
-    def do_error_response(error, request, env)
+    def do_error_response(error, request)
       self.class.failed!
-      result = error_result(error, request, env)
-      result ? do_response(result, request, env) : raise(error)
+      result = error_result(error, request)
+      result ? do_response(result, request) : raise(error)
     end
 
-    def error_result(error, request, env)
+    def error_result(error, request)
       handler = self.class.error_handler
       if handler
-        error_handler_result(handler, error, request, env)
+        error_handler_result(handler, error, request)
       elsif self.class.allow_error?(error)
         :allow
       end
     end
 
-    def error_handler_result(handler, error, request, env)
+    def error_handler_result(handler, error, request)
       result = handler
 
       if handler.is_a?(Proc)
-        args = [error, request, env].first(handler.arity)
+        args = [error, request].first(handler.arity)
         result = handler.call(*args) # may raise error
       end
 

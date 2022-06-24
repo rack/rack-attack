@@ -407,14 +407,17 @@ Rack::Attack has a mission-critical dependency on your [cache store](#cache-stor
 If the cache system experiences an outage, it may cause severe latency within Rack::Attack
 and lead to an overall application outage.
 
-This section explains how to configure your application and handle errors in order to mitigate issues.
+Although Rack::Attack is designed to be "fault-tolerant by default", depending on your application
+setup, additional configuration may be required. Please **read this section carefully** to understand
+how to best protect your application.
 
 ### Built-in error handling
 
-By default, Rack::Attack "does the right thing" when errors occur:
+As a Rack middleware component, Rack::Attack wraps your application's request handling endpoint.
+When an error occurs within either within Rack::Attack **or** within your application, by default:
 
-- If the error is a Redis or Dalli cache error, Rack::Attack allows the error and allow the request.
-- Otherwise, Rack::Attack re-raises the error. The request will fail.
+- If the error is a Redis or Dalli cache error, Rack::Attack logs the error then allows the request.
+- Otherwise, Rack::Attack raises the error. The request will fail.
 
 All errors will trigger a failure cooldown (see below), regardless of whether they are allowed or raised.
 
@@ -425,20 +428,22 @@ any such errors, and Rack::Attack will not be able to handle them properly as pe
 This can be dangerous: if your cache is timing out due to high request volume,
 for example, Rack::Attack will continue to blindly send requests to your cache and worsen the problem.
 
-When using Rails cache with `:redis_cache_store`, you'll need to expose errors to Rack::Attack
+To mitigate this:
+
+* When using Rails cache with `:redis_cache_store`, you'll need to expose errors to Rack::Attack
 with a custom error handler as follows:
 
-```ruby
-# in your Rails config
-config.cache_store = :redis_cache_store,
-                     { # ...
-                       error_handler: -> (method:, returning:, exception:) do
-                         raise exception if Rack::Attack.calling?
-                       end
-                     }
-```
+    ```ruby
+    # in your Rails config
+    config.cache_store = :redis_cache_store,
+                         { # ...
+                           error_handler: -> (method:, returning:, exception:) do
+                             raise exception if Rack::Attack.calling?
+                           end
+                         }
+    ```
 
-Rails `:mem_cache_store` and `:dalli_store` suppress all Dalli errors. The recommended
+* Rails `:mem_cache_store` and `:dalli_store` suppress all Dalli errors. The recommended
 workaround is to set a [Rack::Attack-specific cache configuration](#cache-store-configuration).
 
 ### Configure cache timeout
@@ -495,9 +500,9 @@ or `:throttle`, or else re-raise the error; other returned values will allow the
 ```ruby
 # Set a custom error handler which blocks allowed errors
 # and raises all others
-Rack::Attack.error_handler = -> (error) do
+Rack::Attack.error_handler = -> (error, request) do
   if Rack::Attack.allow_error?(error)
-    Rails.logger.warn("Blocking error: #{error}")
+    Rails.logger.warn("Blocking error: #{error.class.name} from IP #{request.ip}")
     :block
   else
     raise(error)
@@ -520,9 +525,9 @@ Rack::Attack.error_handler = :allow
 
 ## Testing
 
-A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will
-need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
-for more on how to do this.
+When developing and testing apps using Rack::Attack, if you are using throttling in particular,
+you must enable the cache in your development environment. See
+[Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html) for how to do this.
 
 ### Disabling
 
