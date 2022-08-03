@@ -23,6 +23,7 @@ jobs:
           - 2.6.10
           - 2.5.8
         gemfile:
+          - rack_3
           - rack_2
           - rack_1
           - rails_7_0
