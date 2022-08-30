@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.6.1] - 2022-04-14
+
+### Fixed
+
+- Fixes deprecation warning in redis 4.6+ ([@ixti])
+
 ## [6.6.0] - 2022-01-29
 
 ### Added
@@ -265,6 +271,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Extract mandatory options to constants
 
 
+[6.6.1]: https://github.com/rack/rack-attack/compare/v6.6.0...v6.6.1/
 [6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
 [6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/
 [6.4.0]: https://github.com/rack/rack-attack/compare/v6.3.1...v6.4.0/
@@ -302,3 +309,4 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 [@fatkodima]: https://github.com/fatkodima
 [@rofreg]: https://github.com/rofreg
 [@NikolayRys]: https://github.com/NikolayRys
+[@ixti]: https://github.com/ixti

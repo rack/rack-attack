@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest', "~> 5.11"
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
   s.add_development_dependency 'rspec-mocks', '~> 3.11.0'
-  s.add_development_dependency 'rack-test', "~> 1.0"
+  s.add_development_dependency 'rack-test', "~> 2.0"
   s.add_development_dependency 'rake', "~> 13.0"
   s.add_development_dependency "rubocop", "0.89.1"
   s.add_development_dependency "rubocop-performance", "~> 1.5.0"

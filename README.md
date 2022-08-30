@@ -353,8 +353,8 @@ Rack::Attack.throttled_response_retry_after_header = true
 Here's an example response that includes conventional `RateLimit-*` headers:
 
 ```ruby
-Rack::Attack.throttled_response = lambda do |env|
-  match_data = env['rack.attack.match_data']
+Rack::Attack.throttled_responder = lambda do |request|
+  match_data = request.env['rack.attack.match_data']
   now = match_data[:epoch_time]
 
   headers = {
