@@ -19,9 +19,6 @@ jobs:
         ruby:
           - 3.1.2
           - 3.0.4
-          - 2.7.6
-          - 2.6.10
-          - 2.5.8
           - truffleruby-head
         gemfile:
           - rack_2
@@ -29,10 +26,7 @@ jobs:
           - rails_7_0
           - rails_6_1
           - rails_6_0
-          - rails_5_2
-          - rails_4_2
           - dalli3
-          - dalli2
           - redis_4
           - redis_3
           - connection_pool_dalli
