@@ -17,10 +17,10 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 3.1.0
-          - 3.0.3
-          - 2.7.5
-          - 2.6.9
+          - 3.1.2
+          - 3.0.4
+          - 2.7.6
+          - 2.6.10
           - 2.5.8
           - truffleruby-head
         gemfile:
@@ -42,27 +42,27 @@ jobs:
           - active_support_redis_store
         exclude:
           - gemfile: rack_1
-            ruby: 3.1.0
+            ruby: 3.1.2
           - gemfile: rails_5_2
-            ruby: 3.1.0
+            ruby: 3.1.2
           - gemfile: rails_4_2
-            ruby: 3.1.0
+            ruby: 3.1.2
           - gemfile: dalli2
-            ruby: 3.1.0
+            ruby: 3.1.2
           - gemfile: rack_1
-            ruby: 3.0.3
+            ruby: 3.0.4
           - gemfile: rails_5_2
-            ruby: 3.0.3
+            ruby: 3.0.4
           - gemfile: rails_4_2
-            ruby: 3.0.3
+            ruby: 3.0.4
           - gemfile: dalli2
-            ruby: 3.0.3
+            ruby: 3.0.4
           - gemfile: rack_1
-            ruby: 2.7.5
+            ruby: 2.7.6
           - gemfile: rails_4_2
-            ruby: 2.7.5
+            ruby: 2.7.6
           - gemfile: rails_7_0
-            ruby: 2.6.9
+            ruby: 2.6.10
           - gemfile: rails_7_0
             ruby: 2.5.8
           - gemfile: rack_1

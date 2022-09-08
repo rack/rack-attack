@@ -4,7 +4,9 @@ module Rack
   class Attack
     # When using Rack::Attack with a Rails app, developers expect the request path
     # to be normalized. In particular, trailing slashes are stripped.
-    # (See https://git.io/v0rrR for implementation.)
+    # (See
+    # https://github.com/rails/rails/blob/f8edd20/actionpack/lib/action_dispatch/journey/router/utils.rb#L5-L22
+    # for implementation.)
     #
     # Look for an ActionDispatch utility class that Rails folks would expect
     # to normalize request paths. If unavailable, use a fallback class that
