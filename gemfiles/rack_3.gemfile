@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "rack", "~> 3.0", git: "https://github.com/rack/rack.git"
-gem "rack-test", git: "https://github.com/rack/rack-test.git"
+gem "rack", "~> 3.0"
 
 gemspec path: "../"

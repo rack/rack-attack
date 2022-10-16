@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+appraise "rack_3" do
+  gem "rack", "~> 3.0"
+end
+
 appraise "rack_2" do
   gem "rack", "~> 2.0"
 end
