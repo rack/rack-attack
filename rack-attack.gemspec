@@ -45,4 +45,6 @@ Gem::Specification.new do |s|
   if RUBY_ENGINE == "ruby"
     s.add_development_dependency 'byebug', '~> 11.0'
   end
+
+  s.add_development_dependency "activesupport"
 end

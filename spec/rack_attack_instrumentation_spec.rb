@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "spec_helper"
+require 'active_support'
 
 # ActiveSupport::Subscribers added in ~> 4.0.2.0
 if ActiveSupport::VERSION::MAJOR > 3

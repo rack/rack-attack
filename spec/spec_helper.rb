@@ -5,7 +5,12 @@ require "bundler/setup"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-require "rails"
+
+begin
+  require "rails"
+rescue LoadError
+  # Ignore.
+end
 
 require "rack/attack"
 
@@ -28,8 +33,10 @@ safe_require "redis-store"
 class MiniTest::Spec
   include Rack::Test::Methods
 
-  before do
-    Rails.cache = nil
+  if Object.const_defined?(:Rails)
+    before do
+      Rails.cache = nil
+    end
   end
 
   after do
