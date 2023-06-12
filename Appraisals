@@ -49,12 +49,12 @@ appraise 'dalli3' do
   gem 'dalli', '~> 3.0'
 end
 
-appraise 'redis_4' do
-  gem 'redis', '~> 4.0'
+appraise 'redis_5' do
+  gem 'redis', '~> 5.0'
 end
 
-appraise 'redis_3' do
-  gem 'redis', '~> 3.3'
+appraise 'redis_4' do
+  gem 'redis', '~> 4.0'
 end
 
 appraise "connection_pool_dalli" do
@@ -64,13 +64,13 @@ end
 
 appraise "active_support_redis_cache_store" do
   gem "activesupport", "~> 6.1.0"
-  gem "redis", "~> 4.0"
+  gem "redis", "~> 5.0"
 end
 
 appraise "active_support_redis_cache_store_pooled" do
   gem "activesupport", "~> 6.1.0"
   gem "connection_pool", "~> 2.2"
-  gem "redis", "~> 4.0"
+  gem "redis", "~> 5.0"
 end
 
 appraise "redis_store" do
