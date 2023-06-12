@@ -79,4 +79,5 @@ end
 
 appraise "active_support_redis_store" do
   gem "redis-activesupport", "~> 5.0"
+  gem 'redis-store', '1.9.1' # remove after https://github.com/redis-store/redis-store/issues/358 is resolved
 end
