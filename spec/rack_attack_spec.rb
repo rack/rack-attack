@@ -11,6 +11,10 @@ describe 'Rack::Attack' do
     end
 
     it 'blocks requests with trailing slash' do
+      if Rack::Attack::PathNormalizer == Rack::Attack::FallbackPathNormalizer
+        skip "Normalization is only present on Rails"
+      end
+
       get '/foo/'
       _(last_response.status).must_equal 403
     end
