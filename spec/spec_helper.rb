@@ -5,7 +5,6 @@ require "bundler/setup"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-# require "rails"
 require "active_support"
 require "rack/attack"
 
@@ -28,11 +27,11 @@ safe_require "redis-store"
 class MiniTest::Spec
   include Rack::Test::Methods
 
-  # if Object.const_defined?(:Rails)
-  #   before do
-  #     Rails.cache = nil
-  #   end
-  # end
+  before do
+    if Object.const_defined?(:Rails) && Rails.respond_to?(:cache)
+      Rails.cache.clear
+    end
+  end
 
   after do
     Rack::Attack.clear_configuration
