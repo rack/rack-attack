@@ -7,7 +7,7 @@ module Rack
       attr_reader :last_epoch_time
 
       def self.default_store
-        if Object.const_defined?(:Rails) && Rails.singleton_class.method_defined?(:cache)
+        if Object.const_defined?(:Rails)
           ::Rails.cache
         end
       end
