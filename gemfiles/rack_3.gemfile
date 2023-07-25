@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "rack", "~> 2.0"
-gem "railties"
+gem "rack", "~> 3.0"
 
 gemspec path: "../"

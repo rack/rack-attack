@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.4'
 
-  s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
+  s.add_runtime_dependency 'rack', ">= 1.0", "< 4"
 
   s.add_development_dependency 'appraisal', '~> 2.2'
   s.add_development_dependency "bundler", ">= 1.17", "< 3.0"
@@ -46,5 +46,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  s.add_development_dependency 'railties', '>= 4.2', '< 7.1'
+  s.add_development_dependency "activesupport"
 end
