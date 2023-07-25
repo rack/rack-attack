@@ -9,8 +9,6 @@ module Rack
       def self.default_store
         if Object.const_defined?(:Rails) && Rails.singleton_class.method_defined?(:cache)
           ::Rails.cache
-        else
-          ActiveSupport::Cache::MemoryStore.new
         end
       end
 
