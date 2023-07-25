@@ -6,8 +6,16 @@ module Rack
       attr_accessor :prefix
       attr_reader :last_epoch_time
 
-      def initialize
-        self.store = ::Rails.cache if defined?(::Rails.cache)
+      def self.default_store
+        if Object.const_defined?(:Rails) && Rails.singleton_class.method_defined?(:cache)
+          ::Rails.cache
+        else
+          ActiveSupport::Cache::MemoryStore.new
+        end
+      end
+
+      def initialize(store = self.class.default_store)
+        self.store = store
         @prefix = 'rack::attack'
       end
 

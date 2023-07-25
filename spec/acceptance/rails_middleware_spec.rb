@@ -2,7 +2,7 @@
 
 require_relative "../spec_helper"
 
-if defined?(Rails)
+if defined?(Rails::Application)
   describe "Middleware for Rails" do
     before do
       @app = Class.new(Rails::Application) do
