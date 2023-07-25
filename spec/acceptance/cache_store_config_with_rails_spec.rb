@@ -9,6 +9,12 @@ describe "Cache store config with Rails" do
     Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
       request.ip
     end
+
+    Rack::Attack.instance_variable_set(:@cache, nil)
+  end
+
+  after do
+    Rack::Attack.instance_variable_set(:@cache, nil)
   end
 
   it "fails when Rails.cache is not set" do
