@@ -12,7 +12,7 @@ module Rack
         end
       end
 
-      def initialize(store = self.class.default_store)
+      def initialize(store: self.class.default_store)
         self.store = store
         @prefix = 'rack::attack'
       end
