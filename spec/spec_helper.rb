@@ -24,7 +24,7 @@ safe_require "redis"
 safe_require "redis-activesupport"
 safe_require "redis-store"
 
-class MiniTest::Spec
+class Minitest::Spec
   include Rack::Test::Methods
 
   before do
