@@ -281,6 +281,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Extract mandatory options to constants
 
 
+[6.7.0]: https://github.com/rack/rack-attack/compare/v6.6.1...v6.7.0/
 [6.6.1]: https://github.com/rack/rack-attack/compare/v6.6.0...v6.6.1/
 [6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
 [6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/
