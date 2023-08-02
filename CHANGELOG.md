@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+This file will no longer be updated - all changes after v6.7.0 will only be documented in the relevant release note.
 
 ## [6.7.0] - 2023-07-26
 
