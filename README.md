@@ -82,7 +82,7 @@ Rack::Attack.enabled = false
 b) For __rack__ applications:
 
 ```ruby
-# In config.ru
+# In config.rb
 
 require "rack/attack"
 use Rack::Attack
