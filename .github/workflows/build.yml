@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         ruby:
+          - 3.2.2
           - 3.1.2
           - 3.0.4
           - 2.7.6
@@ -41,6 +42,14 @@ jobs:
           - redis_store
           - active_support_redis_store
         exclude:
+          - gemfile: rack_1
+            ruby: 3.2.2
+          - gemfile: rails_5_2
+            ruby: 3.2.2
+          - gemfile: rails_4_2
+            ruby: 3.2.2
+          - gemfile: dalli2
+            ruby: 3.2.2
           - gemfile: rack_1
             ruby: 3.1.2
           - gemfile: rails_5_2
