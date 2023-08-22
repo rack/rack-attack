@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
-require 'rack/attack/version'
+require_relative 'lib/rack/attack/version'
 
 Gem::Specification.new do |s|
   s.name = 'rack-attack'
@@ -29,7 +26,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.4'
 
-  s.add_runtime_dependency 'rack', ">= 1.0", "< 3"
+  s.add_runtime_dependency 'rack', ">= 1.0", "< 4"
 
   s.add_development_dependency 'appraisal', '~> 2.2'
   s.add_development_dependency "bundler", ">= 1.17", "< 3.0"
@@ -47,5 +44,5 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'byebug', '~> 11.0'
   end
 
-  s.add_development_dependency 'railties', '>= 4.2', '< 7.1'
+  s.add_development_dependency "activesupport"
 end

@@ -1,6 +1,16 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+This file will no longer be updated - all changes after v6.7.0 will only be documented in the relevant release note.
+
+## [6.7.0] - 2023-07-26
+
+- Replace git.io URL by @kyoshidajp in #579
+- test: update rack-test to v2 from v1 by @grzuy in #587
+- Update example description to not suggest using a deprecated method by @MaksimAbramchuk in #589
+- Add note about cache stores and in-memory caches. by @nateberkopec in #604
+- ci: tests against redis gem v5 by @grzuy in #612
+- Support rack 3 by @ioquatix in #586
+- Gem release management. by @ioquatix in #614
 
 ## [6.6.1] - 2022-04-14
 
@@ -271,6 +281,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Extract mandatory options to constants
 
 
+[6.7.0]: https://github.com/rack/rack-attack/compare/v6.6.1...v6.7.0/
 [6.6.1]: https://github.com/rack/rack-attack/compare/v6.6.0...v6.6.1/
 [6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
 [6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/

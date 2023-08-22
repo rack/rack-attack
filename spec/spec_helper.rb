@@ -6,8 +6,7 @@ require "minitest/autorun"
 require "minitest/pride"
 require "rspec/mocks/minitest_integration"
 require "rack/test"
-require "rails"
-
+require "active_support"
 require "rack/attack"
 
 if RUBY_ENGINE == "ruby"
@@ -26,11 +25,13 @@ safe_require "redis"
 safe_require "redis-activesupport"
 safe_require "redis-store"
 
-class MiniTest::Spec
+class Minitest::Spec
   include Rack::Test::Methods
 
   before do
-    Rails.cache = nil
+    if Object.const_defined?(:Rails) && Rails.respond_to?(:cache)
+      Rails.cache.clear
+    end
   end
 
   after do

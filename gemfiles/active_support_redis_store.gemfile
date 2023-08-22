@@ -3,5 +3,6 @@
 source "https://rubygems.org"
 
 gem "redis-activesupport", "~> 5.0"
+gem "redis-store", "1.9.1"
 
 gemspec path: "../"

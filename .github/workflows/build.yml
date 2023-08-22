@@ -23,6 +23,7 @@ jobs:
           - 2.6.10
           - 2.5.8
         gemfile:
+          - rack_3
           - rack_2
           - rack_1
           - rails_7_0
@@ -32,8 +33,8 @@ jobs:
           - rails_4_2
           - dalli3
           - dalli2
+          - redis_5
           - redis_4
-          - redis_3
           - connection_pool_dalli
           - active_support_redis_cache_store
           - active_support_redis_cache_store_pooled
