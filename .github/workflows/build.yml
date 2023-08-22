@@ -18,9 +18,9 @@ jobs:
       matrix:
         ruby:
           - 3.2.2
-          - 3.1.2
-          - 3.0.4
-          - 2.7.6
+          - 3.1.4
+          - 3.0.6
+          - 2.7.8
           - 2.6.10
           - 2.5.8
         gemfile:
@@ -51,25 +51,25 @@ jobs:
           - gemfile: dalli2
             ruby: 3.2.2
           - gemfile: rack_1
-            ruby: 3.1.2
+            ruby: 3.1.4
           - gemfile: rails_5_2
-            ruby: 3.1.2
+            ruby: 3.1.4
           - gemfile: rails_4_2
-            ruby: 3.1.2
+            ruby: 3.1.4
           - gemfile: dalli2
-            ruby: 3.1.2
+            ruby: 3.1.4
           - gemfile: rack_1
-            ruby: 3.0.4
+            ruby: 3.0.6
           - gemfile: rails_5_2
-            ruby: 3.0.4
+            ruby: 3.0.6
           - gemfile: rails_4_2
-            ruby: 3.0.4
+            ruby: 3.0.6
           - gemfile: dalli2
-            ruby: 3.0.4
+            ruby: 3.0.6
           - gemfile: rack_1
-            ruby: 2.7.6
+            ruby: 2.7.8
           - gemfile: rails_4_2
-            ruby: 2.7.6
+            ruby: 2.7.8
           - gemfile: rails_7_0
             ruby: 2.6.10
           - gemfile: rails_7_0
