@@ -40,7 +40,6 @@ jobs:
           - active_support_redis_cache_store
           - active_support_redis_cache_store_pooled
           - redis_store
-          - active_support_redis_store
         exclude:
           - gemfile: rack_1
             ruby: 3.2.2
