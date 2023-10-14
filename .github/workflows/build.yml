@@ -32,7 +32,6 @@ jobs:
           - rails_6_1
           - rails_6_0
           - rails_5_2
-          - rails_4_2
           - dalli3
           - dalli2
           - redis_5
@@ -46,15 +45,11 @@ jobs:
             ruby: 3.2.2
           - gemfile: rails_5_2
             ruby: 3.2.2
-          - gemfile: rails_4_2
-            ruby: 3.2.2
           - gemfile: dalli2
             ruby: 3.2.2
           - gemfile: rack_1
             ruby: 3.1.4
           - gemfile: rails_5_2
-            ruby: 3.1.4
-          - gemfile: rails_4_2
             ruby: 3.1.4
           - gemfile: dalli2
             ruby: 3.1.4
@@ -62,13 +57,9 @@ jobs:
             ruby: 3.0.6
           - gemfile: rails_5_2
             ruby: 3.0.6
-          - gemfile: rails_4_2
-            ruby: 3.0.6
           - gemfile: dalli2
             ruby: 3.0.6
           - gemfile: rack_1
-            ruby: 2.7.8
-          - gemfile: rails_4_2
             ruby: 2.7.8
           - gemfile: rails_7_0
             ruby: 2.6.10
