@@ -4,10 +4,8 @@ require_relative "../spec_helper"
 
 describe "Extending the request object" do
   before do
-    class Rack::Attack::Request
-      def authorized?
-        env["APIKey"] == "private-secret"
-      end
+    Rack::Attack::Request.define_method :authorized? do
+      env["APIKey"] == "private-secret"
     end
 
     Rack::Attack.blocklist("unauthorized requests") do |request|
@@ -17,9 +15,7 @@ describe "Extending the request object" do
 
   # We don't want the extension to leak to other test cases
   after do
-    class Rack::Attack::Request
-      remove_method :authorized?
-    end
+    Rack::Attack::Request.undef_method :authorized?
   end
 
   it "forbids request if blocklist condition is true" do
