@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rubocop", "1.12.1"
   s.add_development_dependency "rubocop-minitest", "~> 0.11.1"
   s.add_development_dependency "rubocop-performance", "~> 1.5.0"
+  s.add_development_dependency "rubocop-rake", "~> 0.5.1"
   s.add_development_dependency "timecop", "~> 0.9.1"
 
   # byebug only works with MRI

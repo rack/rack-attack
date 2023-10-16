@@ -1,6 +1,7 @@
 require:
   - rubocop-minitest
   - rubocop-performance
+  - rubocop-rake
 
 inherit_mode:
   merge:
