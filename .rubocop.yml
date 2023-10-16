@@ -56,7 +56,6 @@ Security:
 
 Style/BlockDelimiters:
   Enabled: true
-  IgnoredMethods: [] # Workaround rubocop bug: https://github.com/rubocop-hq/rubocop/issues/6179
 
 Style/ClassAndModuleChildren:
   Enabled: true
