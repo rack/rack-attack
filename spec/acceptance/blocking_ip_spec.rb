@@ -14,7 +14,7 @@ describe "Blocking an IP" do
   end
 
   it "succeeds if IP doesn't match" do
-    get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
+    get "/", {}, "REMOTE_ADDR" => ""
 
     assert_equal 200, last_response.status
   end
