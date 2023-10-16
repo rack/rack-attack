@@ -5,10 +5,8 @@ require_relative 'spec_helper'
 describe 'Rack::Attack' do
   describe 'helpers' do
     before do
-      class Rack::Attack::Request
-        def remote_ip
-          ip
-        end
+      Rack::Attack::Request.define_method :remote_ip do
+        ip
       end
 
       Rack::Attack.safelist('valid IP') do |req|

@@ -17,8 +17,11 @@ require 'rack/attack/railtie' if defined?(::Rails)
 module Rack
   class Attack
     class Error < StandardError; end
+
     class MisconfiguredStoreError < Error; end
+
     class MissingStoreError < Error; end
+
     class IncompatibleStoreError < Error; end
 
     autoload :Check,                'rack/attack/check'
