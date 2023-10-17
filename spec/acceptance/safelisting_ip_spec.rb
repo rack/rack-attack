@@ -12,6 +12,12 @@ describe "Safelist an IP" do
   end
 
   it "forbids request if blocklist condition is true and safelist is false" do
+    get "/admin", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 403, last_response.status
+  end
+
+  it "forbids request if blocklist condition is true and safelist is false (missing IP)" do
     get "/admin", {}, "REMOTE_ADDR" => ""
 
     assert_equal 403, last_response.status
