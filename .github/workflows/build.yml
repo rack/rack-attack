@@ -27,6 +27,7 @@ jobs:
           - rack_3
           - rack_2
           - rack_1
+          - rails_7_1
           - rails_7_0
           - rails_6_1
           - rails_6_0
@@ -72,6 +73,10 @@ jobs:
           - gemfile: rails_7_0
             ruby: 2.6.10
           - gemfile: rails_7_0
+            ruby: 2.5.8
+          - gemfile: rails_7_1
+            ruby: 2.6.10
+          - gemfile: rails_7_1
             ruby: 2.5.8
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
