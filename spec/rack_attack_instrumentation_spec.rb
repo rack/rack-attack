@@ -2,9 +2,8 @@
 
 require_relative "spec_helper"
 require 'active_support'
-
-require_relative 'spec_helper'
 require 'active_support/subscriber'
+
 class CustomSubscriber < ActiveSupport::Subscriber
   @notification_count = 0
 
