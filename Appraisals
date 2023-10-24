@@ -81,6 +81,17 @@ appraise "active_support_redis_cache_store_pooled" do
   gem "redis", "~> 5.0"
 end
 
+appraise "active_support_5_redis_cache_store" do
+  gem "activesupport", "~> 5.2.0"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_5_redis_cache_store_pooled" do
+  gem "activesupport", "~> 5.2.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 5.0"
+end
+
 appraise "redis_store" do
   gem "redis-store", "~> 1.5"
 end

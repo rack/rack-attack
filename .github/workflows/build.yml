@@ -40,11 +40,17 @@ jobs:
           - connection_pool_dalli
           - active_support_redis_cache_store
           - active_support_redis_cache_store_pooled
+          - active_support_5_redis_cache_store
+          - active_support_5_redis_cache_store_pooled
           - redis_store
         exclude:
           - gemfile: rack_1
             ruby: 3.2.2
           - gemfile: rails_5_2
+            ruby: 3.2.2
+          - gemfile: active_support_5_redis_cache_store
+            ruby: 3.2.2
+          - gemfile: active_support_5_redis_cache_store_pooled
             ruby: 3.2.2
           - gemfile: rails_4_2
             ruby: 3.2.2
@@ -53,6 +59,10 @@ jobs:
           - gemfile: rack_1
             ruby: 3.1.4
           - gemfile: rails_5_2
+            ruby: 3.1.4
+          - gemfile: active_support_5_redis_cache_store
+            ruby: 3.1.4
+          - gemfile: active_support_5_redis_cache_store_pooled
             ruby: 3.1.4
           - gemfile: rails_4_2
             ruby: 3.1.4
@@ -61,6 +71,10 @@ jobs:
           - gemfile: rack_1
             ruby: 3.0.6
           - gemfile: rails_5_2
+            ruby: 3.0.6
+          - gemfile: active_support_5_redis_cache_store
+            ruby: 3.0.6
+          - gemfile: active_support_5_redis_cache_store_pooled
             ruby: 3.0.6
           - gemfile: rails_4_2
             ruby: 3.0.6
