@@ -70,12 +70,34 @@ appraise "connection_pool_dalli" do
   gem "dalli", "~> 3.0"
 end
 
-appraise "active_support_redis_cache_store" do
+appraise "active_support_7-1_redis_cache_store" do
+  gem "activesupport", "~> 7.1.0"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_7-1_redis_cache_store_pooled" do
+  gem "activesupport", "~> 7.1.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_7-0_redis_cache_store" do
+  gem "activesupport", "~> 7.0.0"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_7-0_redis_cache_store_pooled" do
+  gem "activesupport", "~> 7.0.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_6_redis_cache_store" do
   gem "activesupport", "~> 6.1.0"
   gem "redis", "~> 5.0"
 end
 
-appraise "active_support_redis_cache_store_pooled" do
+appraise "active_support_6_redis_cache_store_pooled" do
   gem "activesupport", "~> 6.1.0"
   gem "connection_pool", "~> 2.2"
   gem "redis", "~> 5.0"
