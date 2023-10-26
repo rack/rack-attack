@@ -4,4 +4,9 @@ source "https://rubygems.org"
 
 gem "railties", "~> 6.1.0"
 
+group :maintenance, optional: true do
+  gem "bake"
+  gem "bake-gem"
+end
+
 gemspec path: "../"
