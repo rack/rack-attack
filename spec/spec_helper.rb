@@ -22,7 +22,6 @@ end
 safe_require "connection_pool"
 safe_require "dalli"
 safe_require "redis"
-safe_require "redis-activesupport"
 safe_require "redis-store"
 
 class Minitest::Spec

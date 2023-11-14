@@ -79,7 +79,7 @@ describe "Cache store config when using fail2ban" do
   end
 
   it "works with any object that responds to #read, #write and #increment" do
-    FakeStore = Class.new do
+    fake_store_class = Class.new do
       attr_accessor :backend
 
       def initialize
@@ -100,7 +100,7 @@ describe "Cache store config when using fail2ban" do
       end
     end
 
-    Rack::Attack.cache.store = FakeStore.new
+    Rack::Attack.cache.store = fake_store_class.new
 
     get "/"
     assert_equal 200, last_response.status

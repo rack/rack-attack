@@ -11,6 +11,7 @@ module Rack
         end
 
         def inherited(klass)
+          super
           proxies << klass
         end
 
