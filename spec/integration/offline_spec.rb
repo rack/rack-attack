@@ -21,18 +21,6 @@ OfflineExamples = Minitest::SharedExamples.new do
   end
 end
 
-if defined?(::ActiveSupport::Cache::RedisStore)
-  describe 'when Redis is offline' do
-    include OfflineExamples
-
-    before do
-      @cache = Rack::Attack::Cache.new
-      # Use presumably unused port for Redis client
-      @cache.store = ActiveSupport::Cache::RedisStore.new(host: '127.0.0.1', port: 3333)
-    end
-  end
-end
-
 if defined?(Redis) && defined?(ActiveSupport::Cache::RedisCacheStore) && Redis::VERSION >= '4'
   describe 'when Redis is offline' do
     include OfflineExamples

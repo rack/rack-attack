@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "railties", "~> 5.2.0"
+gem "rack", "~> 3.0"
 
 group :maintenance, optional: true do
   gem "bake"

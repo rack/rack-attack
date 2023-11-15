@@ -39,8 +39,9 @@ module Rack
           retry_after: cache.last_retry_after_time
         }
 
+        annotate_request_with_throttle_data(request, data)
+
         (count > current_limit).tap do |throttled|
-          annotate_request_with_throttle_data(request, data)
           if throttled
             annotate_request_with_matched_data(request, data)
             Rack::Attack.instrument(request)
