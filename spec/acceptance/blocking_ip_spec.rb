@@ -19,6 +19,12 @@ describe "Blocking an IP" do
     assert_equal 200, last_response.status
   end
 
+  it "succeeds if IP is missing" do
+    get "/", {}, "REMOTE_ADDR" => ""
+
+    assert_equal 200, last_response.status
+  end
+
   it "notifies when the request is blocked" do
     notified = false
     notification_type = nil

@@ -40,8 +40,9 @@ module Rack
           epoch_time: cache.last_epoch_time
         }
 
+        annotate_request_with_throttle_data(request, data)
+
         (count > current_limit).tap do |throttled|
-          annotate_request_with_throttle_data(request, data)
           if throttled
             annotate_request_with_matched_data(request, data)
             Rack::Attack.instrument(request)
@@ -53,8 +54,8 @@ module Rack
 
       def discriminator_for(request)
         discriminator = block.call(request)
-        if discriminator && Rack::Attack.discriminator_normalizer
-          discriminator = Rack::Attack.discriminator_normalizer.call(discriminator)
+        if discriminator && Rack::Attack.throttle_discriminator_normalizer
+          discriminator = Rack::Attack.throttle_discriminator_normalizer.call(discriminator)
         end
         discriminator
       end

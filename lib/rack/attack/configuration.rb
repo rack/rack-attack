@@ -5,37 +5,35 @@ require "ipaddr"
 module Rack
   class Attack
     class Configuration
-      DEFAULT_BLOCKLISTED_CALLBACK = lambda { |_req| [403, { 'Content-Type' => 'text/plain' }, ["Forbidden\n"]] }
+      DEFAULT_BLOCKLISTED_RESPONDER = lambda { |_req| [403, { 'content-type' => 'text/plain' }, ["Forbidden\n"]] }
 
-      DEFAULT_THROTTLED_CALLBACK = lambda do |req|
+      DEFAULT_THROTTLED_RESPONDER = lambda do |req|
         if Rack::Attack.configuration.throttled_response_retry_after_header
           match_data = req.env['rack.attack.match_data']
           now = match_data[:epoch_time]
           retry_after = match_data[:period] - (now % match_data[:period])
 
-          [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, ["Retry later\n"]]
+          [429, { 'content-type' => 'text/plain', 'retry-after' => retry_after.to_s }, ["Retry later\n"]]
         else
-          [429, { 'Content-Type' => 'text/plain' }, ["Retry later\n"]]
+          [429, { 'content-type' => 'text/plain' }, ["Retry later\n"]]
         end
       end
 
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_callback, :throttled_callback, :throttled_response_retry_after_header
+      attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 
-      def blocklisted_response=(callback)
-        # TODO: uncomment in 7.0
-        # warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
-        #   "Please use Rack::Attack.blocklisted_callback instead."
-        @blocklisted_response = callback
+      def blocklisted_response=(responder)
+        warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
+          "Please use Rack::Attack.blocklisted_responder instead."
+        @blocklisted_response = responder
       end
 
-      def throttled_response=(callback)
-        # TODO: uncomment in 7.0
-        # warn "[DEPRECATION] Rack::Attack.throttled_response is deprecated. "\
-        #   "Please use Rack::Attack.throttled_callback instead"
-        @throttled_response = callback
+      def throttled_response=(responder)
+        warn "[DEPRECATION] Rack::Attack.throttled_response is deprecated. "\
+          "Please use Rack::Attack.throttled_responder instead"
+        @throttled_response = responder
       end
 
       def initialize
@@ -63,11 +61,15 @@ module Rack
       end
 
       def blocklist_ip(ip_address)
-        @anonymous_blocklists << Blocklist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
+        @anonymous_blocklists << Blocklist.new do |request|
+          request.ip && !request.ip.empty? && IPAddr.new(ip_address).include?(IPAddr.new(request.ip))
+        end
       end
 
       def safelist_ip(ip_address)
-        @anonymous_safelists << Safelist.new { |request| IPAddr.new(ip_address).include?(IPAddr.new(request.ip)) }
+        @anonymous_safelists << Safelist.new do |request|
+          request.ip && !request.ip.empty? && IPAddr.new(ip_address).include?(IPAddr.new(request.ip))
+        end
       end
 
       def throttle(name, options, &block)
@@ -115,8 +117,8 @@ module Rack
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false
 
-        @blocklisted_callback = DEFAULT_BLOCKLISTED_CALLBACK
-        @throttled_callback = DEFAULT_THROTTLED_CALLBACK
+        @blocklisted_responder = DEFAULT_BLOCKLISTED_RESPONDER
+        @throttled_responder = DEFAULT_THROTTLED_RESPONDER
 
         # Deprecated: Keeping these for backwards compatibility
         @blocklisted_response = nil

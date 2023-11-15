@@ -1,6 +1,64 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+This file will no longer be updated - all changes after v6.7.0 will only be documented in the relevant release note.
+
+## [6.7.0] - 2023-07-26
+
+- Replace git.io URL by @kyoshidajp in #579
+- test: update rack-test to v2 from v1 by @grzuy in #587
+- Update example description to not suggest using a deprecated method by @MaksimAbramchuk in #589
+- Add note about cache stores and in-memory caches. by @nateberkopec in #604
+- ci: tests against redis gem v5 by @grzuy in #612
+- Support rack 3 by @ioquatix in #586
+- Gem release management. by @ioquatix in #614
+
+## [6.6.1] - 2022-04-14
+
+### Fixed
+
+- Fixes deprecation warning in redis 4.6+ ([@ixti])
+
+## [6.6.0] - 2022-01-29
+
+### Added
+
+- Ability to have access to the `request` object instead of only `env` (still can access env with `request.env`) when
+customizing throttle and blocklist responses with new methods `Rack::Attack.blocklisted_responder=` and
+`Rack::Attack.throttled_responder=` which yield the request to your lambda. ([@NikolayRys])
+
+### Deprecated
+
+- `Rack::Attack.blocklisted_response=`
+- `Rack::Attack.throttled_response=`
+
+## [6.5.0] - 2021-02-07
+
+### Added
+
+- Added ability to normalize throttle discriminator by setting `Rack::Attack.throttle_discriminator_normalizer` (@fatkodima)
+
+  Example:
+
+      Rack::Attack.throttle_discriminator_normalizer = ->(discriminator) { ... }
+
+  or disable default normalization with:
+
+      Rack::Attack.throttle_discriminator_normalizer = nil
+
+### Removed
+
+- Dropped support for ruby v2.4
+- Dropped support for rails v5.1
+
+## [6.4.0] - 2021-01-23
+
+### Added
+
+- Added support for ruby v3.0
+
+### Removed
+
+- Dropped support for ruby v2.3
 
 ## [6.3.1] - 2020-05-21
 
@@ -222,6 +280,12 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Remove unused variable
  - Extract mandatory options to constants
 
+
+[6.7.0]: https://github.com/rack/rack-attack/compare/v6.6.1...v6.7.0/
+[6.6.1]: https://github.com/rack/rack-attack/compare/v6.6.0...v6.6.1/
+[6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
+[6.5.0]: https://github.com/rack/rack-attack/compare/v6.4.0...v6.5.0/
+[6.4.0]: https://github.com/rack/rack-attack/compare/v6.3.1...v6.4.0/
 [6.3.1]: https://github.com/rack/rack-attack/compare/v6.3.0...v6.3.1/
 [6.3.0]: https://github.com/rack/rack-attack/compare/v6.2.2...v6.3.0/
 [6.2.2]: https://github.com/rack/rack-attack/compare/v6.2.1...v6.2.2/
@@ -255,3 +319,5 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 
 [@fatkodima]: https://github.com/fatkodima
 [@rofreg]: https://github.com/rofreg
+[@NikolayRys]: https://github.com/NikolayRys
+[@ixti]: https://github.com/ixti

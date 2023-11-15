@@ -2,6 +2,6 @@
 
 module Rack
   class Attack
-    VERSION = '6.3.1'
+    VERSION = '6.7.0'
   end
 end

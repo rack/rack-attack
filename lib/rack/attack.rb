@@ -11,15 +11,17 @@ require 'rack/attack/store_proxy/mem_cache_store_proxy'
 require 'rack/attack/store_proxy/redis_proxy'
 require 'rack/attack/store_proxy/redis_store_proxy'
 require 'rack/attack/store_proxy/redis_cache_store_proxy'
-require 'rack/attack/store_proxy/active_support_redis_store_proxy'
 
 require 'rack/attack/railtie' if defined?(::Rails)
 
 module Rack
   class Attack
     class Error < StandardError; end
+
     class MisconfiguredStoreError < Error; end
+
     class MissingStoreError < Error; end
+
     class IncompatibleStoreError < Error; end
 
     autoload :Check,                'rack/attack/check'
@@ -31,7 +33,7 @@ module Rack
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
     class << self
-      attr_accessor :enabled, :notifier, :discriminator_normalizer
+      attr_accessor :enabled, :notifier, :throttle_discriminator_normalizer
       attr_reader :configuration
 
       def instrument(request)
@@ -66,10 +68,10 @@ module Rack
         :safelist_ip,
         :throttle,
         :track,
-        :throttled_callback,
-        :throttled_callback=,
-        :blocklisted_callback,
-        :blocklisted_callback=,
+        :throttled_responder,
+        :throttled_responder=,
+        :blocklisted_responder,
+        :blocklisted_responder=,
         :blocklisted_response,
         :blocklisted_response=,
         :throttled_response,
@@ -87,7 +89,7 @@ module Rack
     # Set defaults
     @enabled = true
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
-    @discriminator_normalizer = lambda do |discriminator|
+    @throttle_discriminator_normalizer = lambda do |discriminator|
       discriminator.to_s.strip.downcase
     end
     @configuration = Configuration.new
@@ -113,14 +115,14 @@ module Rack
         if configuration.blocklisted_response
           configuration.blocklisted_response.call(env)
         else
-          configuration.blocklisted_callback.call(request)
+          configuration.blocklisted_responder.call(request)
         end
       elsif configuration.throttled?(request)
         # Deprecated: Keeping throttled_response for backwards compatibility
         if configuration.throttled_response
           configuration.throttled_response.call(env)
         else
-          configuration.throttled_callback.call(request)
+          configuration.throttled_responder.call(request)
         end
       else
         configuration.tracked?(request)

@@ -6,8 +6,14 @@ module Rack
       attr_accessor :prefix
       attr_reader :last_epoch_time
 
-      def initialize
-        self.store = ::Rails.cache if defined?(::Rails.cache)
+      def self.default_store
+        if Object.const_defined?(:Rails) && Rails.respond_to?(:cache)
+          ::Rails.cache
+        end
+      end
+
+      def initialize(store: self.class.default_store)
+        self.store = store
         @prefix = 'rack::attack'
       end
 
@@ -62,7 +68,7 @@ module Rack
 
       def key_and_expiry(unprefixed_key, period)
         @last_epoch_time = Time.now.to_i
-        # Add 1 to expires_in to avoid timing error: https://git.io/i1PHXA
+        # Add 1 to expires_in to avoid timing error: https://github.com/rack/rack-attack/pull/85
         expires_in = (period - (@last_epoch_time % period) + 1).to_i
         ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
       end

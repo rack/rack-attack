@@ -11,6 +11,10 @@ describe 'Rack::Attack' do
     end
 
     it 'blocks requests with trailing slash' do
+      if Rack::Attack::PathNormalizer == Rack::Attack::FallbackPathNormalizer
+        skip "Normalization is only present on Rails"
+      end
+
       get '/foo/'
       _(last_response.status).must_equal 403
     end
@@ -64,15 +68,15 @@ describe 'Rack::Attack' do
       end
     end
 
-    describe '#blocklisted_callback' do
+    describe '#blocklisted_responder' do
       it 'should exist' do
-        _(Rack::Attack.blocklisted_callback).must_respond_to :call
+        _(Rack::Attack.blocklisted_responder).must_respond_to :call
       end
     end
 
-    describe '#throttled_callback' do
+    describe '#throttled_responder' do
       it 'should exist' do
-        _(Rack::Attack.throttled_callback).must_respond_to :call
+        _(Rack::Attack.throttled_responder).must_respond_to :call
       end
     end
   end
