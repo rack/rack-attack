@@ -26,7 +26,6 @@ jobs:
         gemfile:
           - rack_3
           - rack_2
-          - rack_1
           - rails_7_1
           - rails_7_0
           - rails_6_1
@@ -47,8 +46,6 @@ jobs:
           - active_support_5_redis_cache_store_pooled
           - redis_store
         exclude:
-          - gemfile: rack_1
-            ruby: '3.2'
           - gemfile: rails_5_2
             ruby: '3.2'
           - gemfile: active_support_5_redis_cache_store
@@ -57,8 +54,6 @@ jobs:
             ruby: '3.2'
           - gemfile: dalli2
             ruby: '3.2'
-          - gemfile: rack_1
-            ruby: '3.1'
           - gemfile: rails_5_2
             ruby: '3.1'
           - gemfile: active_support_5_redis_cache_store
@@ -67,8 +62,6 @@ jobs:
             ruby: '3.1'
           - gemfile: dalli2
             ruby: '3.1'
-          - gemfile: rack_1
-            ruby: '3.0'
           - gemfile: rails_5_2
             ruby: '3.0'
           - gemfile: active_support_5_redis_cache_store
@@ -77,8 +70,6 @@ jobs:
             ruby: '3.0'
           - gemfile: dalli2
             ruby: '3.0'
-          - gemfile: rack_1
-            ruby: '2.7'
           - gemfile: rails_7_0
             ruby: '2.6'
           - gemfile: rails_7_0

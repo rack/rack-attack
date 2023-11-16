@@ -8,19 +8,6 @@ appraise "rack_2" do
   gem "rack", "~> 2.0"
 end
 
-appraise "rack_1" do
-  # Override activesupport and actionpack version constraints by making
-  # it more loose so it's compatible with rack 1.6.x
-  gem "actionpack", ">= 4.2"
-  gem "activesupport", ">= 4.2"
-
-  gem "rack", "~> 1.6"
-
-  # Override rack-test version constraint by making it more loose
-  # so it's compatible with actionpack 4.2.x
-  gem "rack-test", ">= 0.6"
-end
-
 appraise 'rails_7-1' do
   gem 'railties', '~> 7.1.0'
 end
