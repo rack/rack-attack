@@ -3,7 +3,7 @@
 require "bundler/setup"
 
 require "minitest/autorun"
-require "minitest/pride"
+require "rspec/mocks/minitest_integration"
 require "rack/test"
 require "active_support"
 require "rack/attack"
@@ -35,6 +35,7 @@ class Minitest::Spec
   after do
     Rack::Attack.clear_configuration
     Rack::Attack.instance_variable_set(:@cache, nil)
+    Rack::Attack.allowed_errors = Rack::Attack::DEFAULT_ALLOWED_ERRORS.dup
   end
 
   def app

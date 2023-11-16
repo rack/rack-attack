@@ -32,8 +32,14 @@ module Rack
     autoload :Fail2Ban,             'rack/attack/fail2ban'
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
+    DEFAULT_ALLOWED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
+
     class << self
-      attr_accessor :enabled, :notifier, :throttle_discriminator_normalizer
+      attr_accessor :enabled,
+                    :notifier,
+                    :throttle_discriminator_normalizer,
+                    :allowed_errors
+
       attr_reader :configuration
 
       def instrument(request)
@@ -57,6 +63,15 @@ module Rack
 
       def reset!
         cache.reset!
+      end
+
+      def allow_error?(error)
+        allowed_errors&.any? do |ignored_error|
+          case ignored_error
+          when String then error.class.ancestors.any? {|a| a.name == ignored_error }
+          else error.is_a?(ignored_error)
+          end
+        end
       end
 
       extend Forwardable
@@ -86,7 +101,10 @@ module Rack
       )
     end
 
-    # Set defaults
+    # Set class defaults
+    self.allowed_errors = DEFAULT_ALLOWED_ERRORS.dup
+
+    # Set instance defaults
     @enabled = true
     @notifier = ActiveSupport::Notifications if defined?(ActiveSupport::Notifications)
     @throttle_discriminator_normalizer = lambda do |discriminator|
@@ -128,6 +146,8 @@ module Rack
         configuration.tracked?(request)
         @app.call(env)
       end
+    rescue StandardError => error
+      self.class.allow_error?(error) ? @app.call(request.env) : raise(error)
     end
   end
 end

@@ -37,6 +37,7 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 - [Customizing responses](#customizing-responses)
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
 - [Logging & Instrumentation](#logging--instrumentation)
+- [Custom Error Handling](#custom-error-handling)
 - [Testing](#testing)
 - [How it works](#how-it-works)
   - [About Tracks](#about-tracks)
@@ -400,11 +401,21 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
 end
 ```
 
+## Custom Error Handling
+
+You may specify the list of internal errors to allow (i.e. not raise an error)
+as either an array of Class and/or String values.
+
+```ruby
+# in initializers/rack_attack.rb
+Rack::Attack.allowed_errors += [MyErrorClass, 'MyOtherErrorClass']
+```
+
 ## Testing
 
-A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will
-need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
-for more on how to do this.
+When developing and testing apps using Rack::Attack, if you are using throttling in particular,
+you must enable the cache in your development environment. See
+[Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html) for how to do this.
 
 ### Disabling
 
