@@ -35,7 +35,7 @@ class Minitest::Spec
   after do
     Rack::Attack.clear_configuration
     Rack::Attack.instance_variable_set(:@cache, nil)
-    Rack::Attack.allowed_errors = Rack::Attack::DEFAULT_ALLOWED_ERRORS.dup
+    Rack::Attack.allowed_errors = Rack::Attack::Configuration::DEFAULT_ALLOWED_ERRORS.dup
   end
 
   def app

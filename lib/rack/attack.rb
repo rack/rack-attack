@@ -32,13 +32,10 @@ module Rack
     autoload :Fail2Ban,             'rack/attack/fail2ban'
     autoload :Allow2Ban,            'rack/attack/allow2ban'
 
-    DEFAULT_ALLOWED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
-
     class << self
       attr_accessor :enabled,
                     :notifier,
-                    :throttle_discriminator_normalizer,
-                    :allowed_errors
+                    :throttle_discriminator_normalizer
 
       attr_reader :configuration
 
@@ -97,12 +94,11 @@ module Rack
         :safelists,
         :blocklists,
         :throttles,
-        :tracks
+        :tracks,
+        :allowed_errors,
+        :allowed_errors=
       )
     end
-
-    # Set class defaults
-    self.allowed_errors = DEFAULT_ALLOWED_ERRORS.dup
 
     # Set instance defaults
     @enabled = true

@@ -5,6 +5,8 @@ require "ipaddr"
 module Rack
   class Attack
     class Configuration
+      DEFAULT_ALLOWED_ERRORS = %w[Dalli::DalliError Redis::BaseError].freeze
+
       DEFAULT_BLOCKLISTED_RESPONDER = lambda { |_req| [403, { 'content-type' => 'text/plain' }, ["Forbidden\n"]] }
 
       DEFAULT_THROTTLED_RESPONDER = lambda do |req|
@@ -19,10 +21,20 @@ module Rack
         end
       end
 
-      attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
+      attr_reader :safelists,
+                  :blocklists,
+                  :throttles,
+                  :anonymous_blocklists,
+                  :anonymous_safelists
 
-      attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
+      attr_accessor :allowed_errors,
+                    :blocklisted_responder,
+                    :throttled_responder,
+                    :throttled_response_retry_after_header
+
+      # Keeping these for backwards compatibility
+      attr_reader :blocklisted_response,
+                  :throttled_response
 
       def blocklisted_response=(responder)
         warn "[DEPRECATION] Rack::Attack.blocklisted_response is deprecated. "\
@@ -116,6 +128,7 @@ module Rack
         @anonymous_blocklists = []
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false
+        @allowed_errors = DEFAULT_ALLOWED_ERRORS.dup
 
         @blocklisted_responder = DEFAULT_BLOCKLISTED_RESPONDER
         @throttled_responder = DEFAULT_THROTTLED_RESPONDER
