@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'spec_helper'
+require 'timecop'
 
 describe 'Rack::Attack.throttle' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |req| req.ip }
   end
@@ -14,14 +15,18 @@ describe 'Rack::Attack.throttle' do
   it_allows_ok_requests
 
   describe 'a single request' do
-    before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
-
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      _(Rack::Attack.cache.store.read(key)).must_equal 1
+      Timecop.freeze do
+        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
+        key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+        _(Rack::Attack.cache.store.read(key)).must_equal 1
+      end
     end
 
     it 'should populate throttle data' do
+      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
       data = {
         count: 1,
         limit: 1,
@@ -36,7 +41,9 @@ describe 'Rack::Attack.throttle' do
 
   describe "with 2 requests" do
     before do
-      2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+      Timecop.freeze do
+        2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+      end
     end
 
     it 'should block the last request' do
@@ -62,7 +69,7 @@ end
 
 describe 'Rack::Attack.throttle with limit as proc' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: @period) { |req| req.ip }
   end
@@ -70,14 +77,17 @@ describe 'Rack::Attack.throttle with limit as proc' do
   it_allows_ok_requests
 
   describe 'a single request' do
-    before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
-
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      _(Rack::Attack.cache.store.read(key)).must_equal 1
+      Timecop.freeze do
+        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
+        key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+        _(Rack::Attack.cache.store.read(key)).must_equal 1
+      end
     end
 
     it 'should populate throttle data' do
+      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
       data = {
         count: 1,
         limit: 1,
@@ -93,7 +103,7 @@ end
 
 describe 'Rack::Attack.throttle with period as proc' do
   before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
+    @period = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: lambda { |_req| @period }) { |req| req.ip }
   end
@@ -101,14 +111,18 @@ describe 'Rack::Attack.throttle with period as proc' do
   it_allows_ok_requests
 
   describe 'a single request' do
-    before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
-
     it 'should set the counter for one request' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      _(Rack::Attack.cache.store.read(key)).must_equal 1
+      Timecop.freeze do
+        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
+        key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+        _(Rack::Attack.cache.store.read(key)).must_equal 1
+      end
     end
 
     it 'should populate throttle data' do
+      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
       data = {
         count: 1,
         limit: 1,
@@ -122,7 +136,7 @@ describe 'Rack::Attack.throttle with period as proc' do
   end
 end
 
-describe 'Rack::Attack.throttle with block retuning nil' do
+describe 'Rack::Attack.throttle with block returning nil' do
   before do
     @period = 60
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
@@ -132,14 +146,17 @@ describe 'Rack::Attack.throttle with block retuning nil' do
   it_allows_ok_requests
 
   describe 'a single request' do
-    before { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
-
     it 'should not set the counter' do
-      key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
-      assert_nil Rack::Attack.cache.store.read(key)
+      Timecop.freeze do
+        get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
+        key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
+        assert_nil Rack::Attack.cache.store.read(key)
+      end
     end
 
     it 'should not populate throttle data' do
+      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
       assert_nil last_request.env['rack.attack.throttle_data']
     end
   end
@@ -162,9 +179,11 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
   end
 
   it 'should not differentiate requests when throttle_discriminator_normalizer is enabled' do
-    post_logins
-    key = "rack::attack:#{Time.now.to_i / @period}:logins/email:person@example.com"
-    _(Rack::Attack.cache.store.read(key)).must_equal 3
+    Timecop.freeze do
+      post_logins
+      key = "rack::attack:#{Time.now.to_i / @period}:logins/email:person@example.com"
+      _(Rack::Attack.cache.store.read(key)).must_equal 3
+    end
   end
 
   it 'should differentiate requests when throttle_discriminator_normalizer is disabled' do
@@ -172,10 +191,12 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
       prev = Rack::Attack.throttle_discriminator_normalizer
       Rack::Attack.throttle_discriminator_normalizer = nil
 
-      post_logins
-      @emails.each do |email|
-        key = "rack::attack:#{Time.now.to_i / @period}:logins/email:#{email}"
-        _(Rack::Attack.cache.store.read(key)).must_equal 1
+      Timecop.freeze do
+        post_logins
+        @emails.each do |email|
+          key = "rack::attack:#{Time.now.to_i / @period}:logins/email:#{email}"
+          _(Rack::Attack.cache.store.read(key)).must_equal 1
+        end
       end
     ensure
       Rack::Attack.throttle_discriminator_normalizer = prev
