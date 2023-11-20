@@ -63,10 +63,10 @@ module Rack
       end
 
       def allow_error?(error)
-        allowed_errors&.any? do |ignored_error|
-          case ignored_error
-          when String then error.class.ancestors.any? {|a| a.name == ignored_error }
-          else error.is_a?(ignored_error)
+        allowed_errors&.any? do |allowed_error|
+          case allowed_error
+          when String then error.class.ancestors.any? {|a| a.name == allowed_error }
+          else error.is_a?(allowed_error)
           end
         end
       end
