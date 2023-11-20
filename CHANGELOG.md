@@ -12,6 +12,12 @@ This file will no longer be updated - all changes after v6.7.0 will only be docu
 - Support rack 3 by @ioquatix in #586
 - Gem release management. by @ioquatix in #614
 
+## [6.x.x] = 2022-xx-xx
+
+### Added
+
+- Added pseudo-random time offsets to throttling. If your application uses a custom throttle lambda to emit RateLimit-style headers, see the README for updated sample code.
+
 ## [6.6.1] - 2022-04-14
 
 ### Fixed

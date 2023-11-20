@@ -10,8 +10,7 @@ module Rack
       DEFAULT_THROTTLED_RESPONDER = lambda do |req|
         if Rack::Attack.configuration.throttled_response_retry_after_header
           match_data = req.env['rack.attack.match_data']
-          now = match_data[:epoch_time]
-          retry_after = match_data[:period] - (now % match_data[:period])
+          retry_after = match_data[:retry_after] - match_data[:epoch_time]
 
           [429, { 'content-type' => 'text/plain', 'retry-after' => retry_after.to_s }, ["Retry later\n"]]
         else
@@ -20,7 +19,8 @@ module Rack
       end
 
       attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
-      attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
+      attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header,
+                    :throttled_responder_is_offset_aware
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
 
@@ -91,8 +91,10 @@ module Rack
       end
 
       def throttled?(request)
+        use_offset = throttled_responder_is_offset_aware ||
+                     (!throttled_response && throttled_responder == DEFAULT_THROTTLED_RESPONDER)
         @throttles.any? do |_name, throttle|
-          throttle.matched_by?(request)
+          throttle.matched_by?(request, use_offset)
         end
       end
 
@@ -119,6 +121,7 @@ module Rack
 
         @blocklisted_responder = DEFAULT_BLOCKLISTED_RESPONDER
         @throttled_responder = DEFAULT_THROTTLED_RESPONDER
+        @throttled_responder_is_offset_aware = false
 
         # Deprecated: Keeping these for backwards compatibility
         @blocklisted_response = nil

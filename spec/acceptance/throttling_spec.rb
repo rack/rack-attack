@@ -48,7 +48,19 @@ describe "#throttle" do
 
     Timecop.freeze(Time.at(25)) do
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      assert_equal "35", last_response.headers["Retry-After"]
+      assert_equal 429, last_response.status
+      assert_equal "19", last_response.headers["Retry-After"]
+    end
+
+    Timecop.freeze(Time.at(42)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 429, last_response.status
+      assert_equal "2", last_response.headers["Retry-After"]
+    end
+
+    Timecop.freeze(Time.at(44)) do
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      assert_equal 200, last_response.status
     end
   end
 
