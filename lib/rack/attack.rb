@@ -128,6 +128,17 @@ module Rack
         configuration.tracked?(request)
         @app.call(env)
       end
+    rescue *allowed_errors
+      @app.call(request.env)
+    end
+
+    private
+
+    def allowed_errors
+      errors = []
+      errors << Dalli::DalliError if defined?(Dalli)
+      errors << Redis::BaseError if defined?(Redis)
+      errors
     end
   end
 end

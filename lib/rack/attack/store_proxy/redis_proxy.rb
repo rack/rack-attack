@@ -19,49 +19,37 @@ module Rack
         end
 
         def read(key)
-          rescuing { get(key) }
+          get(key)
         end
 
         def write(key, value, options = {})
           if (expires_in = options[:expires_in])
-            rescuing { setex(key, expires_in, value) }
+            setex(key, expires_in, value)
           else
-            rescuing { set(key, value) }
+            set(key, value)
           end
         end
 
         def increment(key, amount, options = {})
-          rescuing do
-            pipelined do |redis|
-              redis.incrby(key, amount)
-              redis.expire(key, options[:expires_in]) if options[:expires_in]
-            end.first
-          end
+          pipelined do |redis|
+            redis.incrby(key, amount)
+            redis.expire(key, options[:expires_in]) if options[:expires_in]
+          end.first
         end
 
         def delete(key, _options = {})
-          rescuing { del(key) }
+          del(key)
         end
 
         def delete_matched(matcher, _options = nil)
           cursor = "0"
 
-          rescuing do
-            # Fetch keys in batches using SCAN to avoid blocking the Redis server.
-            loop do
-              cursor, keys = scan(cursor, match: matcher, count: 1000)
-              del(*keys) unless keys.empty?
-              break if cursor == "0"
-            end
+          # Fetch keys in batches using SCAN to avoid blocking the Redis server.
+          loop do
+            cursor, keys = scan(cursor, match: matcher, count: 1000)
+            del(*keys) unless keys.empty?
+            break if cursor == "0"
           end
-        end
-
-        private
-
-        def rescuing
-          yield
-        rescue Redis::BaseConnectionError
-          nil
         end
       end
     end
