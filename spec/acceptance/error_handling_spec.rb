@@ -32,7 +32,7 @@ describe "error handling" do
     end
 
     describe 'when raising Redis::BaseError' do
-      let(:raised_error) { stub_const('Redis::BaseError', Class.new(StandardError)) }
+      let(:raised_error) { stub_const('Redis::BaseConnectionError', Class.new(StandardError)) }
 
       it 'allows the response' do
         get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
