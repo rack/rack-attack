@@ -137,7 +137,7 @@ module Rack
     def allowed_errors
       errors = []
       errors << Dalli::DalliError if defined?(Dalli)
-      errors << Redis::BaseError if defined?(Redis)
+      errors << Redis::BaseConnectionError if defined?(Redis)
       errors
     end
   end
