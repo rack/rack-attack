@@ -102,7 +102,7 @@ module Rack
     end
 
     def call(env)
-      return @app.call(env) if handle_call(env)
+      @app.call(env) if handle_call(env)
     end
 
     private
