@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'spec_helper'
-require 'timecop'
+require_relative 'support/freeze_time_helper'
 
 describe 'Rack::Attack.throttle' do
   before do
@@ -16,7 +16,7 @@ describe 'Rack::Attack.throttle' do
 
   describe 'a single request' do
     it 'should set the counter for one request' do
-      Timecop.freeze do
+      within_same_period do
         get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
 
         key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
@@ -41,7 +41,7 @@ describe 'Rack::Attack.throttle' do
 
   describe "with 2 requests" do
     before do
-      Timecop.freeze do
+      within_same_period do
         2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
       end
     end
@@ -78,7 +78,7 @@ describe 'Rack::Attack.throttle with limit as proc' do
 
   describe 'a single request' do
     it 'should set the counter for one request' do
-      Timecop.freeze do
+      within_same_period do
         get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
 
         key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
@@ -112,7 +112,7 @@ describe 'Rack::Attack.throttle with period as proc' do
 
   describe 'a single request' do
     it 'should set the counter for one request' do
-      Timecop.freeze do
+      within_same_period do
         get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
 
         key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
@@ -147,7 +147,7 @@ describe 'Rack::Attack.throttle with block returning nil' do
 
   describe 'a single request' do
     it 'should not set the counter' do
-      Timecop.freeze do
+      within_same_period do
         get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
 
         key = "rack::attack:#{Time.now.to_i / @period}:ip/sec:1.2.3.4"
@@ -179,7 +179,7 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
   end
 
   it 'should not differentiate requests when throttle_discriminator_normalizer is enabled' do
-    Timecop.freeze do
+    within_same_period do
       post_logins
       key = "rack::attack:#{Time.now.to_i / @period}:logins/email:person@example.com"
       _(Rack::Attack.cache.store.read(key)).must_equal 3
@@ -191,7 +191,7 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
       prev = Rack::Attack.throttle_discriminator_normalizer
       Rack::Attack.throttle_discriminator_normalizer = nil
 
-      Timecop.freeze do
+      within_same_period do
         post_logins
         @emails.each do |email|
           key = "rack::attack:#{Time.now.to_i / @period}:logins/email:#{email}"
