@@ -31,6 +31,7 @@ module Rack
     autoload :Track,                'rack/attack/track'
     autoload :Fail2Ban,             'rack/attack/fail2ban'
     autoload :Allow2Ban,            'rack/attack/allow2ban'
+    autoload :Postrequest,          'rack/attack/postrequest'
 
     class << self
       attr_accessor :enabled, :notifier, :throttle_discriminator_normalizer
@@ -81,6 +82,7 @@ module Rack
         :clear_configuration,
         :safelists,
         :blocklists,
+        :postrequest,
         :throttles,
         :tracks
       )
@@ -126,7 +128,9 @@ module Rack
         end
       else
         configuration.tracked?(request)
-        @app.call(env)
+        response = @app.call(env)
+        configuration.process_postrequests(request, response)
+        response
       end
     end
   end

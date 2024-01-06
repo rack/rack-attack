@@ -19,7 +19,7 @@ module Rack
         end
       end
 
-      attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
+      attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists, :postrequests
       attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
@@ -80,6 +80,10 @@ module Rack
         @tracks[name] = Track.new(name, options, &block)
       end
 
+      def postrequest(name, &block)
+        @postrequests[name] = Postrequest.new(name, &block)
+      end
+
       def safelisted?(request)
         @anonymous_safelists.any? { |safelist| safelist.matched_by?(request) } ||
           @safelists.any? { |_name, safelist| safelist.matched_by?(request) }
@@ -87,7 +91,8 @@ module Rack
 
       def blocklisted?(request)
         @anonymous_blocklists.any? { |blocklist| blocklist.matched_by?(request) } ||
-          @blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) }
+          @blocklists.any? { |_name, blocklist| blocklist.matched_by?(request) } ||
+          @postrequests.any? { |_name, postrequest| postrequest.matched_by?(request, nil) }
       end
 
       def throttled?(request)
@@ -102,6 +107,10 @@ module Rack
         end
       end
 
+      def process_postrequests(request, response)
+        @postrequests.each { |_name, postrequest| postrequest.matched_by?(request, response) }
+      end
+
       def clear_configuration
         set_defaults
       end
@@ -113,6 +122,7 @@ module Rack
         @blocklists = {}
         @throttles = {}
         @tracks = {}
+        @postrequests = {}
         @anonymous_blocklists = []
         @anonymous_safelists = []
         @throttled_response_retry_after_header = false

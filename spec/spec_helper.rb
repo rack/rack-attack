@@ -46,7 +46,13 @@ class Minitest::Spec
       use Rack::Attack
       use Rack::Lint
 
-      run lambda { |_env| [200, {}, ['Hello World']] }
+      run lambda { |env|
+        if env['PATH_INFO'] == '/not_found'
+          [404, {}, ['Not Found']]
+        else
+          [200, {}, ['Hello World']]
+        end
+      }
     end.to_app
   end
 
