@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'freeze_time_helper'
+
 class Minitest::Spec
   def self.it_works_for_cache_backed_features(options)
     fetch_from_store = options.fetch(:fetch_from_store)
@@ -9,11 +11,13 @@ class Minitest::Spec
         request.ip
       end
 
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      assert_equal 200, last_response.status
+      within_same_period do
+        get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+        assert_equal 200, last_response.status
 
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      assert_equal 429, last_response.status
+        get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+        assert_equal 429, last_response.status
+      end
     end
 
     it "works for fail2ban" do
@@ -23,17 +27,19 @@ class Minitest::Spec
         end
       end
 
-      get "/"
-      assert_equal 200, last_response.status
+      within_same_period do
+        get "/"
+        assert_equal 200, last_response.status
 
-      get "/private-place"
-      assert_equal 403, last_response.status
+        get "/private-place"
+        assert_equal 403, last_response.status
 
-      get "/private-place"
-      assert_equal 403, last_response.status
+        get "/private-place"
+        assert_equal 403, last_response.status
 
-      get "/"
-      assert_equal 403, last_response.status
+        get "/"
+        assert_equal 403, last_response.status
+      end
     end
 
     it "works for allow2ban" do
@@ -43,20 +49,22 @@ class Minitest::Spec
         end
       end
 
-      get "/"
-      assert_equal 200, last_response.status
+      within_same_period do
+        get "/"
+        assert_equal 200, last_response.status
 
-      get "/scarce-resource"
-      assert_equal 200, last_response.status
+        get "/scarce-resource"
+        assert_equal 200, last_response.status
 
-      get "/scarce-resource"
-      assert_equal 200, last_response.status
+        get "/scarce-resource"
+        assert_equal 200, last_response.status
 
-      get "/scarce-resource"
-      assert_equal 403, last_response.status
+        get "/scarce-resource"
+        assert_equal 403, last_response.status
 
-      get "/"
-      assert_equal 403, last_response.status
+        get "/"
+        assert_equal 403, last_response.status
+      end
     end
 
     it "doesn't leak keys" do
@@ -66,9 +74,7 @@ class Minitest::Spec
 
       key = nil
 
-      # Freeze time during these statement to be sure that the key used by rack attack is the same
-      # we pre-calculate in local variable `key`
-      Timecop.freeze do
+      within_same_period do
         key = "rack::attack:#{Time.now.to_i}:by ip:1.2.3.4"
 
         get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
