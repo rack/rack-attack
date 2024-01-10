@@ -4,7 +4,6 @@ require_relative "../../spec_helper"
 
 if defined?(::ConnectionPool) && defined?(::Dalli)
   require_relative "../../support/cache_store_helper"
-  require "timecop"
 
   describe "ActiveSupport::Cache::MemCacheStore (pooled) as a cache backend" do
     before do
