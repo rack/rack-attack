@@ -6,7 +6,6 @@ if defined?(::Dalli) && defined?(::ConnectionPool)
   require_relative "../../support/cache_store_helper"
   require "connection_pool"
   require "dalli"
-  require "timecop"
 
   describe "ConnectionPool with Dalli::Client as a cache backend" do
     before do

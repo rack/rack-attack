@@ -4,8 +4,6 @@ require_relative "../../spec_helper"
 require_relative "../../support/cache_store_helper"
 
 if defined?(::Redis::Store)
-  require "timecop"
-
   describe "Redis::Store as a cache backend" do
     before do
       Rack::Attack.cache.store = ::Redis::Store.new

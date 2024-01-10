@@ -9,7 +9,6 @@ should_run =
 
 if should_run
   require_relative "../../support/cache_store_helper"
-  require "timecop"
 
   describe "ActiveSupport::Cache::RedisCacheStore as a cache backend" do
     before do

@@ -5,7 +5,6 @@ require_relative "../../spec_helper"
 if defined?(::Dalli)
   require_relative "../../support/cache_store_helper"
   require "dalli"
-  require "timecop"
 
   describe "Dalli::Client as a cache backend" do
     before do
