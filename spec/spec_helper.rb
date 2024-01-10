@@ -20,6 +20,7 @@ end
 
 safe_require "connection_pool"
 safe_require "dalli"
+safe_require "rails"
 safe_require "redis"
 safe_require "redis-store"
 
@@ -27,7 +28,7 @@ class Minitest::Spec
   include Rack::Test::Methods
 
   before do
-    if Object.const_defined?(:Rails) && Rails.respond_to?(:cache)
+    if Object.const_defined?(:Rails) && Rails.respond_to?(:cache) && Rails.cache.respond_to?(:clear)
       Rails.cache.clear
     end
   end

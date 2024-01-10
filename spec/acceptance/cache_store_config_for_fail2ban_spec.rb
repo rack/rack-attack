@@ -12,9 +12,11 @@ describe "Cache store config when using fail2ban" do
     end
   end
 
-  it "gives semantic error if no store was configured" do
-    assert_raises(Rack::Attack::MissingStoreError) do
-      get "/private-place"
+  unless defined?(Rails)
+    it "gives semantic error if no store was configured" do
+      assert_raises(Rack::Attack::MissingStoreError) do
+        get "/private-place"
+      end
     end
   end
 

@@ -9,9 +9,11 @@ describe "Cache store config when throttling without Rails" do
     end
   end
 
-  it "gives semantic error if no store was configured" do
-    assert_raises(Rack::Attack::MissingStoreError) do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+  unless defined?(Rails)
+    it "gives semantic error if no store was configured" do
+      assert_raises(Rack::Attack::MissingStoreError) do
+        get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+      end
     end
   end
 
