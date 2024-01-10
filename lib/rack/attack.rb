@@ -96,9 +96,9 @@ module Rack
 
     attr_reader :configuration
 
-    def initialize(app)
+    def initialize(app, configuration = nil)
       @app = app
-      @configuration = self.class.configuration
+      @configuration = configuration || self.class.configuration
     end
 
     def call(env)
