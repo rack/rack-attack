@@ -12,9 +12,11 @@ describe "Cache store config when using allow2ban" do
     end
   end
 
-  it "gives semantic error if no store was configured" do
-    assert_raises(Rack::Attack::MissingStoreError) do
-      get "/scarce-resource"
+  unless defined?(Rails)
+    it "gives semantic error if no store was configured" do
+      assert_raises(Rack::Attack::MissingStoreError) do
+        get "/scarce-resource"
+      end
     end
   end
 

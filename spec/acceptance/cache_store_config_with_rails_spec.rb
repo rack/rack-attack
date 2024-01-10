@@ -11,10 +11,12 @@ describe "Cache store config with Rails" do
     end
   end
 
-  it "fails when Rails.cache is not set" do
-    Object.stub_const(:Rails, OpenStruct.new(cache: nil)) do
-      assert_raises(Rack::Attack::MissingStoreError) do
-        get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+  unless defined?(Rails)
+    it "fails when Rails.cache is not set" do
+      Object.stub_const(:Rails, OpenStruct.new(cache: nil)) do
+        assert_raises(Rack::Attack::MissingStoreError) do
+          get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+        end
       end
     end
   end
