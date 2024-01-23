@@ -15,6 +15,7 @@ jobs:
         ports:
           - 11211:11211
     strategy:
+      fail-fast: false
       matrix:
         ruby:
           - '3.3'
