@@ -291,7 +291,7 @@ Rack::Attack.track("special_agent", limit: 6, period: 60) do |req|
 end
 
 # Track it using ActiveSupport::Notification
-ActiveSupport::Notifications.subscribe("track.rack_attack") do |name, start, finish, event_id, payload|
+ActiveSupport::Notifications.subscribe("track.rack_attack") do |name, start, finish, instrumenter_id, payload|
   req = payload[:request]
   if req.env['rack.attack.matched'] == "special_agent"
     Rails.logger.info "special_agent: #{req.path}"
@@ -383,7 +383,7 @@ To get notified about specific type of events, subscribe to the event name follo
 E.g. for throttles use:
 
 ```ruby
-ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |name, start, finish, event_id, payload|
+ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |name, start, finish, instrumenter_id, payload|
   # request object available in payload[:request]
 
   # Your code here
@@ -393,7 +393,7 @@ end
 If you want to subscribe to every `rack_attack` event, use:
 
 ```ruby
-ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, event_id, payload|
+ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, instrumenter_id, payload|
   # request object available in payload[:request]
 
   # Your code here
