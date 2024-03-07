@@ -217,6 +217,35 @@ end
 
 Note that `Fail2Ban` filters are not automatically scoped to the blocklist, so when using multiple filters in an application the scoping must be added to the discriminator e.g. `"pentest:#{req.ip}"`.
 
+Instrumentation of fail2ban requires passing the request to the filter, and
+subscribing to `ban.rack_attack`:
+
+```ruby
+Rack::Attack.blocklist('fail2ban') do |req|
+  # same as above, plus passing in the request
+  Rack::Attack::Fail2Ban.filter(..., request: req) { ... }
+end
+
+# Then you can subscribe to the ban event
+ActiveSupport::Notifications.subscribe("ban.rack_attack") do |name, start, finish, request_id, payload|
+  # Request object available in payload[:request].
+  #
+  # For ease of use, the payload echoes the fail2ban settings that triggered
+  # the ban:
+  #
+  # payload[:request].env['rack.attack.match_data'] #=> {
+  #   name: "fail2ban",
+  #   discriminator: "1.2.3.4",
+  #   count: 2,
+  #   maxretry: 5,
+  #   findtime: 60,
+  #   bantime: 3600
+  # }
+
+  # Your code here
+end
+```
+
 #### Allow2Ban
 
 `Allow2Ban.filter` works the same way as the `Fail2Ban.filter` except that it *allows* requests from misbehaving
