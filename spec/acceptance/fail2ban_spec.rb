@@ -4,6 +4,8 @@ require_relative "../spec_helper"
 require "timecop"
 
 describe "fail2ban" do
+  let(:notifications) { [] }
+
   before do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
@@ -74,5 +76,45 @@ describe "fail2ban" do
       get "/"
       assert_equal 200, last_response.status
     end
+  end
+
+  it "notifies when the request is blocked" do
+    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+      notifications.push(payload)
+    end
+
+    get "/"
+
+    assert_equal 200, last_response.status
+    assert notifications.empty?
+
+    get "/private-place"
+
+    assert_equal 403, last_response.status
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
+
+    get "/"
+
+    assert_equal 200, last_response.status
+    assert notifications.empty?
+
+    get "/private-place"
+
+    assert_equal 403, last_response.status
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
+
+    get "/"
+
+    assert_equal 403, last_response.status
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
   end
 end
