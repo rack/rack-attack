@@ -3,21 +3,7 @@
 require_relative 'spec_helper'
 
 describe 'Rack::Attack.track' do
-  let(:counter_class) do
-    Class.new do
-      def self.incr
-        @counter += 1
-      end
-
-      def self.reset
-        @counter = 0
-      end
-
-      def self.check
-        @counter
-      end
-    end
-  end
+  let(:notifications) { [] }
 
   before do
     Rack::Attack.track("everything") { |_req| true }
@@ -34,19 +20,18 @@ describe 'Rack::Attack.track' do
 
   describe "with a notification subscriber and two tracks" do
     before do
-      counter_class.reset
       # A second track
       Rack::Attack.track("homepage") { |req| req.path == "/" }
 
-      ActiveSupport::Notifications.subscribe("track.rack_attack") do |*_args|
-        counter_class.incr
+      ActiveSupport::Notifications.subscribe("track.rack_attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
       end
 
       get "/"
     end
 
     it "should notify twice" do
-      _(counter_class.check).must_equal 2
+      _(notifications.size).must_equal 2
     end
   end
 

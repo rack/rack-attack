@@ -3,6 +3,8 @@
 require_relative "../spec_helper"
 
 describe "#safelist" do
+  let(:notifications) { [] }
+
   before do
     Rack::Attack.blocklist do |request|
       request.ip == "1.2.3.4"
@@ -38,23 +40,23 @@ describe "#safelist" do
   end
 
   it "notifies when the request is safe" do
-    notification_matched = nil
-    notification_type = nil
-
     ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
-      notification_matched = payload[:request].env["rack.attack.matched"]
-      notification_type = payload[:request].env["rack.attack.match_type"]
+      notifications.push(payload)
     end
 
     get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 200, last_response.status
-    assert_nil notification_matched
-    assert_equal :safelist, notification_type
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_nil notification[:request].env["rack.attack.matched"]
+    assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
   end
 end
 
 describe "#safelist with name" do
+  let(:notifications) { [] }
+
   before do
     Rack::Attack.blocklist("block 1.2.3.4") do |request|
       request.ip == "1.2.3.4"
@@ -90,18 +92,16 @@ describe "#safelist with name" do
   end
 
   it "notifies when the request is safe" do
-    notification_matched = nil
-    notification_type = nil
-
     ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
-      notification_matched = payload[:request].env["rack.attack.matched"]
-      notification_type = payload[:request].env["rack.attack.match_type"]
+      notifications.push(payload)
     end
 
     get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 200, last_response.status
-    assert_equal "safe path", notification_matched
-    assert_equal :safelist, notification_type
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_equal "safe path", notification[:request].env["rack.attack.matched"]
+    assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
   end
 end

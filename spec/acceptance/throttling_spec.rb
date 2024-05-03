@@ -4,6 +4,8 @@ require_relative "../spec_helper"
 require "timecop"
 
 describe "#throttle" do
+  let(:notifications) { [] }
+
   before do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
   end
@@ -138,42 +140,31 @@ describe "#throttle" do
       request.ip
     end
 
-    notification_matched = nil
-    notification_type = nil
-    notification_data = nil
-    notification_discriminator = nil
-
     ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |_name, _start, _finish, _id, payload|
-      notification_matched = payload[:request].env["rack.attack.matched"]
-      notification_type = payload[:request].env["rack.attack.match_type"]
-      notification_data = payload[:request].env['rack.attack.match_data']
-      notification_discriminator = payload[:request].env['rack.attack.match_discriminator']
+      notifications.push(payload)
     end
 
     get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
 
     assert_equal 200, last_response.status
-    assert_nil notification_matched
-    assert_nil notification_type
-    assert_nil notification_data
-    assert_nil notification_discriminator
+    assert notifications.empty?
 
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 200, last_response.status
-    assert_nil notification_matched
-    assert_nil notification_type
-    assert_nil notification_data
-    assert_nil notification_discriminator
+    assert notifications.empty?
 
     get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
     assert_equal 429, last_response.status
-    assert_equal "by ip", notification_matched
-    assert_equal :throttle, notification_type
-    assert_equal 60, notification_data[:period]
-    assert_equal 1, notification_data[:limit]
-    assert_equal 2, notification_data[:count]
-    assert_equal "1.2.3.4", notification_discriminator
+
+    assert_equal 1, notifications.size
+    notification = notifications.pop
+    assert_equal "by ip", notification[:request].env["rack.attack.matched"]
+    assert_equal :throttle, notification[:request].env["rack.attack.match_type"]
+    assert_equal 60, notification[:request].env["rack.attack.match_data"][:period]
+    assert_equal 1, notification[:request].env["rack.attack.match_data"][:limit]
+    assert_equal 2, notification[:request].env["rack.attack.match_data"][:count]
+    assert_equal "1.2.3.4", notification[:request].env["rack.attack.match_discriminator"]
   end
 end
