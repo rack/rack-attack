@@ -37,6 +37,12 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
 - [Customizing responses](#customizing-responses)
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
 - [Logging & Instrumentation](#logging--instrumentation)
+- [Fault Tolerance & Error Handling](#fault-tolerance--error-handling)
+  - [Built-in error handling](#built-in-error-handling)
+  - [Expose Rails cache errors to Rack::Attack](#expose-rails-cache-errors-to-rackattack)
+  - [Configure cache timeout](#configure-cache-timeout)
+  - [Failure cooldown](#failure-cooldown)
+  - [Custom error handling](#custom-error-handling)
 - [Testing](#testing)
 - [How it works](#how-it-works)
   - [About Tracks](#about-tracks)
@@ -400,11 +406,133 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, i
 end
 ```
 
+## Fault Tolerance & Error Handling
+
+Rack::Attack has a mission-critical dependency on your [cache store](#cache-store-configuration).
+If the cache system experiences an outage, it may cause severe latency within Rack::Attack
+and lead to an overall application outage.
+
+Although Rack::Attack is designed to be "fault-tolerant by default", depending on your application
+setup, additional configuration may be required. Please **read this section carefully** to understand
+how to best protect your application.
+
+### Built-in error handling
+
+As a Rack middleware component, Rack::Attack wraps your application's request handling endpoint.
+When an error occurs within either within Rack::Attack **or** within your application, by default:
+
+- If the error is a Redis or Dalli cache error, Rack::Attack logs the error then allows the request.
+- Otherwise, Rack::Attack raises the error. The request will fail.
+
+All errors will trigger a failure cooldown (see below), regardless of whether they are allowed or raised.
+
+### Expose Rails cache errors to Rack::Attack
+
+If you are using Rack::Attack with Rails cache, by default, Rails cache will **suppress**
+any such errors, and Rack::Attack will not be able to handle them properly as per above.
+This can be dangerous: if your cache is timing out due to high request volume,
+for example, Rack::Attack will continue to blindly send requests to your cache and worsen the problem.
+
+To mitigate this:
+
+* When using Rails cache with `:redis_cache_store`, you'll need to expose errors to Rack::Attack
+with a custom error handler as follows:
+
+    ```ruby
+    # in your Rails config
+    config.cache_store = :redis_cache_store,
+                         { # ...
+                           error_handler: -> (method:, returning:, exception:) do
+                             raise exception if Rack::Attack.calling?
+                           end
+                         }
+    ```
+
+* Rails `:mem_cache_store` and `:dalli_store` suppress all Dalli errors. The recommended
+workaround is to set a [Rack::Attack-specific cache configuration](#cache-store-configuration).
+
+### Configure cache timeout
+
+In your application config, it is recommended to set your cache timeout to 0.1 seconds or lower.
+Please refer to the [Rails Guide](https://guides.rubyonrails.org/caching_with_rails.html).
+
+```ruby
+# Set 100 millisecond timeout on Redis
+config.cache_store = :redis_cache_store,
+                     { # ...
+                       connect_timeout: 0.1,
+                       read_timeout: 0.1,
+                       write_timeout: 0.1
+                     }
+```
+
+To use different timeout values specific to Rack::Attack, you may set a
+[Rack::Attack-specific cache configuration](#cache-store-configuration).
+
+### Failure cooldown
+
+When any error occurs, Rack::Attack becomes disabled for a 60 seconds "cooldown" period.
+This prevents a cache outage from adding timeout latency on each Rack::Attack request.
+All errors trigger the failure cooldown, regardless of whether they are allowed or handled.
+You can configure the cooldown period as follows:
+
+```ruby
+# in initializers/rack_attack.rb
+
+# Disable Rack::Attack for 5 minutes if any cache failure occurs
+Rack::Attack.failure_cooldown = 300
+
+# Do not use failure cooldown
+Rack::Attack.failure_cooldown = nil
+```
+
+### Custom error handling
+
+For most use cases, it is not necessary to re-configure Rack::Attack's default error handling.
+However, there are several ways you may do so.
+
+First, you may specify the list of errors to allow as an array of Class and/or String values.
+
+```ruby
+# in initializers/rack_attack.rb
+Rack::Attack.allowed_errors += [MyErrorClass, 'MyOtherErrorClass']
+```
+
+Alternatively, you may define a custom error handler as a Proc. The error handler will receive all errors,
+regardless of whether they are on the allow list. Your handler should return either `:allow`, `:block`,
+or `:throttle`, or else re-raise the error; other returned values will allow the request.
+
+```ruby
+# Set a custom error handler which blocks allowed errors
+# and raises all others
+Rack::Attack.error_handler = -> (error, request) do
+  if Rack::Attack.allow_error?(error)
+    Rails.logger.warn("Blocking error: #{error.class.name} from IP #{request.ip}")
+    :block
+  else
+    raise(error)
+  end
+end
+```
+
+Lastly, you can define the error handlers as a Symbol shortcut:
+
+```ruby
+# Handle all errors with block response
+Rack::Attack.error_handler = :block
+
+# Handle all errors with throttle response
+Rack::Attack.error_handler = :throttle
+
+# Handle all errors by allowing the request
+Rack::Attack.error_handler = :allow
+```
+
 ## Testing
 
-A note on developing and testing apps using Rack::Attack - if you are using throttling in particular, you will
-need to enable the cache in your development environment. See [Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html)
-for more on how to do this.
+When developing and testing apps using Rack::Attack, if you are using throttling in particular,
+you must enable the cache in your development environment. See
+[Caching with Rails](http://guides.rubyonrails.org/caching_with_rails.html) for how to do this.
 
 ### Disabling
 
