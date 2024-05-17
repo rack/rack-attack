@@ -24,34 +24,26 @@ module Rack
         end
 
         def read(key)
-          rescuing do
-            with do |client|
-              client.get(key)
-            end
+          with do |client|
+            client.get(key)
           end
         end
 
         def write(key, value, options = {})
-          rescuing do
-            with do |client|
-              client.set(key, value, options.fetch(:expires_in, 0), raw: true)
-            end
+          with do |client|
+            client.set(key, value, options.fetch(:expires_in, 0), raw: true)
           end
         end
 
         def increment(key, amount, options = {})
-          rescuing do
-            with do |client|
-              client.incr(key, amount, options.fetch(:expires_in, 0), amount)
-            end
+          with do |client|
+            client.incr(key, amount, options.fetch(:expires_in, 0), amount)
           end
         end
 
         def delete(key)
-          rescuing do
-            with do |client|
-              client.delete(key)
-            end
+          with do |client|
+            client.delete(key)
           end
         end
 
@@ -65,12 +57,6 @@ module Rack
               end
             end
           end
-        end
-
-        def rescuing
-          yield
-        rescue Dalli::DalliError
-          nil
         end
       end
     end

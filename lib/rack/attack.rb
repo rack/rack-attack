@@ -102,14 +102,21 @@ module Rack
     end
 
     def call(env)
-      return @app.call(env) if !self.class.enabled || env["rack.attack.called"]
+      @app.call(env) if handle_call(env)
+    end
+
+    private
+
+    # Returns true if call should be forwarded to middleware.
+    def handle_call(env)
+      return true if !self.class.enabled || env["rack.attack.called"]
 
       env["rack.attack.called"] = true
       env['PATH_INFO'] = PathNormalizer.normalize_path(env['PATH_INFO'])
       request = Rack::Attack::Request.new(env)
 
       if configuration.safelisted?(request)
-        @app.call(env)
+        return true
       elsif configuration.blocklisted?(request)
         # Deprecated: Keeping blocklisted_response for backwards compatibility
         if configuration.blocklisted_response
@@ -126,8 +133,19 @@ module Rack
         end
       else
         configuration.tracked?(request)
-        @app.call(env)
+        return true
       end
+
+      false
+    rescue *allowed_errors
+      true
+    end
+
+    def allowed_errors
+      errors = []
+      errors << Dalli::DalliError if defined?(Dalli)
+      errors << Redis::BaseConnectionError if defined?(Redis)
+      errors
     end
   end
 end
