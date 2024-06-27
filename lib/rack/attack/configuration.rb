@@ -19,7 +19,7 @@ module Rack
         end
       end
 
-      attr_reader :safelists, :blocklists, :throttles, :anonymous_blocklists, :anonymous_safelists
+      attr_reader :safelists, :blocklists, :throttles, :tracks, :anonymous_blocklists, :anonymous_safelists
       attr_accessor :blocklisted_responder, :throttled_responder, :throttled_response_retry_after_header
 
       attr_reader :blocklisted_response, :throttled_response # Keeping these for backwards compatibility
