@@ -8,6 +8,10 @@ appraise "rack_2" do
   gem "rack", "~> 2.0"
 end
 
+appraise 'rails_7-2' do
+  gem 'railties', '~> 7.2.0'
+end
+
 appraise 'rails_7-1' do
   gem 'railties', '~> 7.1.0'
 end
@@ -47,6 +51,17 @@ end
 appraise "connection_pool_dalli" do
   gem "connection_pool", "~> 2.2"
   gem "dalli", "~> 3.0"
+end
+
+appraise "active_support_7-2_redis_cache_store" do
+  gem "activesupport", "~> 7.2.0"
+  gem "redis", "~> 5.0"
+end
+
+appraise "active_support_7-2_redis_cache_store_pooled" do
+  gem "activesupport", "~> 7.2.0"
+  gem "connection_pool", "~> 2.2"
+  gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-1_redis_cache_store" do
