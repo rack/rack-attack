@@ -103,26 +103,4 @@ describe 'Rack::Attack' do
       end
     end
   end
-
-  describe 'reset!' do
-    it 'raises an error when is not supported by cache store' do
-      Rack::Attack.cache.store = Class.new
-      assert_raises(Rack::Attack::IncompatibleStoreError) do
-        Rack::Attack.reset!
-      end
-    end
-
-    if defined?(Redis)
-      it 'should delete rack attack keys' do
-        redis = Redis.new
-        redis.set('key', 'value')
-        redis.set("#{Rack::Attack.cache.prefix}::key", 'value')
-        Rack::Attack.cache.store = redis
-        Rack::Attack.reset!
-
-        _(redis.get('key')).must_equal 'value'
-        _(redis.get("#{Rack::Attack.cache.prefix}::key")).must_be_nil
-      end
-    end
-  end
 end

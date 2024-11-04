@@ -45,11 +45,12 @@ module Rack
 
         def delete_matched(matcher, _options = nil)
           cursor = "0"
+          source = matcher.source
 
           rescuing do
             # Fetch keys in batches using SCAN to avoid blocking the Redis server.
             loop do
-              cursor, keys = scan(cursor, match: matcher, count: 1000)
+              cursor, keys = scan(cursor, match: source, count: 1000)
               del(*keys) unless keys.empty?
               break if cursor == "0"
             end
