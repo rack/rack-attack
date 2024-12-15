@@ -36,7 +36,6 @@ jobs:
           - rails_6_0
           - rails_5_2
           - dalli3
-          - dalli2
           - redis_5
           - redis_4
           - connection_pool_dalli
@@ -60,15 +59,11 @@ jobs:
             ruby: '3.3'
           - gemfile: active_support_5_redis_cache_store_pooled
             ruby: '3.3'
-          - gemfile: dalli2
-            ruby: '3.3'
           - gemfile: rails_5_2
             ruby: '3.2'
           - gemfile: active_support_5_redis_cache_store
             ruby: '3.2'
           - gemfile: active_support_5_redis_cache_store_pooled
-            ruby: '3.2'
-          - gemfile: dalli2
             ruby: '3.2'
           - gemfile: rails_5_2
             ruby: '3.1'
@@ -76,15 +71,11 @@ jobs:
             ruby: '3.1'
           - gemfile: active_support_5_redis_cache_store_pooled
             ruby: '3.1'
-          - gemfile: dalli2
-            ruby: '3.1'
           - gemfile: rails_5_2
             ruby: '3.0'
           - gemfile: active_support_5_redis_cache_store
             ruby: '3.0'
           - gemfile: active_support_5_redis_cache_store_pooled
-            ruby: '3.0'
-          - gemfile: dalli2
             ruby: '3.0'
           - gemfile: rails_7_0
             ruby: '2.6'
