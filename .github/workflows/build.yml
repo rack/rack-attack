@@ -35,7 +35,6 @@ jobs:
           - rails_6_1
           - rails_6_0
           - dalli3
-          - dalli2
           - redis_5
           - redis_4
           - connection_pool_dalli
@@ -51,13 +50,6 @@ jobs:
           - active_support_6_redis_cache_store_pooled
           - redis_store
         exclude:
-          - gemfile: dalli2
-            ruby: '3.3'
-          - gemfile: dalli2
-            ruby: '3.2'
-          - gemfile: dalli2
-            ruby: '3.1'
-          - gemfile: dalli2
             ruby: '3.0'
           - gemfile: rails_7_0
             ruby: '2.6'
