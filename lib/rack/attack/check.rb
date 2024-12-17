@@ -14,8 +14,11 @@ module Rack
       def matched_by?(request)
         block.call(request).tap do |match|
           if match
-            request.env["rack.attack.matched"] = name
-            request.env["rack.attack.match_type"] = type
+            # Can already be set if the match just resulted in a ban,
+            # in which case we want to notify about the ban, not the
+            # blocklist check
+            request.env["rack.attack.matched"] ||= name
+            request.env["rack.attack.match_type"] ||= type
             Rack::Attack.instrument(request)
           end
         end
