@@ -3,7 +3,7 @@
 require "bundler/setup"
 
 require "minitest/autorun"
-require "minitest/pride"
+require "rspec/mocks/minitest_integration"
 require "rack/test"
 require "active_support"
 require "rack/attack"
