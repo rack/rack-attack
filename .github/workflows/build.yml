@@ -50,7 +50,6 @@ jobs:
           - active_support_6_redis_cache_store_pooled
           - redis_store
         exclude:
-            ruby: '3.0'
           - gemfile: rails_7_0
             ruby: '2.6'
           - gemfile: rails_7_0
