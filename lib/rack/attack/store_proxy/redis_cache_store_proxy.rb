@@ -33,6 +33,10 @@ module Rack
         def write(name, value, options = {})
           super(name, value, options.merge!(raw: true))
         end
+
+        def delete_matched(matcher, options = nil)
+          super(matcher.source, options)
+        end
       end
     end
   end

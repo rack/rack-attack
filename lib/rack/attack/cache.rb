@@ -55,7 +55,7 @@ module Rack
 
       def reset!
         if store.respond_to?(:delete_matched)
-          store.delete_matched("#{prefix}*")
+          store.delete_matched(/#{prefix}*/)
         else
           raise(
             Rack::Attack::IncompatibleStoreError,
