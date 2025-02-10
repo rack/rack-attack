@@ -51,14 +51,28 @@ jobs:
           - active_support_6_redis_cache_store_pooled
           - redis_store
         exclude:
+          - gemfile: rails_6_0
+            ruby: '3.4'
+          - gemfile: active_support_6_redis_cache_store
+            ruby: '3.4'
+          - gemfile: active_support_6_redis_cache_store_pooled
+            ruby: '3.4'
+          - gemfile: rails_6_1
+            ruby: '3.4'
+          - gemfile: rails_7_0
+            ruby: '3.4'
           - gemfile: rails_7_0
             ruby: '2.6'
           - gemfile: rails_7_0
             ruby: '2.5'
           - gemfile: active_support_7_0_redis_cache_store
+            ruby: '3.4'
+          - gemfile: active_support_7_0_redis_cache_store
             ruby: '2.6'
           - gemfile: active_support_7_0_redis_cache_store
             ruby: '2.5'
+          - gemfile: active_support_7_0_redis_cache_store_pooled
+            ruby: '3.4'
           - gemfile: active_support_7_0_redis_cache_store_pooled
             ruby: '2.6'
           - gemfile: active_support_7_0_redis_cache_store_pooled
