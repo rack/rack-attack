@@ -48,6 +48,10 @@ appraise 'redis_4' do
   gem 'redis', '~> 4.0'
 end
 
+appraise "sqlite" do
+  gem "sqlite3", "~> 1.4"
+end
+
 appraise "connection_pool_dalli" do
   gem "connection_pool", "~> 2.2"
   gem "dalli", "~> 3.0"
