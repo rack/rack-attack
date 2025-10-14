@@ -1,6 +1,29 @@
 # Changelog
 
-This file will no longer be updated - all changes after v6.7.0 will only be documented in the relevant release note.
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [6.8.0] - 2025-10-14
+
+### Changed
+
+- Avoid RedisCacheStore#increment on Rails 6+ (which might improve performance) by @jdelStrother (#597)
+
+### Fixed
+
+- Fix #588 don't fail if request.ip is missing, by @santib (#630)
+- Fix reset! when using namespaced cache store by @santib (#673)
+
+### Deprecated
+
+- Soft deprecate integration with rack 1.x, may or may not work with it.
+- Soft deprecate integration with rails 5.2 or less, may or may not work with it.
+
+### Removed
+
+- Remove support for unmaintained ActiveSupport::Cache::RedisStore, by @mitchellhenke (#625)
 
 ## [6.7.0] - 2023-07-26
 
@@ -281,6 +304,7 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
  - Extract mandatory options to constants
 
 
+[6.8.0]: https://github.com/rack/rack-attack/compare/v6.7.0...v6.8.0/
 [6.7.0]: https://github.com/rack/rack-attack/compare/v6.6.1...v6.7.0/
 [6.6.1]: https://github.com/rack/rack-attack/compare/v6.6.0...v6.6.1/
 [6.6.0]: https://github.com/rack/rack-attack/compare/v6.5.0...v6.6.0/
@@ -321,3 +345,6 @@ so your custom code is less prone to race conditions ([#282](https://github.com/
 [@rofreg]: https://github.com/rofreg
 [@NikolayRys]: https://github.com/NikolayRys
 [@ixti]: https://github.com/ixti
+[@santib]: https://github.com/santib
+[@jdelStrother]: https://github.com/jdelStrother
+[@mitchellhenke]: https://github.com/mitchellhenke
