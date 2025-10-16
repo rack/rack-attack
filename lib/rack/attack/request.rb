@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Rack::Attack::Request is the same as ::Rack::Request by default.
+# Rack::Attack::Request is the same as :ActionDispatch::Request in Rails apps,
+# and ::Rack::Request in other apps by default.
 #
 # This is a safe place to add custom helper methods to the request object
 # through monkey patching:
@@ -15,7 +16,7 @@
 #
 module Rack
   class Attack
-    class Request < ::Rack::Request
+    class Request < defined?(::ActionDispatch::Request) ? ::ActionDispatch::Request : ::Rack::Request
     end
   end
 end
