@@ -55,7 +55,7 @@ Add this line to your application's Gemfile:
 ```ruby
 # In your Gemfile
 
-gem 'rack-attack'
+gem "rack-attack", "~> 6.8"
 ```
 
 And then execute:
