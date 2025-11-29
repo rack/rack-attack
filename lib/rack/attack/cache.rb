@@ -19,10 +19,10 @@ module Rack
 
       attr_reader :store
 
-      def store=(store)
+      def store=(store, bypass_all_store_errors: false, bypassable_store_errors: [])
         @store =
           if (proxy = BaseProxy.lookup(store))
-            proxy.new(store)
+            proxy.new(store, bypass_all_store_errors: bypass_all_store_errors, bypassable_store_errors: bypassable_store_errors)
           else
             store
           end
