@@ -356,9 +356,9 @@ Rack::Attack.throttled_responder = lambda do |request|
   now = match_data[:epoch_time]
 
   headers = {
-    'RateLimit-Limit' => match_data[:limit].to_s,
-    'RateLimit-Remaining' => '0',
-    'RateLimit-Reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
+    'ratelimit-limit' => match_data[:limit].to_s,
+    'ratelimit-remaining' => '0',
+    'ratelimit-reset' => (now + (match_data[:period] - now % match_data[:period])).to_s
   }
 
   [ 429, headers, ["Throttled\n"]]
