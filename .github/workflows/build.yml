@@ -35,25 +35,17 @@ jobs:
           - dalli3
           - redis_5
           - redis_4
-          - connection_pool_dalli
           - active_support_8_1_redis_cache_store
-          - active_support_8_1_redis_cache_store_pooled
           - active_support_8_0_redis_cache_store
-          - active_support_8_0_redis_cache_store_pooled
           - active_support_7_2_redis_cache_store
-          - active_support_7_2_redis_cache_store_pooled
           - active_support_7_1_redis_cache_store
-          - active_support_7_1_redis_cache_store_pooled
           - active_support_7_0_redis_cache_store
-          - active_support_7_0_redis_cache_store_pooled
           - redis_store
         exclude:
           - gemfile: rails_7_0
             ruby: '3.4'
           - gemfile: active_support_7_0_redis_cache_store
             ruby: '3.4'
-          - gemfile: active_support_7_0_redis_cache_store_pooled
-            ruby: '3.4'
           - gemfile: rails_7_2
             ruby: '3.0'
           - gemfile: rails_7_2
@@ -62,10 +54,6 @@ jobs:
             ruby: '3.0'
           - gemfile: active_support_7_2_redis_cache_store
             ruby: '2.7'
-          - gemfile: active_support_7_2_redis_cache_store_pooled
-            ruby: '3.0'
-          - gemfile: active_support_7_2_redis_cache_store_pooled
-            ruby: '2.7'
           - gemfile: rails_8_0
             ruby: '3.1'
           - gemfile: rails_8_0
@@ -78,12 +66,6 @@ jobs:
             ruby: '3.0'
           - gemfile: active_support_8_0_redis_cache_store
             ruby: '2.7'
-          - gemfile: active_support_8_0_redis_cache_store_pooled
-            ruby: '3.1'
-          - gemfile: active_support_8_0_redis_cache_store_pooled
-            ruby: '3.0'
-          - gemfile: active_support_8_0_redis_cache_store_pooled
-            ruby: '2.7'
           - gemfile: rails_8_1
             ruby: '3.1'
           - gemfile: rails_8_1
@@ -95,12 +77,6 @@ jobs:
           - gemfile: active_support_8_1_redis_cache_store
             ruby: '3.0'
           - gemfile: active_support_8_1_redis_cache_store
-            ruby: '2.7'
-          - gemfile: active_support_8_1_redis_cache_store_pooled
-            ruby: '3.1'
-          - gemfile: active_support_8_1_redis_cache_store_pooled
-            ruby: '3.0'
-          - gemfile: active_support_8_1_redis_cache_store_pooled
             ruby: '2.7'
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
