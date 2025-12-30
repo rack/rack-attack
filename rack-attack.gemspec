@@ -46,4 +46,7 @@ Gem::Specification.new do |s|
   end
 
   s.add_development_dependency "activesupport"
+  # Fix activesupport Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails/issues/56291 is ixed and released
+  s.add_development_dependency "connection_pool", "~> 2.5"
 end
