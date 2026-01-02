@@ -7,7 +7,11 @@ if defined?(::Dalli)
 
   describe "ActiveSupport::Cache::MemCacheStore as a cache backend" do
     before do
-      Rack::Attack.cache.store = ActiveSupport::Cache::MemCacheStore.new
+      Rack::Attack.cache.store = if ActiveSupport.gem_version >= Gem::Version.new("7.2.0")
+                                   ActiveSupport::Cache::MemCacheStore.new(pool: true)
+                                 else
+                                   ActiveSupport::Cache::MemCacheStore.new(pool_size: 2)
+                                 end
     end
 
     after do

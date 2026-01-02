@@ -12,7 +12,11 @@ if should_run
 
   describe "ActiveSupport::Cache::RedisCacheStore as a cache backend" do
     before do
-      Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new
+      Rack::Attack.cache.store = if ActiveSupport.gem_version >= Gem::Version.new("7.2.0")
+                                   ActiveSupport::Cache::RedisCacheStore.new(pool: true)
+                                 else
+                                   ActiveSupport::Cache::RedisCacheStore.new(pool_size: 2)
+                                 end
     end
 
     after do
