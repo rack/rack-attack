@@ -42,26 +42,41 @@ end
 
 appraise "active_support_8-1_redis_cache_store" do
   gem "activesupport", "~> 8.1.0"
+  # Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails#56291 is fixed and released
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_8-0_redis_cache_store" do
   gem "activesupport", "~> 8.0.0"
+  # Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails#56291 is fixed and released
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-2_redis_cache_store" do
   gem "activesupport", "~> 7.2.0"
+  # Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails#56291 is fixed and released
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-1_redis_cache_store" do
   gem "activesupport", "~> 7.1.0"
+  # Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails#56291 is fixed and released
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-0_redis_cache_store" do
   gem "activesupport", "~> 7.0.0"
+  # Direct version requirement on connection_pool
+  # can be removed once https://github.com/rails/rails#56291 is fixed and released
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
