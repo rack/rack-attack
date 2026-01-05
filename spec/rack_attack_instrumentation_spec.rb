@@ -1,39 +1,41 @@
 # frozen_string_literal: true
 
 require_relative "spec_helper"
-require 'active_support'
-require 'active_support/subscriber'
 
-class CustomSubscriber < ActiveSupport::Subscriber
-  @notification_count = 0
+if defined?(::ActiveSupport::Subscriber)
+  require 'active_support/subscriber'
 
-  class << self
-    attr_accessor :notification_count
-  end
+  class CustomSubscriber < ActiveSupport::Subscriber
+    @notification_count = 0
 
-  def throttle(_event)
-    self.class.notification_count += 1
-  end
-end
-
-describe 'Rack::Attack.instrument' do
-  before do
-    @period = 60 # Use a long period; failures due to cache key rotation less likely
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |req| req.ip }
-  end
-
-  describe "with throttling" do
-    before do
-      ActiveSupport::Notifications.stub(:notifier, ActiveSupport::Notifications::Fanout.new) do
-        CustomSubscriber.attach_to("rack_attack")
-        2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
-      end
+    class << self
+      attr_accessor :notification_count
     end
 
-    it 'should instrument without error' do
-      _(last_response.status).must_equal 429
-      assert_equal 1, CustomSubscriber.notification_count
+    def throttle(_event)
+      self.class.notification_count += 1
+    end
+  end
+
+  describe 'Rack::Attack.instrument' do
+    before do
+      @period = 60 # Use a long period; failures due to cache key rotation less likely
+      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+      Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |req| req.ip }
+    end
+
+    describe "with throttling" do
+      before do
+        ActiveSupport::Notifications.stub(:notifier, ActiveSupport::Notifications::Fanout.new) do
+          CustomSubscriber.attach_to("rack_attack")
+          2.times { get '/', {}, 'REMOTE_ADDR' => '1.2.3.4' }
+        end
+      end
+
+      it 'should instrument without error' do
+        _(last_response.status).must_equal 429
+        assert_equal 1, CustomSubscriber.notification_count
+      end
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require_relative "../../spec_helper"
 
-if defined?(::Dalli)
+if defined?(::Dalli) && defined?(::ActiveSupport::Cache::MemCacheStore)
   require_relative "../../support/cache_store_helper"
 
   describe "ActiveSupport::Cache::MemCacheStore as a cache backend" do

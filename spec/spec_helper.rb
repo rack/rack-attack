@@ -6,7 +6,6 @@ require "logger"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-require "active_support"
 require "rack/attack"
 
 if RUBY_ENGINE == "ruby"
@@ -19,6 +18,7 @@ rescue LoadError
   nil
 end
 
+safe_require "active_support"
 safe_require "connection_pool"
 safe_require "dalli"
 safe_require "rails"
