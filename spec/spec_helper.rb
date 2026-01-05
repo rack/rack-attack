@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require "bundler/setup"
-
-require "logger"
-require "minitest/autorun"
-require "minitest/pride"
-require "rack/test"
-require "rack/attack"
-
-if RUBY_ENGINE == "ruby"
-  require "byebug"
-end
-
 def safe_require(name)
   require name
 rescue LoadError
   nil
 end
 
+require "bundler/setup"
+
+require "logger"
+require "minitest/autorun"
+require "minitest/pride"
+require "rack/test"
 safe_require "active_support"
+require "rack/attack"
+
+if RUBY_ENGINE == "ruby"
+  require "byebug"
+end
+
 safe_require "connection_pool"
 safe_require "dalli"
 safe_require "rails"
