@@ -11,14 +11,14 @@ module Rack
         end
 
         def read(key)
-          rescuing { get(key, raw: true) }
+          handle_store_error { get(key, raw: true) }
         end
 
         def write(key, value, options = {})
           if (expires_in = options[:expires_in])
-            rescuing { setex(key, expires_in, value, raw: true) }
+            handle_store_error { setex(key, expires_in, value, raw: true) }
           else
-            rescuing { set(key, value, raw: true) }
+            handle_store_error { set(key, value, raw: true) }
           end
         end
       end
