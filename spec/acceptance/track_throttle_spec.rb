@@ -3,12 +3,12 @@
 require_relative "../spec_helper"
 require "timecop"
 
-if defined?(::ActiveSupport::Cache::MemoryStore)
-  describe "#track with throttle-ish options" do
-    let(:notifications) { [] }
+describe "#track with throttle-ish options" do
+  let(:notifications) { [] }
 
+  if defined?(::ActiveSupport::Notifications)
     it "notifies when throttle goes over the limit without actually throttling requests" do
-      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+      Rack::Attack.cache.store = SimpleMemoryStore.new
 
       Rack::Attack.track("by ip", limit: 1, period: 60) do |request|
         request.ip

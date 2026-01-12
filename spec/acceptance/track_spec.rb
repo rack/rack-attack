@@ -2,10 +2,10 @@
 
 require_relative "../spec_helper"
 
-if defined?(::ActiveSupport::Notifications)
-  describe "#track" do
-    let(:notifications) { [] }
+describe "#track" do
+  let(:notifications) { [] }
 
+  if defined?(::ActiveSupport::Notifications)
     it "notifies when track block returns true" do
       Rack::Attack.track("ip 1.2.3.4") do |request|
         request.ip == "1.2.3.4"

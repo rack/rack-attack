@@ -2,83 +2,81 @@
 
 require_relative "../spec_helper"
 
-if defined?(::ActiveSupport::Cache::MemoryStore)
-  describe "Customizing throttled response" do
-    before do
-      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+describe "Customizing throttled response" do
+  before do
+    Rack::Attack.cache.store = SimpleMemoryStore.new
 
-      Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
-        request.ip
-      end
+    Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
+      request.ip
+    end
+  end
+
+  it "can be customized" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 200, last_response.status
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 429, last_response.status
+
+    Rack::Attack.throttled_responder = lambda do |_req|
+      [503, {}, ["Throttled"]]
     end
 
-    it "can be customized" do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
-      assert_equal 200, last_response.status
+    assert_equal 503, last_response.status
+    assert_equal "Throttled", last_response.body
+  end
 
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+  it "exposes match data" do
+    matched = nil
+    match_type = nil
+    match_data = nil
+    match_discriminator = nil
 
-      assert_equal 429, last_response.status
+    Rack::Attack.throttled_responder = lambda do |req|
+      matched = req.env['rack.attack.matched']
+      match_type = req.env['rack.attack.match_type']
+      match_data = req.env['rack.attack.match_data']
+      match_discriminator = req.env['rack.attack.match_discriminator']
 
-      Rack::Attack.throttled_responder = lambda do |_req|
+      [429, {}, ["Throttled"]]
+    end
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal "by ip", matched
+    assert_equal :throttle, match_type
+    assert_equal 60, match_data[:period]
+    assert_equal 1, match_data[:limit]
+    assert_equal 2, match_data[:count]
+    assert_equal "1.2.3.4", match_discriminator
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+    assert_equal 3, match_data[:count]
+  end
+
+  it "supports old style" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 200, last_response.status
+
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+    assert_equal 429, last_response.status
+
+    silence_warnings do
+      Rack::Attack.throttled_response = lambda do |_req|
         [503, {}, ["Throttled"]]
       end
-
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-      assert_equal 503, last_response.status
-      assert_equal "Throttled", last_response.body
     end
 
-    it "exposes match data" do
-      matched = nil
-      match_type = nil
-      match_data = nil
-      match_discriminator = nil
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
-      Rack::Attack.throttled_responder = lambda do |req|
-        matched = req.env['rack.attack.matched']
-        match_type = req.env['rack.attack.match_type']
-        match_data = req.env['rack.attack.match_data']
-        match_discriminator = req.env['rack.attack.match_discriminator']
-
-        [429, {}, ["Throttled"]]
-      end
-
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-      assert_equal "by ip", matched
-      assert_equal :throttle, match_type
-      assert_equal 60, match_data[:period]
-      assert_equal 1, match_data[:limit]
-      assert_equal 2, match_data[:count]
-      assert_equal "1.2.3.4", match_discriminator
-
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-      assert_equal 3, match_data[:count]
-    end
-
-    it "supports old style" do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-      assert_equal 200, last_response.status
-
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-      assert_equal 429, last_response.status
-
-      silence_warnings do
-        Rack::Attack.throttled_response = lambda do |_req|
-          [503, {}, ["Throttled"]]
-        end
-      end
-
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-      assert_equal 503, last_response.status
-      assert_equal "Throttled", last_response.body
-    end
+    assert_equal 503, last_response.status
+    assert_equal "Throttled", last_response.body
   end
 end

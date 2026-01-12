@@ -2,32 +2,32 @@
 
 require_relative "../spec_helper"
 
-if defined?(::ActiveSupport::Notifications)
-  describe "Blocking an IP subnet" do
-    let(:notifications) { [] }
+describe "Blocking an IP subnet" do
+  let(:notifications) { [] }
 
-    before do
-      Rack::Attack.blocklist_ip("1.2.3.4/31")
-    end
+  before do
+    Rack::Attack.blocklist_ip("1.2.3.4/31")
+  end
 
-    it "forbids request if IP is inside the subnet" do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+  it "forbids request if IP is inside the subnet" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
-      assert_equal 403, last_response.status
-    end
+    assert_equal 403, last_response.status
+  end
 
-    it "forbids request for another IP in the subnet" do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.5"
+  it "forbids request for another IP in the subnet" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.5"
 
-      assert_equal 403, last_response.status
-    end
+    assert_equal 403, last_response.status
+  end
 
-    it "succeeds if IP is outside the subnet" do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.6"
+  it "succeeds if IP is outside the subnet" do
+    get "/", {}, "REMOTE_ADDR" => "1.2.3.6"
 
-      assert_equal 200, last_response.status
-    end
+    assert_equal 200, last_response.status
+  end
 
+  if defined?(::ActiveSupport::Notifications)
     it "notifies when the request is blocked" do
       ActiveSupport::Notifications.subscribe("blocklist.rack_attack") do |_name, _start, _finish, _id, payload|
         notifications.push(payload)

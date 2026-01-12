@@ -2,24 +2,24 @@
 
 require_relative 'spec_helper'
 
-if defined?(::ActiveSupport::Notifications)
-  describe 'Rack::Attack.track' do
-    let(:notifications) { [] }
+describe 'Rack::Attack.track' do
+  before do
+    Rack::Attack.track("everything") { |_req| true }
+  end
 
-    before do
-      Rack::Attack.track("everything") { |_req| true }
-    end
+  it_allows_ok_requests
 
-    it_allows_ok_requests
+  it "should tag the env" do
+    get '/'
 
-    it "should tag the env" do
-      get '/'
+    _(last_request.env['rack.attack.matched']).must_equal 'everything'
+    _(last_request.env['rack.attack.match_type']).must_equal :track
+  end
 
-      _(last_request.env['rack.attack.matched']).must_equal 'everything'
-      _(last_request.env['rack.attack.match_type']).must_equal :track
-    end
-
+  if defined?(::ActiveSupport::Notifications)
     describe "with a notification subscriber and two tracks" do
+      let(:notifications) { [] }
+
       before do
         # A second track
         Rack::Attack.track("homepage") { |req| req.path == "/" }
@@ -35,21 +35,21 @@ if defined?(::ActiveSupport::Notifications)
         _(notifications.size).must_equal 2
       end
     end
+  end
 
-    describe "without limit and period options" do
-      it "should assign the track filter to a Check instance" do
-        track = Rack::Attack.track("homepage") { |req| req.path == "/" }
+  describe "without limit and period options" do
+    it "should assign the track filter to a Check instance" do
+      track = Rack::Attack.track("homepage") { |req| req.path == "/" }
 
-        _(track.filter.class).must_equal Rack::Attack::Check
-      end
+      _(track.filter.class).must_equal Rack::Attack::Check
     end
+  end
 
-    describe "with limit and period options" do
-      it "should assign the track filter to a Throttle instance" do
-        track = Rack::Attack.track("homepage", limit: 10, period: 10) { |req| req.path == "/" }
+  describe "with limit and period options" do
+    it "should assign the track filter to a Throttle instance" do
+      track = Rack::Attack.track("homepage", limit: 10, period: 10) { |req| req.path == "/" }
 
-        _(track.filter.class).must_equal Rack::Attack::Throttle
-      end
+      _(track.filter.class).must_equal Rack::Attack::Throttle
     end
   end
 end
