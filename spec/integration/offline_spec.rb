@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../spec_helper'
-
-begin
-  require 'active_support/cache'
-rescue LoadError
-  # ActiveSupport is optional
-end
+safe_require 'active_support/cache'
 
 OfflineExamples = Minitest::SharedExamples.new do
   it 'should write' do
