@@ -47,21 +47,29 @@ end
 
 appraise "active_support_8-0_redis_cache_store" do
   gem "activesupport", "~> 8.0.0"
+  # Fix connection_pool version requirement for ActiveSupport
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-2_redis_cache_store" do
   gem "activesupport", "~> 7.2.0"
+  # Fix connection_pool version requirement for ActiveSupport
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-1_redis_cache_store" do
   gem "activesupport", "~> 7.1.0"
+  # Fix connection_pool version requirement for ActiveSupport
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 
 appraise "active_support_7-0_redis_cache_store" do
   gem "activesupport", "~> 7.0.0"
+  # Fix connection_pool version requirement for ActiveSupport
+  gem "connection_pool", "~> 2.5"
   gem "redis", "~> 5.0"
 end
 

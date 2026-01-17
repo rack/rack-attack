@@ -5,7 +5,7 @@ require "timecop"
 
 describe "allow2ban" do
   before do
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
 
     Rack::Attack.blocklist("allow2ban pentesters") do |request|
       Rack::Attack::Allow2Ban.filter(request.ip, maxretry: 2, findtime: 30, bantime: 60) do

@@ -39,18 +39,20 @@ describe "#safelist" do
     assert_equal 200, last_response.status
   end
 
-  it "notifies when the request is safe" do
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
-      notifications.push(payload)
+  if defined?(::ActiveSupport::Notifications)
+    it "notifies when the request is safe" do
+      ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
+      end
+
+      get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+      assert_equal 200, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_nil notification[:request].env["rack.attack.matched"]
+      assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
     end
-
-    get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-    assert_equal 200, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_nil notification[:request].env["rack.attack.matched"]
-    assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
   end
 end
 
@@ -91,17 +93,19 @@ describe "#safelist with name" do
     assert_equal 200, last_response.status
   end
 
-  it "notifies when the request is safe" do
-    ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
-      notifications.push(payload)
+  if defined?(::ActiveSupport::Notifications)
+    it "notifies when the request is safe" do
+      ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
+      end
+
+      get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+      assert_equal 200, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal "safe path", notification[:request].env["rack.attack.matched"]
+      assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
     end
-
-    get "/safe_space", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-    assert_equal 200, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal "safe path", notification[:request].env["rack.attack.matched"]
-    assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
   end
 end

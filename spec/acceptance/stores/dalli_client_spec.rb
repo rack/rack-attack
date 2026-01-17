@@ -18,17 +18,19 @@ if defined?(::Dalli)
     it_works_for_cache_backed_features(fetch_from_store: ->(key) { Rack::Attack.cache.store.fetch(key) })
   end
 
-  describe "ConnectionPool with Dalli::Client as a cache backend" do
-    before do
-      Rack::Attack.cache.store = ConnectionPool.new { Dalli::Client.new }
-    end
+  if defined?(::ConnectionPool)
+    describe "ConnectionPool with Dalli::Client as a cache backend" do
+      before do
+        Rack::Attack.cache.store = ConnectionPool.new { Dalli::Client.new }
+      end
 
-    after do
-      Rack::Attack.cache.store.with { |client| client.flush_all }
-    end
+      after do
+        Rack::Attack.cache.store.with { |client| client.flush_all }
+      end
 
-    it_works_for_cache_backed_features(
-      fetch_from_store: ->(key) { Rack::Attack.cache.store.with { |client| client.fetch(key) } }
-    )
+      it_works_for_cache_backed_features(
+        fetch_from_store: ->(key) { Rack::Attack.cache.store.with { |client| client.fetch(key) } }
+      )
+    end
   end
 end

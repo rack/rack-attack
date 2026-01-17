@@ -43,16 +43,18 @@ describe "Safelist an IP" do
     assert_equal 200, last_response.status
   end
 
-  it "notifies when the request is safe" do
-    ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
-      notifications.push(payload)
+  if defined?(::ActiveSupport::Notifications)
+    it "notifies when the request is safe" do
+      ActiveSupport::Notifications.subscribe("safelist.rack_attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
+      end
+
+      get "/admin", {}, "REMOTE_ADDR" => "5.6.7.8"
+
+      assert_equal 200, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
     end
-
-    get "/admin", {}, "REMOTE_ADDR" => "5.6.7.8"
-
-    assert_equal 200, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal :safelist, notification[:request].env["rack.attack.match_type"]
   end
 end

@@ -4,7 +4,7 @@ require_relative "../spec_helper"
 
 describe "Customizing throttled response" do
   before do
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
 
     Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
       request.ip

@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
+def safe_require(name)
+  require name
+rescue LoadError
+  nil
+end
+
 require "bundler/setup"
 
 require "logger"
 require "minitest/autorun"
 require "minitest/pride"
 require "rack/test"
-require "active_support"
+safe_require "active_support"
 require "rack/attack"
+require_relative "support/simple_memory_store"
 
 if RUBY_ENGINE == "ruby"
   require "byebug"
-end
-
-def safe_require(name)
-  require name
-rescue LoadError
-  nil
 end
 
 safe_require "connection_pool"

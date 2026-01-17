@@ -6,7 +6,7 @@ require_relative 'support/freeze_time_helper'
 describe 'Rack::Attack.throttle' do
   before do
     @period = 60
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |req| req.ip }
   end
 
@@ -70,7 +70,7 @@ end
 describe 'Rack::Attack.throttle with limit as proc' do
   before do
     @period = 60
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: @period) { |req| req.ip }
   end
 
@@ -104,7 +104,7 @@ end
 describe 'Rack::Attack.throttle with period as proc' do
   before do
     @period = 60
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: lambda { |_req| 1 }, period: lambda { |_req| @period }) { |req| req.ip }
   end
 
@@ -139,7 +139,7 @@ end
 describe 'Rack::Attack.throttle with block returning nil' do
   before do
     @period = 60
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     Rack::Attack.throttle('ip/sec', limit: 1, period: @period) { |_| nil }
   end
 
@@ -170,7 +170,7 @@ describe 'Rack::Attack.throttle with throttle_discriminator_normalizer' do
       "PERSON@example.com ",
       " person@example.com\r\n  ",
     ]
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     Rack::Attack.throttle('logins/email', limit: 4, period: @period) do |req|
       if req.path == '/login' && req.post?
         req.params['email']

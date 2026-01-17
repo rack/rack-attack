@@ -7,7 +7,7 @@ describe "fail2ban" do
   let(:notifications) { [] }
 
   before do
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
 
     Rack::Attack.blocklist("fail2ban pentesters") do |request|
       Rack::Attack::Fail2Ban.filter(request.ip, maxretry: 2, findtime: 30, bantime: 60) do
@@ -78,43 +78,45 @@ describe "fail2ban" do
     end
   end
 
-  it "notifies when the request is blocked" do
-    ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
-      notifications.push(payload)
+  if defined?(::ActiveSupport::Notifications)
+    it "notifies when the request is blocked" do
+      ActiveSupport::Notifications.subscribe("rack.attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
+      end
+
+      get "/"
+
+      assert_equal 200, last_response.status
+      assert notifications.empty?
+
+      get "/private-place"
+
+      assert_equal 403, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+      assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
+
+      get "/"
+
+      assert_equal 200, last_response.status
+      assert notifications.empty?
+
+      get "/private-place"
+
+      assert_equal 403, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+      assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
+
+      get "/"
+
+      assert_equal 403, last_response.status
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
+      assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
     end
-
-    get "/"
-
-    assert_equal 200, last_response.status
-    assert notifications.empty?
-
-    get "/private-place"
-
-    assert_equal 403, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
-    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
-
-    get "/"
-
-    assert_equal 200, last_response.status
-    assert notifications.empty?
-
-    get "/private-place"
-
-    assert_equal 403, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
-    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
-
-    get "/"
-
-    assert_equal 403, last_response.status
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal 'fail2ban pentesters', notification[:request].env["rack.attack.matched"]
-    assert_equal :blocklist, notification[:request].env["rack.attack.match_type"]
   end
 end

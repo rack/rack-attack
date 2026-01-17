@@ -8,7 +8,7 @@ describe 'Rack::Attack.Fail2Ban' do
     @cache = Rack::Attack.cache
     @findtime = 60
     @bantime  = 60
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
     @f2b_options = { bantime: @bantime, findtime: @findtime, maxretry: 2 }
 
     Rack::Attack.blocklist('pentest') do |req|

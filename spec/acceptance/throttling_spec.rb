@@ -7,7 +7,7 @@ describe "#throttle" do
   let(:notifications) { [] }
 
   before do
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    Rack::Attack.cache.store = SimpleMemoryStore.new
   end
 
   it "allows one request per minute by IP" do
@@ -135,36 +135,38 @@ describe "#throttle" do
     end
   end
 
-  it "notifies when the request is throttled" do
-    Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
-      request.ip
+  if defined?(::ActiveSupport::Notifications)
+    it "notifies when the request is throttled" do
+      Rack::Attack.throttle("by ip", limit: 1, period: 60) do |request|
+        request.ip
+      end
+
+      ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |_name, _start, _finish, _id, payload|
+        notifications.push(payload)
+      end
+
+      get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
+
+      assert_equal 200, last_response.status
+      assert notifications.empty?
+
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+      assert_equal 200, last_response.status
+      assert notifications.empty?
+
+      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+
+      assert_equal 429, last_response.status
+
+      assert_equal 1, notifications.size
+      notification = notifications.pop
+      assert_equal "by ip", notification[:request].env["rack.attack.matched"]
+      assert_equal :throttle, notification[:request].env["rack.attack.match_type"]
+      assert_equal 60, notification[:request].env["rack.attack.match_data"][:period]
+      assert_equal 1, notification[:request].env["rack.attack.match_data"][:limit]
+      assert_equal 2, notification[:request].env["rack.attack.match_data"][:count]
+      assert_equal "1.2.3.4", notification[:request].env["rack.attack.match_discriminator"]
     end
-
-    ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |_name, _start, _finish, _id, payload|
-      notifications.push(payload)
-    end
-
-    get "/", {}, "REMOTE_ADDR" => "5.6.7.8"
-
-    assert_equal 200, last_response.status
-    assert notifications.empty?
-
-    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-    assert_equal 200, last_response.status
-    assert notifications.empty?
-
-    get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
-
-    assert_equal 429, last_response.status
-
-    assert_equal 1, notifications.size
-    notification = notifications.pop
-    assert_equal "by ip", notification[:request].env["rack.attack.matched"]
-    assert_equal :throttle, notification[:request].env["rack.attack.match_type"]
-    assert_equal 60, notification[:request].env["rack.attack.match_data"][:period]
-    assert_equal 1, notification[:request].env["rack.attack.match_data"][:limit]
-    assert_equal 2, notification[:request].env["rack.attack.match_data"][:count]
-    assert_equal "1.2.3.4", notification[:request].env["rack.attack.match_discriminator"]
   end
 end

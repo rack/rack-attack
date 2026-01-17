@@ -3,8 +3,6 @@
 require_relative 'spec_helper'
 
 describe 'Rack::Attack.track' do
-  let(:notifications) { [] }
-
   before do
     Rack::Attack.track("everything") { |_req| true }
   end
@@ -18,20 +16,24 @@ describe 'Rack::Attack.track' do
     _(last_request.env['rack.attack.match_type']).must_equal :track
   end
 
-  describe "with a notification subscriber and two tracks" do
-    before do
-      # A second track
-      Rack::Attack.track("homepage") { |req| req.path == "/" }
+  if defined?(::ActiveSupport::Notifications)
+    describe "with a notification subscriber and two tracks" do
+      let(:notifications) { [] }
 
-      ActiveSupport::Notifications.subscribe("track.rack_attack") do |_name, _start, _finish, _id, payload|
-        notifications.push(payload)
+      before do
+        # A second track
+        Rack::Attack.track("homepage") { |req| req.path == "/" }
+
+        ActiveSupport::Notifications.subscribe("track.rack_attack") do |_name, _start, _finish, _id, payload|
+          notifications.push(payload)
+        end
+
+        get "/"
       end
 
-      get "/"
-    end
-
-    it "should notify twice" do
-      _(notifications.size).must_equal 2
+      it "should notify twice" do
+        _(notifications.size).must_equal 2
+      end
     end
   end
 
