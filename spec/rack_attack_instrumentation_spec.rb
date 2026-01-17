@@ -2,7 +2,7 @@
 
 require_relative "spec_helper"
 
-require 'active_support/subscriber'
+safe_require 'active_support/subscriber'
 if defined?(::ActiveSupport::Subscriber)
 
   class CustomSubscriber < ActiveSupport::Subscriber
