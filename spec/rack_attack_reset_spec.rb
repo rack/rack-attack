@@ -3,11 +3,41 @@
 require_relative "spec_helper"
 
 describe "Rack::Attack.reset!" do
-  it "raises an error when is not supported by cache store" do
-    Rack::Attack.cache.store = Class.new
-    assert_raises(Rack::Attack::IncompatibleStoreError) do
-      Rack::Attack.reset!
-    end
+  it "falls back to prefix rotation when delete_matched raises NotImplementedError" do
+    store = Class.new do
+      def initialize
+        @data = {}
+      end
+
+      def read(key)
+        @data[key]
+      end
+
+      def write(key, value, _options = {})
+        @data[key] = value
+      end
+
+      def increment(key, amount, _options = {})
+        @data[key] = (@data[key] || 0) + amount
+      end
+
+      def delete(key)
+        @data.delete(key)
+      end
+
+      def delete_matched(_matcher, _options = nil)
+        raise NotImplementedError
+      end
+    end.new
+
+    Rack::Attack.cache.store = store
+
+    Rack::Attack.cache.write("test-key", "value", 300)
+    _(Rack::Attack.cache.read("test-key")).must_equal "value"
+
+    Rack::Attack.reset!
+
+    _(Rack::Attack.cache.read("test-key")).must_be_nil
   end
 
   if defined?(Redis)

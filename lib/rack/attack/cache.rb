@@ -15,6 +15,7 @@ module Rack
       def initialize(store: self.class.default_store)
         self.store = store
         @prefix = 'rack::attack'
+        @generation = nil
       end
 
       attr_reader :store
@@ -37,11 +38,11 @@ module Rack
         enforce_store_presence!
         enforce_store_method_presence!(:read)
 
-        store.read("#{prefix}:#{unprefixed_key}")
+        store.read("#{effective_prefix}:#{unprefixed_key}")
       end
 
       def write(unprefixed_key, value, expires_in)
-        store.write("#{prefix}:#{unprefixed_key}", value, expires_in: expires_in)
+        store.write("#{effective_prefix}:#{unprefixed_key}", value, expires_in: expires_in)
       end
 
       def reset_count(unprefixed_key, period)
@@ -50,27 +51,48 @@ module Rack
       end
 
       def delete(unprefixed_key)
-        store.delete("#{prefix}:#{unprefixed_key}")
+        store.delete("#{effective_prefix}:#{unprefixed_key}")
       end
 
       def reset!
-        if store.respond_to?(:delete_matched)
-          store.delete_matched(/#{prefix}*/)
-        else
-          raise(
-            Rack::Attack::IncompatibleStoreError,
-            "Configured store #{store.class.name} doesn't respond to #delete_matched method"
-          )
-        end
+        store.delete_matched(/#{effective_prefix}*/)
+      rescue NoMethodError, NotImplementedError
+        rotate_generation!
       end
 
       private
+
+      def generation_key
+        "#{@prefix}:generation"
+      end
+
+      def current_generation
+        if @generation.nil?
+          @generation = if store.nil? || !store.respond_to?(:read)
+                          0
+                        else
+                          store.read(generation_key).to_i
+                        end
+        end
+        @generation
+      end
+
+      def effective_prefix
+        gen = current_generation
+        gen > 0 ? "#{@prefix}:g#{gen}" : @prefix
+      end
+
+      def rotate_generation!
+        new_gen = current_generation + 1
+        store.write(generation_key, new_gen, expires_in: nil)
+        @generation = new_gen
+      end
 
       def key_and_expiry(unprefixed_key, period)
         @last_epoch_time = Time.now.to_i
         # Add 1 to expires_in to avoid timing error: https://github.com/rack/rack-attack/pull/85
         expires_in = (period - (@last_epoch_time % period) + 1).to_i
-        ["#{prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
+        ["#{effective_prefix}:#{(@last_epoch_time / period).to_i}:#{unprefixed_key}", expires_in]
       end
 
       def do_count(key, expires_in)
