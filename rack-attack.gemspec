@@ -29,9 +29,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rack', ">= 1.0", "< 4"
 
   s.add_development_dependency 'appraisal', '~> 2.2'
-  s.add_development_dependency "bundler", ">= 1.17", "< 3.0"
   s.add_development_dependency 'minitest', "~> 5.11"
   s.add_development_dependency "minitest-stub-const", "~> 0.6"
+  s.add_development_dependency 'ostruct'
   s.add_development_dependency 'rack-test', "~> 2.0"
   s.add_development_dependency 'rake', "~> 13.0"
   s.add_development_dependency "rubocop", "1.82"
