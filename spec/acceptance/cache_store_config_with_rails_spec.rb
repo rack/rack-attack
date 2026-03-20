@@ -2,7 +2,6 @@
 
 require_relative "../spec_helper"
 require "minitest/stub_const"
-require "ostruct"
 
 describe "Cache store config with Rails" do
   before do
@@ -13,7 +12,8 @@ describe "Cache store config with Rails" do
 
   unless defined?(Rails)
     it "fails when Rails.cache is not set" do
-      Object.stub_const(:Rails, OpenStruct.new(cache: nil)) do
+      rails = Struct.new(:cache).new(nil)
+      Object.stub_const(:Rails, rails) do
         assert_raises(Rack::Attack::MissingStoreError) do
           get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
         end
@@ -22,7 +22,8 @@ describe "Cache store config with Rails" do
   end
 
   it "works when Rails.cache is set" do
-    Object.stub_const(:Rails, OpenStruct.new(cache: ActiveSupport::Cache::MemoryStore.new)) do
+    rails = Struct.new(:cache).new(ActiveSupport::Cache::MemoryStore.new)
+    Object.stub_const(:Rails, rails) do
       get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
 
       assert_equal 200, last_response.status
