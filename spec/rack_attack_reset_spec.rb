@@ -4,9 +4,21 @@ require_relative "spec_helper"
 
 describe "Rack::Attack.reset!" do
   it "raises an error when is not supported by cache store" do
-    Rack::Attack.cache.store = Class.new
-    assert_raises(Rack::Attack::IncompatibleStoreError) do
-      Rack::Attack.reset!
+    fake_store_class = Class.new do
+      def read(key); end
+
+      def write(key, value); end
+
+      def increment(key, count, options = {}); end
+
+      def delete(key); end
+    end
+
+    Object.stub_const(:FakeStore, fake_store_class) do
+      Rack::Attack.cache.store = FakeStore.new
+      assert_raises(Rack::Attack::IncompatibleStoreError) do
+        Rack::Attack.reset!
+      end
     end
   end
 

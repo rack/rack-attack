@@ -20,67 +20,14 @@ describe "Cache store config when using allow2ban" do
     end
   end
 
-  it "gives semantic error if store is missing #read method" do
-    raised_exception = nil
-
-    fake_store_class = Class.new do
-      def write(key, value); end
-
-      def increment(key, count, options = {}); end
+  it "display warning if store is missing methods" do
+    warning = "[rack-attack] Configured store Object doesn't respond to #read, #write, #delete, #increment\n"
+    assert_output("", warning) do
+      Rack::Attack.cache.store = Object.new
     end
-
-    Object.stub_const(:FakeStore, fake_store_class) do
-      Rack::Attack.cache.store = FakeStore.new
-
-      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-        get "/scarce-resource"
-      end
-    end
-
-    assert_equal "Configured store FakeStore doesn't respond to #read method", raised_exception.message
   end
 
-  it "gives semantic error if store is missing #write method" do
-    raised_exception = nil
-
-    fake_store_class = Class.new do
-      def read(key); end
-
-      def increment(key, count, options = {}); end
-    end
-
-    Object.stub_const(:FakeStore, fake_store_class) do
-      Rack::Attack.cache.store = FakeStore.new
-
-      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-        get "/scarce-resource"
-      end
-    end
-
-    assert_equal "Configured store FakeStore doesn't respond to #write method", raised_exception.message
-  end
-
-  it "gives semantic error if store is missing #increment method" do
-    raised_exception = nil
-
-    fake_store_class = Class.new do
-      def read(key); end
-
-      def write(key, value); end
-    end
-
-    Object.stub_const(:FakeStore, fake_store_class) do
-      Rack::Attack.cache.store = FakeStore.new
-
-      raised_exception = assert_raises(Rack::Attack::MisconfiguredStoreError) do
-        get "/scarce-resource"
-      end
-    end
-
-    assert_equal "Configured store FakeStore doesn't respond to #increment method", raised_exception.message
-  end
-
-  it "works with any object that responds to #read, #write and #increment" do
+  it "works with any object that responds to #read, #write, #delete and #increment" do
     fake_store_class = Class.new do
       attr_accessor :backend
 
@@ -99,6 +46,10 @@ describe "Cache store config when using allow2ban" do
       def increment(key, _count, _options = {})
         @backend[key] ||= 0
         @backend[key] += 1
+      end
+
+      def delete(key)
+        @backend.delete(key)
       end
     end
 

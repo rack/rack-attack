@@ -18,10 +18,9 @@ describe "Cache store config when throttling without Rails" do
   end
 
   it "gives semantic error if incompatible store was configured" do
-    Rack::Attack.cache.store = Object.new
-
-    assert_raises(Rack::Attack::MisconfiguredStoreError) do
-      get "/", {}, "REMOTE_ADDR" => "1.2.3.4"
+    warning = "[rack-attack] Configured store Object doesn't respond to #read, #write, #delete, #increment\n"
+    assert_output("", warning) do
+      Rack::Attack.cache.store = Object.new
     end
   end
 
@@ -33,9 +32,21 @@ describe "Cache store config when throttling without Rails" do
         @counts = {}
       end
 
+      def read(key)
+        @counts[key]
+      end
+
+      def write(key, count)
+        @counts[key] = count
+      end
+
       def increment(key, _count, _options)
         @counts[key] ||= 0
         @counts[key] += 1
+      end
+
+      def delete(key)
+        @counts.delete(key)
       end
     end
 
