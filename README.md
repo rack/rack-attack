@@ -35,6 +35,7 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
   - [Cache store configuration](#cache-store-configuration)
 - [Customizing responses](#customizing-responses)
   - [RateLimit headers for well-behaved clients](#ratelimit-headers-for-well-behaved-clients)
+- [Blocking Based on Response](#blocking-based-on-response)
 - [Logging & Instrumentation](#logging--instrumentation)
 - [Testing](#testing)
 - [How it works](#how-it-works)
@@ -371,6 +372,14 @@ For responses that did not exceed a throttle limit, Rack::Attack annotates the e
 ```ruby
 request.env['rack.attack.throttle_data'][name] # => { discriminator: d, count: n, period: p, limit: l, epoch_time: t }
 ```
+
+## Blocking Based on Response
+
+Sometimes you want to block requests based on the response rather than just the request properties. For example, you might want to block IPs that receive multiple 404 responses (potential pentesters scanning for vulnerabilities) or multiple 401 responses (brute force login attempts).
+
+Since `Rack::Attack` runs before your application processes the request, it cannot directly access response status codes. However, you can achieve this using a custom middleware that runs *after* your application, combined with `Fail2Ban` filters.
+
+For a complete working example with middleware implementation and setup instructions, see the [Block Based on Response](docs/advanced_configuration.md#block-based-on-response) section in the advanced configuration guide.
 
 ## Logging & Instrumentation
 
