@@ -6,32 +6,36 @@ module Rack
   class Attack
     module StoreProxy
       class RedisProxy < BaseProxy
-        def initialize(*args)
+        def initialize(store, **options)
           if Gem::Version.new(Redis::VERSION) < Gem::Version.new("3")
             warn 'RackAttack requires Redis gem >= 3.0.0.'
           end
 
-          super(*args)
+          super(store, **options)
         end
 
         def self.handle?(store)
           defined?(::Redis) && store.class == ::Redis
         end
 
+        def self.default_bypassable_store_errors
+          ['Redis::BaseConnectionError']
+        end
+
         def read(key)
-          rescuing { get(key) }
+          handle_store_error { get(key) }
         end
 
         def write(key, value, options = {})
           if (expires_in = options[:expires_in])
-            rescuing { setex(key, expires_in, value) }
+            handle_store_error { setex(key, expires_in, value) }
           else
-            rescuing { set(key, value) }
+            handle_store_error { set(key, value) }
           end
         end
 
         def increment(key, amount, options = {})
-          rescuing do
+          handle_store_error do
             pipelined do |redis|
               redis.incrby(key, amount)
               redis.expire(key, options[:expires_in]) if options[:expires_in]
@@ -40,14 +44,14 @@ module Rack
         end
 
         def delete(key, _options = {})
-          rescuing { del(key) }
+          handle_store_error { del(key) }
         end
 
         def delete_matched(matcher, _options = nil)
           cursor = "0"
           source = matcher.source
 
-          rescuing do
+          handle_store_error do
             # Fetch keys in batches using SCAN to avoid blocking the Redis server.
             loop do
               cursor, keys = scan(cursor, match: source, count: 1000)
@@ -55,14 +59,6 @@ module Rack
               break if cursor == "0"
             end
           end
-        end
-
-        private
-
-        def rescuing
-          yield
-        rescue Redis::BaseConnectionError
-          nil
         end
       end
     end

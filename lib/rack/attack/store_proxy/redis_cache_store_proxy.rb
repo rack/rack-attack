@@ -17,25 +17,25 @@ module Rack
             # So in order to workaround this we use RedisCacheStore#write (which sets expiration) to initialize
             # the counter. After that we continue using the original RedisCacheStore#increment.
             if options[:expires_in] && !read(name)
-              write(name, amount, options)
+              handle_store_error { write(name, amount, options) }
 
               amount
             else
-              super
+              handle_store_error { super }
             end
           end
         end
 
         def read(name, options = {})
-          super(name, options.merge!(raw: true))
+          handle_store_error { super(name, options.merge!(raw: true)) }
         end
 
         def write(name, value, options = {})
-          super(name, value, options.merge!(raw: true))
+          handle_store_error { super(name, value, options.merge!(raw: true)) }
         end
 
         def delete_matched(matcher, options = nil)
-          super(matcher.source, options)
+          handle_store_error { super(matcher.source, options) }
         end
       end
     end

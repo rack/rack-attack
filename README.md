@@ -314,6 +314,35 @@ Most applications should use a new, separate database used only for `rack-attack
 
 Note that `Rack::Attack.cache` is only used for throttling, allow2ban and fail2ban filtering; not blocklisting and safelisting. Your cache store must implement `increment` and `write` like [ActiveSupport::Cache::Store](http://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html). This means that other cache stores which inherit from ActiveSupport::Cache::Store are also compatible. In-memory stores which are not backed by an external database, such as `ActiveSupport::Cache::MemoryStore.new`, will be mostly ineffective because each Ruby process in your deployment will have it's own state, effectively multiplying the number of requests each client can make by the number of Ruby processes you have deployed.
 
+#### Bypassing store errors
+
+By default, some store proxies will swallow the errors they historically rescued (`Redis::BaseConnectionError` for `Redis`, `Dalli::DalliError` for `Dalli`). When one of those errors is raised inside the proxy, the request goes through as if no throttling were applied, which keeps your app available if the dedicated rack-attack store goes down.
+
+You can customize this behavior through `Rack::Attack.cache.bypassable_store_errors`:
+
+```ruby
+# Use the proxy's built-in defaults (this is the default)
+Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: "...")
+
+# Bypass ALL errors raised by the store — requests continue serving even if the
+# store misbehaves in unexpected ways (e.g. Redis OOM, timeouts, protocol errors).
+Rack::Attack.cache.bypassable_store_errors = :all
+
+# Bypass NO errors — any error from the store will propagate. This disables the
+# proxy's historical default rescue behavior as well.
+Rack::Attack.cache.bypassable_store_errors = :none
+
+# Bypass a specific list of error classes (or class-name Strings). This REPLACES
+# the proxy's built-in defaults - include any you still want to rescue.
+Rack::Attack.cache.bypassable_store_errors = [
+  Redis::BaseConnectionError,
+  Redis::TimeoutError,
+  "Redis::CommandError"
+]
+```
+
+`bypassable_store_errors` can be set before or after assigning `cache.store`; the store is re-wrapped automatically.
+
 ## Customizing responses
 
 Customize the response of blocklisted and throttled requests using an object that adheres to the [Rack app interface](http://www.rubydoc.info/github/rack/rack/file/SPEC.rdoc).

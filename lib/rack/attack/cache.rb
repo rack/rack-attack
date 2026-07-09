@@ -4,7 +4,7 @@ module Rack
   class Attack
     class Cache
       attr_accessor :prefix
-      attr_reader :last_epoch_time
+      attr_reader :last_epoch_time, :bypassable_store_errors
 
       def self.default_store
         if Object.const_defined?(:Rails) && Rails.respond_to?(:cache)
@@ -13,6 +13,7 @@ module Rack
       end
 
       def initialize(store: self.class.default_store)
+        @bypassable_store_errors = nil
         self.store = store
         @prefix = 'rack::attack'
       end
@@ -20,15 +21,16 @@ module Rack
       attr_reader :store
 
       def store=(store)
-        @store =
-          if (proxy = BaseProxy.lookup(store))
-            proxy.new(store)
-          else
-            store
-          end
+        @raw_store = store
+        @store = wrap_store(store)
         if @store
           check_store_methods_presence(:read, :write, :delete, :increment)
         end
+      end
+
+      def bypassable_store_errors=(value)
+        @bypassable_store_errors = value
+        @store = wrap_store(@raw_store) if @raw_store
       end
 
       def count(unprefixed_key, period)
@@ -69,6 +71,16 @@ module Rack
       end
 
       private
+
+      def wrap_store(store)
+        return store if store.nil?
+
+        if (proxy = BaseProxy.lookup(store))
+          proxy.new(store, bypassable_store_errors: @bypassable_store_errors)
+        else
+          store
+        end
+      end
 
       def key_and_expiry(unprefixed_key, period)
         @last_epoch_time = Time.now.to_i

@@ -18,13 +18,17 @@ module Rack
           end
         end
 
-        def initialize(client)
-          super(client)
+        def self.default_bypassable_store_errors
+          ['Dalli::DalliError']
+        end
+
+        def initialize(client, **options)
+          super(client, **options)
           stub_with_if_missing
         end
 
         def read(key)
-          rescuing do
+          handle_store_error do
             with do |client|
               client.get(key)
             end
@@ -32,7 +36,7 @@ module Rack
         end
 
         def write(key, value, options = {})
-          rescuing do
+          handle_store_error do
             with do |client|
               client.set(key, value, options.fetch(:expires_in, 0), raw: true)
             end
@@ -40,7 +44,7 @@ module Rack
         end
 
         def increment(key, amount, options = {})
-          rescuing do
+          handle_store_error do
             with do |client|
               client.incr(key, amount, options.fetch(:expires_in, 0), amount)
             end
@@ -48,7 +52,7 @@ module Rack
         end
 
         def delete(key)
-          rescuing do
+          handle_store_error do
             with do |client|
               client.delete(key)
             end
@@ -65,12 +69,6 @@ module Rack
               end
             end
           end
-        end
-
-        def rescuing
-          yield
-        rescue Dalli::DalliError
-          nil
         end
       end
     end
