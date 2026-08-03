@@ -13,7 +13,9 @@ module Rack
             # Return true for blocklist
             true
           elsif yield
-            fail!(discriminator, bantime, findtime, maxretry)
+            # `request` is optional and only enriches the `ban.rack_attack`
+            # payload; the event is emitted with or without it.
+            fail!(discriminator, bantime, findtime, maxretry, options[:request])
           end
         end
 
@@ -34,10 +36,20 @@ module Rack
           'fail2ban'
         end
 
-        def fail!(discriminator, bantime, findtime, maxretry)
+        def fail!(discriminator, bantime, findtime, maxretry, request = nil)
           count = cache.count("#{key_prefix}:count:#{discriminator}", findtime)
           if count >= maxretry
             ban!(discriminator, bantime)
+
+            Rack::Attack.instrument_ban(
+              name: key_prefix,
+              discriminator: discriminator,
+              count: count,
+              maxretry: maxretry,
+              findtime: findtime,
+              bantime: bantime,
+              request: request
+            )
           end
 
           true

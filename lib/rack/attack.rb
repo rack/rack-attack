@@ -46,6 +46,14 @@ module Rack
         end
       end
 
+      # Instruments the moment a Fail2Ban/Allow2Ban ban is written, as opposed
+      # to `instrument` above, which fires on every request a check matches.
+      # Deliberately does not write to `request.env`, so the `blocklist` (or
+      # `track`) event for this same request is emitted exactly as before.
+      def instrument_ban(payload)
+        notifier.instrument("ban.rack_attack", payload) if notifier
+      end
+
       def cache
         @cache ||= Cache.new
       end
