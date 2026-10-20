@@ -63,7 +63,7 @@ describe 'Rack::Attack.Allow2Ban' do
 
         it 'is banned' do
           key = "rack::attack:allow2ban:ban:1.2.3.4"
-          _(@cache.store.read(key)).must_equal 1
+          _(@cache.store.read(key)).must_be :>, Time.now.to_f
         end
       end
     end
@@ -100,7 +100,7 @@ describe 'Rack::Attack.Allow2Ban' do
 
       it 'is still banned' do
         key = "rack::attack:allow2ban:ban:1.2.3.4"
-        _(@cache.store.read(key)).must_equal 1
+        _(@cache.store.read(key)).must_be :>, Time.now.to_f
       end
     end
 
@@ -120,7 +120,7 @@ describe 'Rack::Attack.Allow2Ban' do
 
       it 'is still banned' do
         key = "rack::attack:allow2ban:ban:1.2.3.4"
-        _(@cache.store.read(key)).must_equal 1
+        _(@cache.store.read(key)).must_be :>, Time.now.to_f
       end
     end
   end

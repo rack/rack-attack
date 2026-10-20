@@ -39,6 +39,7 @@ class Minitest::Spec
 
         get "/"
         assert_equal 403, last_response.status
+        assert_equal 60, Rack::Attack::Fail2Ban.retry_after("127.0.0.1")
       end
     end
 
@@ -64,7 +65,26 @@ class Minitest::Spec
 
         get "/"
         assert_equal 403, last_response.status
+        assert_equal 60, Rack::Attack::Allow2Ban.retry_after("127.0.0.1")
       end
+    end
+
+    it "expires bans" do
+      Rack::Attack.blocklist("fail2ban pentesters") do |request|
+        Rack::Attack::Fail2Ban.filter(request.ip, maxretry: 1, findtime: 30, bantime: 1) do
+          request.path.include?("private-place")
+        end
+      end
+
+      get "/private-place"
+      assert_equal 403, last_response.status
+      assert_equal 1, Rack::Attack::Fail2Ban.retry_after("127.0.0.1")
+
+      sleep 2.1
+
+      assert_nil Rack::Attack::Fail2Ban.retry_after("127.0.0.1")
+      get "/"
+      assert_equal 200, last_response.status
     end
 
     it "doesn't leak keys" do
