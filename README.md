@@ -237,6 +237,26 @@ Rack::Attack.blocklist('allow2ban login scrapers') do |req|
 end
 ```
 
+#### Remaining ban time
+
+`Fail2Ban.retry_after(discriminator)` and `Allow2Ban.retry_after(discriminator)` return the number of seconds until the
+ban expires, rounded up to a whole second, or `nil` if the discriminator is not banned. Pass the same discriminator
+that was given to `filter`. It can be used to send a `Retry-After` header:
+
+```ruby
+Rack::Attack.blocklisted_responder = lambda do |request|
+  headers = {}
+  if (retry_after = Rack::Attack::Allow2Ban.retry_after(request.ip))
+    headers['retry-after'] = retry_after.to_s
+  end
+
+  [ 403, headers, ["Forbidden\n"]]
+end
+```
+
+`retry_after` also returns `nil` for bans created by previous versions of Rack::Attack, which did not store the ban
+expiration time.
+
 ### Throttling
 
 Throttle state is stored in a [configurable cache](#cache-store-configuration) (which defaults to `Rails.cache` if present).
