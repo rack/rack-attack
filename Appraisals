@@ -28,6 +28,14 @@ appraise "rails_7-0" do
   gem "railties", "~> 7.0.0"
 end
 
+appraise "dalli5" do
+  gem "dalli", "~> 5.0"
+end
+
+appraise "dalli4" do
+  gem "dalli", "~> 4.0"
+end
+
 appraise "dalli3" do
   gem "dalli", "~> 3.0"
 end

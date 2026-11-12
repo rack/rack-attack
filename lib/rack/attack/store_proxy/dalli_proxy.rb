@@ -34,7 +34,7 @@ module Rack
         def write(key, value, options = {})
           rescuing do
             with do |client|
-              client.set(key, value, options.fetch(:expires_in, 0), raw: true)
+              client.set(key, value.to_s, options.fetch(:expires_in, 0), raw: true)
             end
           end
         end
