@@ -29,6 +29,7 @@ See the [Backing & Hacking blog post](https://www.kickstarter.com/backing-and-ha
     - [`blocklist(name, &block)`](#blocklistname-block)
     - [Fail2Ban](#fail2ban)
     - [Allow2Ban](#allow2ban)
+    - [Knowing when a ban is applied](#knowing-when-a-ban-is-applied)
   - [Throttling](#throttling)
     - [`throttle(name, options, &block)`](#throttlename-options-block)
   - [Tracks](#tracks)
@@ -234,6 +235,42 @@ Rack::Attack.blocklist('allow2ban login scrapers') do |req|
     # The count for the IP is incremented if the return value is truthy.
     req.path == '/login' and req.post?
   end
+end
+```
+
+#### Knowing when a ban is applied
+
+The `blocklist` event fires for *every* request a blocklist rejects, which means
+a client banned for an hour produces an event on each of its blocked requests,
+and none at all on the request that actually tripped the ban. To be notified the
+moment a ban is applied, subscribe to `ban.rack_attack`:
+
+```ruby
+ActiveSupport::Notifications.subscribe('ban.rack_attack') do |name, start, finish, request_id, payload|
+  # payload => {
+  #   name: 'fail2ban',        # or 'allow2ban'
+  #   discriminator: '1.2.3.4',
+  #   count: 3,
+  #   maxretry: 3,
+  #   findtime: 600,
+  #   bantime: 300,
+  #   request: nil
+  # }
+  Rails.logger.warn("Banned #{payload[:discriminator]} for #{payload[:bantime]}s")
+end
+```
+
+The event fires exactly once per ban, and the discriminator identifies who was
+banned. This is especially useful with `Allow2Ban`, where the request that
+crosses `maxretry` is still allowed through, so the ban is otherwise invisible
+until the *next* request arrives.
+
+`payload[:request]` is `nil` unless you pass the request to the filter, which is
+optional:
+
+```ruby
+Rack::Attack::Allow2Ban.filter(req.ip, maxretry: 20, findtime: 1.minute, bantime: 1.hour, request: req) do
+  req.path == '/login' and req.post?
 end
 ```
 
